@@ -17,6 +17,53 @@ import { ref } from 'vue'
                       <a-link>查看</a-link>
                     </template>
                     <p :style="{ margin: 0 }">
+                      去除字符串中的空格
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '25%' }">
+                  <a-card class="card-demo" title="字符串去回车" :bordered="false">
+                    <template #extra>
+                      <a-link>查看</a-link>
+                    </template>
+                    <p :style="{ margin: 0 }">
+                      去除字符串中的回车
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '25%' }">
+                  <a-card class="card-demo" title="大小写转换" :bordered="false">
+                    <template #extra>
+                      <a-link>查看</a-link>
+                    </template>
+                    <p :style="{ margin: 0 }">
+                      转换字符大小写
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '25%' }">
+                  <a-card class="card-demo" title="字符替换" :bordered="false">
+                    <template #extra>
+                      <a-link>查看</a-link>
+                    </template>
+                    <p :style="{ margin: 0 }">
+                      替换字符串中指定字符
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                
+              </a-card>
+            </div>
+          </a-tab-pane>
+          <a-tab-pane key="2" title="字符工具">
+            <div class="tool-container">
+              <a-card :bordered="false" :style="{ width: '99%' }">
+                <a-card-grid :style="{ width: '25%' }">
+                  <a-card class="card-demo" title="字符串去空格" :bordered="false">
+                    <template #extra>
+                      <a-link>查看</a-link>
+                    </template>
+                    <p :style="{ margin: 0 }">
                       'Card allow to hover'
                     </p>
                   </a-card>
@@ -34,17 +81,83 @@ import { ref } from 'vue'
               </a-card>
             </div>
           </a-tab-pane>
-          <a-tab-pane key="2" title="字符工具">
-            Content of Tab Panel 1
-          </a-tab-pane>
           <a-tab-pane key="3" title="JSON工具">
-            Content of Tab Panel 2
+            <div class="tool-container">
+              <a-card :bordered="false" :style="{ width: '99%' }">
+                <a-card-grid :style="{ width: '25%' }">
+                  <a-card class="card-demo" title="字符串去空格" :bordered="false">
+                    <template #extra>
+                      <a-link>查看</a-link>
+                    </template>
+                    <p :style="{ margin: 0 }">
+                      'Card allow to hover'
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '25%' }">
+                  <a-card class="card-demo" title="字符串去回车" :bordered="false">
+                    <template #extra>
+                      <a-link>查看</a-link>
+                    </template>
+                    <p :style="{ margin: 0 }">
+                      'Card allow to hover'
+                    </p>
+                  </a-card>
+                </a-card-grid>
+              </a-card>
+            </div>
           </a-tab-pane>
           <a-tab-pane key="4" title="转换工具">
-            Content of Tab Panel 3
+            <div class="tool-container">
+              <a-card :bordered="false" :style="{ width: '99%' }">
+                <a-card-grid :style="{ width: '25%' }">
+                  <a-card class="card-demo" title="字符串去空格" :bordered="false">
+                    <template #extra>
+                      <a-link>查看</a-link>
+                    </template>
+                    <p :style="{ margin: 0 }">
+                      'Card allow to hover'
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '25%' }">
+                  <a-card class="card-demo" title="字符串去回车" :bordered="false">
+                    <template #extra>
+                      <a-link>查看</a-link>
+                    </template>
+                    <p :style="{ margin: 0 }">
+                      'Card allow to hover'
+                    </p>
+                  </a-card>
+                </a-card-grid>
+              </a-card>
+            </div>
           </a-tab-pane>
           <a-tab-pane key="5" title="随机工具">
-            Content of Tab Panel 3
+            <div class="tool-container">
+              <a-card :bordered="false" :style="{ width: '99%' }">
+                <a-card-grid :style="{ width: '25%' }">
+                  <a-card class="card-demo" title="字符串去空格" :bordered="false">
+                    <template #extra>
+                      <a-link>查看</a-link>
+                    </template>
+                    <p :style="{ margin: 0 }">
+                      'Card allow to hover'
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '25%' }">
+                  <a-card class="card-demo" title="字符串去回车" :bordered="false">
+                    <template #extra>
+                      <a-link>查看</a-link>
+                    </template>
+                    <p :style="{ margin: 0 }">
+                      'Card allow to hover'
+                    </p>
+                  </a-card>
+                </a-card-grid>
+              </a-card>
+            </div>
           </a-tab-pane>
         </a-tabs>
       </a-col>
