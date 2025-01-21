@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
+import { app, BrowserWindow, shell, ipcMain,Menu } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -78,7 +78,10 @@ async function createWindow() {
   // win.webContents.on('will-navigate', (event, url) => { }) #344
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(()=>{
+  createWindow()
+  Menu.setApplicationMenu(null);
+})
 
 app.on('window-all-closed', () => {
   win = null
