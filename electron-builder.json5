@@ -1,9 +1,9 @@
 // @see https://www.electron.build/configuration/configuration
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "appId": "YourAppID",
+  "appId": "0096",
   "asar": true,
-  "productName": "YourAppName",
+  "productName": "蜂巢工具箱",
   "directories": {
     "output": "release/${version}"
   },
