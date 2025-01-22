@@ -72,6 +72,20 @@ function closeWindow() {
                     </p>
                   </a-card>
                 </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t3-1')">
+                  <a-card class="card-demo" title="JSON格式化" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      将JSON格式化输出
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-1')">
+                  <a-card class="card-demo" title="Windows加密" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      Windows自带指令
+                    </p>
+                  </a-card>
+                </a-card-grid>
               </a-card>
             </div>
           </a-tab-pane>
@@ -110,6 +124,27 @@ function closeWindow() {
                   <a-card class="card-demo" title="替换与转义" :bordered="false">
                     <p :style="{ margin: 0 }">
                       替换指定字符
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-2')">
+                  <a-card class="card-demo" title="MD5加密" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      字符串转MD5
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-3')">
+                  <a-card class="card-demo" title="SHA1加密" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      字符串转SHA1
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-4')">
+                  <a-card class="card-demo" title="SHA256加密" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      字符串转SHA256
                     </p>
                   </a-card>
                 </a-card-grid>
@@ -159,161 +194,21 @@ function closeWindow() {
                     </p>
                   </a-card>
                 </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-2')">
                   <a-card class="card-demo" title="MD5加密" :bordered="false">
                     <p :style="{ margin: 0 }">
                       字符串转MD5
                     </p>
                   </a-card>
                 </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-3')">
                   <a-card class="card-demo" title="SHA1加密" :bordered="false">
                     <p :style="{ margin: 0 }">
                       字符串转SHA1
                     </p>
                   </a-card>
                 </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="SHA256加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转SHA256
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-1')">
-                  <a-card class="card-demo" title="Windows加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      Windows自带指令
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="MD5加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转MD5
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="SHA1加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转SHA1
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="SHA256加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转SHA256
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-1')">
-                  <a-card class="card-demo" title="Windows加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      Windows自带指令
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="MD5加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转MD5
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="SHA1加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转SHA1
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="SHA256加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转SHA256
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-1')">
-                  <a-card class="card-demo" title="Windows加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      Windows自带指令
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="MD5加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转MD5
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="SHA1加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转SHA1
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="SHA256加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转SHA256
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-1')">
-                  <a-card class="card-demo" title="Windows加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      Windows自带指令
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="MD5加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转MD5
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="SHA1加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转SHA1
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="SHA256加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转SHA256
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-1')">
-                  <a-card class="card-demo" title="Windows加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      Windows自带指令
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="MD5加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转MD5
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
-                  <a-card class="card-demo" title="SHA1加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      字符串转SHA1
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-4')">
                   <a-card class="card-demo" title="SHA256加密" :bordered="false">
                     <p :style="{ margin: 0 }">
                       字符串转SHA256
@@ -326,14 +221,14 @@ function closeWindow() {
           <a-tab-pane key="6" title="随机工具">
             <div class="tool-container">
               <a-card :bordered="false" :style="{ width: '99%' }">
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t6-1')">
                   <a-card class="card-demo" title="随机数字" :bordered="false">
                     <p :style="{ margin: 0 }">
                       生成随机数字
                     </p>
                   </a-card>
                 </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t6-2')">
                   <a-card class="card-demo" title="随机字符串" :bordered="false">
                     <p :style="{ margin: 0 }">
                       生成随机字符串

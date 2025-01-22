@@ -5,6 +5,7 @@ import { Message } from '@arco-design/web-vue';
 import { toPng } from 'html-to-image';
 import { saveAs } from 'file-saver';
 import QrcodeVue from 'qrcode.vue';
+import CryptoJS from 'crypto-js';
 
 const props = defineProps({
     toolbar: Boolean,
@@ -219,6 +220,35 @@ function process_t3_1() {
     }
 }
 
+// t5-2
+const t5_2_in: any = ref("")
+const t5_2_out_small: any = ref("")
+const t5_2_out_big: any = ref("")
+function process_t5_2() {
+    var md5 = CryptoJS.MD5(t5_2_in.value).toString()
+    t5_2_out_small.value = md5
+    t5_2_out_big.value = md5.toUpperCase()
+}
+
+// t5-3
+const t5_3_in: any = ref("")
+const t5_3_out_small: any = ref("")
+const t5_3_out_big: any = ref("")
+function process_t5_3() {
+    var sha1 = CryptoJS.SHA1(t5_3_in.value).toString()
+    t5_3_out_small.value = sha1
+    t5_3_out_big.value = sha1.toUpperCase()
+}
+
+// t5-4
+const t5_4_in: any = ref("")
+const t5_4_out_small: any = ref("")
+const t5_4_out_big: any = ref("")
+function process_t5_4() {
+    var sha256 = CryptoJS.SHA256(t5_4_in.value).toString()
+    t5_4_out_small.value = sha256
+    t5_4_out_big.value = sha256.toUpperCase()
+}
 
 </script>
 
@@ -645,6 +675,135 @@ Path : C:\Windows\notepad.exe</code></pre>
 9E107D9D372BB6826BD81D3542A419D6
 CertUtil: -hashfile 命令成功完成。</code></pre>
 
+                    </a-col>
+                </a-row>
+
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't5-2'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="MD5加密" @back="switchToMenu"
+                    subtitle="字符串转MD5">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
+                                        src="../assets/min.png" style="width: 15px;"
+                                        @click="minimizeWindow()" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button"> <template #icon><img
+                                        src="../assets/close.png" style="width: 15px;"
+                                        @click="closeWindow()" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row>
+                            <a-col :span="4">
+                                <p class="t1-1-title">输入字符串：</p>
+                            </a-col>
+                            <a-col :span="16">
+                                <a-input v-model="t5_2_in" placeholder="请输入字符串" class="t1-1-inputer"></a-input>
+                            </a-col>
+                            <a-col :span="4">
+                                <a-button @click="process_t5_2" class="t1-1-button">生成MD5</a-button><br />
+                            </a-col>
+                </a-row>
+                <a-row v-show="t5_2_out_small!='' && t5_2_out_big!=''">
+                    <a-col :span="24">
+                        <a-row style="margin-top: 10px;">
+                            <p style="text-align: center;width: 100%;margin: 0;font-size: large;">小写MD5： {{ t5_2_out_small }}</p><br />
+                        </a-row>
+                        <a-row>
+                            <p  style="text-align: center;width: 100%;margin: 0;margin-top: 5px;font-size: large;">大写MD5： {{ t5_2_out_big }}</p><br />
+                        </a-row>
+                    </a-col>
+                </a-row>
+
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't5-3'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="SHA1加密" @back="switchToMenu"
+                    subtitle="字符串转SHA1">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
+                                        src="../assets/min.png" style="width: 15px;"
+                                        @click="minimizeWindow()" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button"> <template #icon><img
+                                        src="../assets/close.png" style="width: 15px;"
+                                        @click="closeWindow()" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row>
+                            <a-col :span="4">
+                                <p class="t1-1-title">输入字符串：</p>
+                            </a-col>
+                            <a-col :span="16">
+                                <a-input v-model="t5_3_in" placeholder="请输入字符串" class="t1-1-inputer"></a-input>
+                            </a-col>
+                            <a-col :span="4">
+                                <a-button @click="process_t5_3" class="t1-1-button">生成SHA1</a-button><br />
+                            </a-col>
+                </a-row>
+                <a-row v-show="t5_3_out_small!='' && t5_3_out_big!=''">
+                    <a-col :span="24">
+                        <a-row style="margin-top: 10px;">
+                            <p style="text-align: center;width: 100%;margin: 0;font-size: large;">小写SHA1： {{ t5_3_out_small }}</p><br />
+                        </a-row>
+                        <a-row>
+                            <p  style="text-align: center;width: 100%;margin: 0;margin-top: 5px;font-size: large;">大写SHA1： {{ t5_3_out_big }}</p><br />
+                        </a-row>
+                    </a-col>
+                </a-row>
+
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't5-4'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="SHA256加密" @back="switchToMenu"
+                    subtitle="字符串转SHA256">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
+                                        src="../assets/min.png" style="width: 15px;"
+                                        @click="minimizeWindow()" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button"> <template #icon><img
+                                        src="../assets/close.png" style="width: 15px;"
+                                        @click="closeWindow()" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row>
+                            <a-col :span="4">
+                                <p class="t1-1-title">输入字符串：</p>
+                            </a-col>
+                            <a-col :span="16">
+                                <a-input v-model="t5_4_in" placeholder="请输入字符串" class="t1-1-inputer"></a-input>
+                            </a-col>
+                            <a-col :span="4">
+                                <a-button @click="process_t5_4" class="t1-1-button">生成SHA1</a-button><br />
+                            </a-col>
+                </a-row>
+                <a-row v-show="t5_4_out_small!='' && t5_4_out_big!=''">
+                    <a-col :span="24">
+                        <a-row style="margin-top: 10px;">
+                            <p style="text-align: center;width: 100%;margin: 0;">小写SHA256： {{ t5_4_out_small }}</p><br />
+                        </a-row>
+                        <a-row>
+                            <p  style="text-align: center;width: 100%;margin: 0;margin-top: 5px;">大写SHA256： {{ t5_4_out_big }}</p><br />
+                        </a-row>
                     </a-col>
                 </a-row>
 
