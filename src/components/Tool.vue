@@ -58,8 +58,10 @@ const copySvgToClipboard = async (svgElementId: string): Promise<void> => {
     await navigator.clipboard.write([
       new ClipboardItem({ 'image/png': await (await fetch(dataUrl)).blob() }),
     ]);
+    Message.clear()
     Message.success({content:'图片已复制到剪切板!',position:'bottom'})
   } catch (error) {
+    Message.clear()
     Message.error({content:'复制图片到剪贴板失败：'+error,position:'bottom'})
   }
 };
@@ -74,13 +76,16 @@ const saveSvgImage = async (svgElementId: string): Promise<void> => {
   try {
     const dataUrl = await toPng(svgElement);
     saveAs(dataUrl, 'code.png');
-    Message.success({content:'图片已保存!',position:'bottom'})
+    Message.clear()
+    Message.success({content:'处理文件保存中!',position:'bottom'})
   } catch (error) {
+    Message.clear()
     Message.error({content:'保存图片失败：'+error,position:'bottom'})
   }
 };
 
 // t1-2
+
 </script>
 
 <template>
