@@ -6,13 +6,30 @@ const switchToTool = (t: string) => {
   emit('update:toolbar', true);
   emit('update:tooltype', t);
 };
+
+function minimizeWindow() {
+  window.ipcRenderer.send('minimize-window');
+}
+function closeWindow() {
+  window.ipcRenderer.send('close-window');
+}
+
 </script>
 
 <template>
   <div>
     <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-head">
-      <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="蜂巢工具箱" subtitle="离线功能列表"
-        :show-back=false></a-page-header>
+      <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="蜂巢工具箱" subtitle="离线功能列表" :show-back=false>
+        <template #extra>
+          <div class="can_touch">
+            <a-button class="header-button no-outline-button" @click=""> <template #icon><img src="../assets/min.png"
+                  style="width: 15px;" @click="minimizeWindow()" /></template>
+            </a-button>
+            <a-button class="header-button no-outline-button"> <template #icon><img src="../assets/close.png"
+                  style="width: 15px;" @click="closeWindow()" /></template> </a-button>
+          </div>
+        </template>
+      </a-page-header>
     </div>
     <a-row>
       <a-col :span="24">
@@ -174,13 +191,14 @@ const switchToTool = (t: string) => {
 }
 
 
-.one-card{
+.one-card {
   border-radius: 5px;
   margin-left: 0.5%;
   margin-right: 0.5%;
   margin-top: 0.5%;
   margin-bottom: 0.5%;
 }
+
 .one-card:hover {
   background-color: #f0f0f0;
   cursor: pointer;
@@ -192,5 +210,27 @@ const switchToTool = (t: string) => {
 
 .card-demo :deep(.arco-card-header) {
   border: none;
+}
+
+.can_touch {
+  -webkit-app-region: no-drag;
+}
+
+.header-button {
+  background-color: transparent !important;
+}
+
+.header-button:hover {
+  background-color: #f0f0f0 !important;
+}
+
+.no-outline-button {
+  outline: none;
+  /* 移除默认点击边框 */
+}
+
+.no-outline-button:focus {
+  outline: none;
+  /* 移除焦点时的边框 */
 }
 </style>

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain,Menu } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, Menu } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -81,7 +81,7 @@ async function createWindow() {
   // win.webContents.on('will-navigate', (event, url) => { }) #344
 }
 
-app.whenReady().then(()=>{
+app.whenReady().then(() => {
   createWindow()
   Menu.setApplicationMenu(null);
 })
@@ -124,3 +124,7 @@ ipcMain.handle('open-win', (_, arg) => {
     childWindow.loadFile(indexHtml, { hash: arg })
   }
 })
+
+// 监听最小化和关闭事件 
+ipcMain.on('minimize-window', () => { win.minimize(); }); 
+ipcMain.on('close-window', () => { win.close(); });
