@@ -44,8 +44,11 @@ const indexHtml = path.join(RENDERER_DIST, 'index.html')
 
 async function createWindow() {
   win = new BrowserWindow({
-    title: 'Main window',
+    title: '蜂巢工具箱',
     icon: path.join(process.env.VITE_PUBLIC, 'favicon.ico'),
+    resizable: false, // 禁止调整窗口大小 
+    maximizable: false, // 禁止最大化窗口
+    titleBarStyle: 'hidden', // 隐藏标题栏
     webPreferences: {
       preload,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
