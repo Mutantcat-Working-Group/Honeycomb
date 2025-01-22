@@ -4,6 +4,7 @@ import JsBarcode from 'jsbarcode';
 import { Message } from '@arco-design/web-vue';
 import { toPng } from 'html-to-image';
 import { saveAs } from 'file-saver';
+import QrcodeVue from 'qrcode.vue';
 
 const props = defineProps({
     toolbar: Boolean,
@@ -39,53 +40,103 @@ function generateBarcode() {
         })
         t1_1_ok.value = true
         Message.clear()
-        Message.success({content:'生成成功!',position:'bottom'})
+        Message.success({ content: '生成成功!', position: 'bottom' })
     } catch (err) {
         Message.clear()
-        Message.error({content:'生成条形码失败,请检查输入的数字是否正确',position:'bottom'})
+        Message.error({ content: '生成条形码失败,请检查输入的数字是否正确', position: 'bottom' })
     }
 }
 
 const copySvgToClipboard = async (svgElementId: string): Promise<void> => {
-  const svgElement = document.getElementById(svgElementId) as HTMLElement | null;
-  if (!svgElement) {
-    console.error(`未找到 ID 为 "${svgElementId}" 的 SVG 元素`);
-    return;
-  }
+    const svgElement = document.getElementById(svgElementId) as HTMLElement | null;
+    if (!svgElement) {
+        console.error(`未找到 ID 为 "${svgElementId}" 的 SVG 元素`);
+        return;
+    }
 
-  try {
-    const dataUrl = await toPng(svgElement);
-    await navigator.clipboard.write([
-      new ClipboardItem({ 'image/png': await (await fetch(dataUrl)).blob() }),
-    ]);
-    Message.clear()
-    Message.success({content:'图片已复制到剪切板!',position:'bottom'})
-  } catch (error) {
-    Message.clear()
-    Message.error({content:'复制图片到剪贴板失败：'+error,position:'bottom'})
-  }
+    try {
+        const dataUrl = await toPng(svgElement);
+        await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': await (await fetch(dataUrl)).blob() }),
+        ]);
+        Message.clear()
+        Message.success({ content: '图片已复制到剪切板!', position: 'bottom' })
+    } catch (error) {
+        Message.clear()
+        Message.error({ content: '复制图片到剪贴板失败：' + error, position: 'bottom' })
+    }
 };
 
 const saveSvgImage = async (svgElementId: string): Promise<void> => {
-  const svgElement = document.getElementById(svgElementId) as HTMLElement | null;
-  if (!svgElement) {
-    console.error(`未找到 ID 为 "${svgElementId}" 的 SVG 元素`);
-    return;
-  }
+    const svgElement = document.getElementById(svgElementId) as HTMLElement | null;
+    if (!svgElement) {
+        console.error(`未找到 ID 为 "${svgElementId}" 的 SVG 元素`);
+        return;
+    }
 
-  try {
-    const dataUrl = await toPng(svgElement);
-    saveAs(dataUrl, 'code.png');
-    Message.clear()
-    Message.success({content:'处理文件保存中!',position:'bottom'})
-  } catch (error) {
-    Message.clear()
-    Message.error({content:'保存图片失败：'+error,position:'bottom'})
-  }
+    try {
+        const dataUrl = await toPng(svgElement);
+        saveAs(dataUrl, 'code.png');
+        Message.clear()
+        Message.success({ content: '处理文件保存中!', position: 'bottom' })
+    } catch (error) {
+        Message.clear()
+        Message.error({ content: '保存图片失败：' + error, position: 'bottom' })
+    }
 };
 
 // t1-2
+const t1_2_in: any = ref("")
+const t1_2_qr: any = ref("")
 
+function generateQrcode() {
+    t1_2_qr.value = t1_2_in.value
+}
+
+const copyCanvasToClipboard = async (canvasId: string): Promise<void> => {
+    const canvasElement = document.getElementById(canvasId) as HTMLCanvasElement | null;
+    if (!canvasElement) {
+        console.error(`未找到 ID 为 "${canvasId}" 的 Canvas 元素`);
+        return;
+    }
+
+    try {
+        const dataUrl = await toPng(canvasElement);
+        const blob = await (await fetch(dataUrl)).blob();
+
+        await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob }),
+        ]);
+
+        Message.clear()
+        Message.success({ content: '图片已复制到剪贴板', position: 'bottom' })
+    } catch (error) {
+        Message.clear()
+        Message.error({ content: '复制图片到剪贴板失败：' + error, position: 'bottom' })
+    }
+};
+
+const saveCanvasImage = async (canvasId: string): Promise<void> => {
+    const canvasElement = document.getElementById(canvasId) as HTMLCanvasElement | null;
+    if (!canvasElement) {
+        console.error(`未找到 ID 为 "${canvasId}" 的 Canvas 元素`);
+        return;
+    }
+
+    try {
+        let dataUrl;
+        dataUrl = await toPng(canvasElement);
+
+        if (dataUrl) {
+            saveAs(dataUrl, `code.png`);
+            Message.clear()
+            Message.success({ content: '处理文件保存中!', position: 'bottom' })
+        }
+    } catch (error) {
+        Message.clear()
+        Message.error({ content: '保存图片失败：' + error, position: 'bottom' })
+    }
+};
 </script>
 
 <template>
@@ -128,8 +179,10 @@ const saveSvgImage = async (svgElementId: string): Promise<void> => {
                         </a-row>
                         <a-row style="margin-top: 10px;" v-show="t1_1_ok">
                             <a-col :span="24" style="width: 200px; ">
-                                <a-button class="t1-1-button" style="margin: 0 15px;" @click="copySvgToClipboard('barcode')">复制条形码</a-button>
-                                <a-button class="t1-1-button" style="margin: 0 15px;" @click="saveSvgImage('barcode')">保存条形码</a-button>
+                                <a-button class="t1-1-button" style="margin: 0 15px;"
+                                    @click="copySvgToClipboard('barcode')">复制条形码</a-button>
+                                <a-button class="t1-1-button" style="margin: 0 15px;"
+                                    @click="saveSvgImage('barcode')">保存条形码</a-button>
                             </a-col>
                         </a-row>
                     </a-col>
@@ -140,7 +193,7 @@ const saveSvgImage = async (svgElementId: string): Promise<void> => {
         <div v-show="tooltype == 't1-2'" class="one-tool">
             <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
                 <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="二维码生成" @back="switchToMenu"
-                    subtitle="文字、网址生成条形码">
+                    subtitle="文字、网址生成二维码">
                     <template #extra>
                         <div class="can_touch">
                             <a-button class="header-button no-outline-button" @click=""> <template #icon><img
@@ -153,6 +206,40 @@ const saveSvgImage = async (svgElementId: string): Promise<void> => {
                         </div>
                     </template>
                 </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row>
+                    <a-col :span="24">
+                        <a-row>
+                            <a-col :span="4">
+                                <p class="t1-1-title">请输入文字：</p>
+                            </a-col>
+                            <a-col :span="16">
+                                <a-input v-model="t1_2_in" placeholder="请输入文字" class="t1-1-inputer"></a-input>
+                            </a-col>
+                            <a-col :span="4">
+                                <a-button @click="generateQrcode" class="t1-1-button">刷新二维码</a-button><br />
+                            </a-col>
+                        </a-row>
+                        <a-row style="margin-top: 10px;">
+                            <a-col :span="24" style="width: 200px; overflow-x: auto; white-space: nowrap;">
+                                <qrcode-vue :value="t1_2_qr" :size="200" :level="'H'" :fg-color="'#000000'"
+                                    :bg-color="'#ffffff'" id="qrcode" />
+                            </a-col>
+                        </a-row>
+                        <a-row style="margin-top: 10px;">
+                            <a-col :span="24" style="width: 200px; ">
+                                <a-button class="t1-1-button" style="margin: 0 15px;"
+                                    @click="copyCanvasToClipboard('qrcode')">复制二维码</a-button>
+                                <a-button class="t1-1-button" style="margin: 0 15px;"
+                                    @click="saveCanvasImage('qrcode')">保存二维码</a-button>
+                            </a-col>
+                        </a-row>
+
+
+                    </a-col>
+                </a-row>
+
             </div>
         </div>
     </div>
