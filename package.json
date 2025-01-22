@@ -37,6 +37,9 @@
     "vue-tsc": "^2.0.6"
   },
   "dependencies": {
+    "@types/file-saver": "^2.0.7",
+    "file-saver": "^2.0.5",
+    "html-to-image": "^1.11.11",
     "jsbarcode": "^3.11.6"
   }
 }

@@ -2,6 +2,8 @@
 import { defineProps, defineEmits, ref } from 'vue';
 import JsBarcode from 'jsbarcode';
 import { Message } from '@arco-design/web-vue';
+import { toPng } from 'html-to-image';
+import { saveAs } from 'file-saver';
 
 const props = defineProps({
     toolbar: Boolean,
@@ -33,7 +35,7 @@ function generateBarcode() {
             width: 2,
             height: 60,
             textMargin: 0,
-            margin: 0
+            margin: 1
         })
         t1_1_ok.value = true
         Message.clear()
@@ -43,6 +45,42 @@ function generateBarcode() {
         Message.error({content:'生成条形码失败,请检查输入的数字是否正确',position:'bottom'})
     }
 }
+
+const copySvgToClipboard = async (svgElementId: string): Promise<void> => {
+  const svgElement = document.getElementById(svgElementId) as HTMLElement | null;
+  if (!svgElement) {
+    console.error(`未找到 ID 为 "${svgElementId}" 的 SVG 元素`);
+    return;
+  }
+
+  try {
+    const dataUrl = await toPng(svgElement);
+    await navigator.clipboard.write([
+      new ClipboardItem({ 'image/png': await (await fetch(dataUrl)).blob() }),
+    ]);
+    Message.success({content:'图片已复制到剪切板!',position:'bottom'})
+  } catch (error) {
+    Message.error({content:'复制图片到剪贴板失败：'+error,position:'bottom'})
+  }
+};
+
+const saveSvgImage = async (svgElementId: string): Promise<void> => {
+  const svgElement = document.getElementById(svgElementId) as HTMLElement | null;
+  if (!svgElement) {
+    console.error(`未找到 ID 为 "${svgElementId}" 的 SVG 元素`);
+    return;
+  }
+
+  try {
+    const dataUrl = await toPng(svgElement);
+    saveAs(dataUrl, 'code.png');
+    Message.success({content:'图片已保存!',position:'bottom'})
+  } catch (error) {
+    Message.error({content:'保存图片失败：'+error,position:'bottom'})
+  }
+};
+
+// t1-2
 </script>
 
 <template>
@@ -85,8 +123,8 @@ function generateBarcode() {
                         </a-row>
                         <a-row style="margin-top: 10px;" v-show="t1_1_ok">
                             <a-col :span="24" style="width: 200px; ">
-                                <a-button class="t1-1-button" style="margin: 0 15px;">复制条形码</a-button>
-                                <a-button class="t1-1-button" style="margin: 0 15px;">保存条形码</a-button>
+                                <a-button class="t1-1-button" style="margin: 0 15px;" @click="copySvgToClipboard('barcode')">复制条形码</a-button>
+                                <a-button class="t1-1-button" style="margin: 0 15px;" @click="saveSvgImage('barcode')">保存条形码</a-button>
                             </a-col>
                         </a-row>
                     </a-col>
