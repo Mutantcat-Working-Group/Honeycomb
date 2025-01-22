@@ -137,6 +137,43 @@ const saveCanvasImage = async (canvasId: string): Promise<void> => {
         Message.error({ content: '保存图片失败：' + error, position: 'bottom' })
     }
 };
+
+// t2-1
+const t2_1_in: any = ref("")
+const t2_1_out: any = ref("")
+
+function clear_t2_1() {
+    t2_1_in.value = ""
+    t2_1_out.value = ""
+}
+
+function process_t2_1() {
+    t2_1_out.value = t2_1_in.value.replace(/ /g, "");
+}
+
+// t2-2
+const t2_2_in: any = ref("")
+const t2_2_out: any = ref("")
+function clear_t2_2() {
+    t2_2_in.value = ""
+    t2_2_out.value = ""
+}
+function process_t2_2() {
+    t2_2_out.value = t2_2_in.value.replace(/\n/g, "");
+}
+
+// t2-3
+const t2_3_in: any = ref("")
+const t2_3_out: any = ref("")
+function clear_t2_3() {
+    t2_3_in.value = ""
+    t2_3_out.value = ""
+}
+function process_t2_3() {
+    t2_3_out.value = t2_3_in.value.replace(/[\n\s]/g, "");
+}
+
+
 </script>
 
 <template>
@@ -242,6 +279,148 @@ const saveCanvasImage = async (canvasId: string): Promise<void> => {
 
             </div>
         </div>
+
+        <div v-show="tooltype == 't2-1'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="字符串去空格" @back="switchToMenu"
+                    subtitle="去除字符串中的空格">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
+                                        src="../assets/min.png" style="width: 15px;"
+                                        @click="minimizeWindow()" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button"> <template #icon><img
+                                        src="../assets/close.png" style="width: 15px;"
+                                        @click="closeWindow()" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row>
+                    <a-col :span="24">
+                        <a-row style="margin-top: 5px;">
+                            <a-col :span="11" style="width: 200px; overflow-x: auto; white-space: nowrap;">
+                                <a-textarea placeholder="原始文本" v-model="t2_1_in" :auto-size="{
+                                    minRows: 22,
+                                    maxRows: 22
+                                }" />
+                            </a-col>
+                            <a-col :span="2"
+                                style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+                                <a-button @click="process_t2_1()" class="t1-1-button">处理</a-button><br />
+                                <a-button @click="clear_t2_1()" class="t1-1-button">清空</a-button><br />
+                            </a-col>
+                            <a-col :span="11" style="width: 200px; overflow-x: auto; white-space: nowrap;">
+                                <a-textarea placeholder="处理结果" v-model="t2_1_out" :auto-size="{
+                                    minRows: 22,
+                                    maxRows: 22
+                                }" />
+                            </a-col>
+                        </a-row>
+
+
+                    </a-col>
+                </a-row>
+
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't2-2'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="字符串去回车" @back="switchToMenu"
+                    subtitle="去除字符串中的回车">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
+                                        src="../assets/min.png" style="width: 15px;"
+                                        @click="minimizeWindow()" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button"> <template #icon><img
+                                        src="../assets/close.png" style="width: 15px;"
+                                        @click="closeWindow()" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row>
+                    <a-col :span="24">
+                        <a-row style="margin-top: 5px;">
+                            <a-col :span="11" style="width: 200px; overflow-x: auto; white-space: nowrap;">
+                                <a-textarea placeholder="原始文本" v-model="t2_2_in" :auto-size="{
+                                    minRows: 22,
+                                    maxRows: 22
+                                }" />
+                            </a-col>
+                            <a-col :span="2"
+                                style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+                                <a-button @click="process_t2_2()" class="t1-1-button">处理</a-button><br />
+                                <a-button @click="clear_t2_2()" class="t1-1-button">清空</a-button><br />
+                            </a-col>
+                            <a-col :span="11" style="width: 200px; overflow-x: auto; white-space: nowrap;">
+                                <a-textarea placeholder="处理结果" v-model="t2_2_out" :auto-size="{
+                                    minRows: 22,
+                                    maxRows: 22
+                                }" />
+                            </a-col>
+                        </a-row>
+
+
+                    </a-col>
+                </a-row>
+
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't2-3'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="去除空格回车" @back="switchToMenu"
+                    subtitle="去除其中字符回车">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
+                                        src="../assets/min.png" style="width: 15px;"
+                                        @click="minimizeWindow()" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button"> <template #icon><img
+                                        src="../assets/close.png" style="width: 15px;"
+                                        @click="closeWindow()" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row>
+                    <a-col :span="24">
+                        <a-row style="margin-top: 5px;">
+                            <a-col :span="11" style="width: 200px; overflow-x: auto; white-space: nowrap;">
+                                <a-textarea placeholder="原始文本" v-model="t2_3_in" :auto-size="{
+                                    minRows: 22,
+                                    maxRows: 22
+                                }" />
+                            </a-col>
+                            <a-col :span="2"
+                                style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+                                <a-button @click="process_t2_3()" class="t1-1-button">处理</a-button><br />
+                                <a-button @click="clear_t2_3()" class="t1-1-button">清空</a-button><br />
+                            </a-col>
+                            <a-col :span="11" style="width: 200px; overflow-x: auto; white-space: nowrap;">
+                                <a-textarea placeholder="处理结果" v-model="t2_3_out" :auto-size="{
+                                    minRows: 22,
+                                    maxRows: 22
+                                }" />
+                            </a-col>
+                        </a-row>
+
+
+                    </a-col>
+                </a-row>
+
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -252,32 +431,6 @@ const saveCanvasImage = async (canvasId: string): Promise<void> => {
     /* Firefox */
     scrowlbar-color: #888 #f1f1f1;
     /* Firefox */
-}
-
-/* 仅应用于你需要的div */
-.scrowlable-div {
-    height: 200px;
-    overflow-y: auto;
-}
-
-.scrowlable-div::-webkit-scrowlbar {
-    width: 6px;
-    /* 设定滚动条的宽度 */
-}
-
-/* 滚动条轨道 */
-.scrowlable-div::-webkit-scrowlbar-track {
-    background: #f1f1f1;
-}
-
-/* 滚动条把手 */
-.scrowlable-div::-webkit-scrowlbar-thumb {
-    background: #888;
-}
-
-/* 滚动条把手悬停 */
-.scrowlable-div::-webkit-scrowlbar-thumb:hover {
-    background: #555;
 }
 
 .tool-container {
