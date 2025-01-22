@@ -25,7 +25,6 @@ function closeWindow() {
 const t1_1_in: any = ref("")
 function generateBarcode() {
     try {
-        Message.info({content:'This is an info message!',position:'bottom'})
         JsBarcode("#barcode", t1_1_in.value, {
             format: "CODE128",
             displayValue: true,
@@ -35,8 +34,11 @@ function generateBarcode() {
             textMargin: 0,
             margin: 0
         })
+        Message.clear()
+        Message.success({content:'生成成功!',position:'bottom'})
     } catch (err) {
-        Message.success('操作成功！');
+        Message.clear()
+        Message.error({content:'生成条形码失败,请检查输入的数字是否正确',position:'bottom'})
     }
 }
 </script>
@@ -77,6 +79,12 @@ function generateBarcode() {
                         <a-row style="margin-top: 10px;">
                             <a-col :span="24" style="width: 200px; overflow-x: auto; white-space: nowrap;">
                                 <svg id="barcode"></svg>
+                            </a-col>
+                        </a-row>
+                        <a-row style="margin-top: 10px;">
+                            <a-col :span="24" style="width: 200px; ">
+                                <a-button class="t1-1-button" style="margin: 0 15px;">复制条形码</a-button>
+                                <a-button class="t1-1-button" style="margin: 0 15px;">保存条形码</a-button>
                             </a-col>
                         </a-row>
                     </a-col>
