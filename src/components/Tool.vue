@@ -23,6 +23,7 @@ function closeWindow() {
 
 // t1-1
 const t1_1_in: any = ref("")
+const t1_1_ok: any = ref(false)
 function generateBarcode() {
     try {
         JsBarcode("#barcode", t1_1_in.value, {
@@ -34,6 +35,7 @@ function generateBarcode() {
             textMargin: 0,
             margin: 0
         })
+        t1_1_ok.value = true
         Message.clear()
         Message.success({content:'生成成功!',position:'bottom'})
     } catch (err) {
@@ -81,7 +83,7 @@ function generateBarcode() {
                                 <svg id="barcode"></svg>
                             </a-col>
                         </a-row>
-                        <a-row style="margin-top: 10px;">
+                        <a-row style="margin-top: 10px;" v-show="t1_1_ok">
                             <a-col :span="24" style="width: 200px; ">
                                 <a-button class="t1-1-button" style="margin: 0 15px;">复制条形码</a-button>
                                 <a-button class="t1-1-button" style="margin: 0 15px;">保存条形码</a-button>
