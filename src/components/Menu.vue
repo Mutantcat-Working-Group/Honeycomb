@@ -22,11 +22,11 @@ function closeWindow() {
       <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="蜂巢工具箱" subtitle="离线功能列表" :show-back=false>
         <template #extra>
           <div class="can_touch">
-            <a-button class="header-button no-outline-button" @click=""> <template #icon><img src="../assets/min.png"
-                  style="width: 15px;" @click="minimizeWindow()" /></template>
+            <a-button class="header-button no-outline-button"  @click="minimizeWindow()"> <template #icon><img src="../assets/min.png"
+                  style="width: 15px;"/></template>
             </a-button>
-            <a-button class="header-button no-outline-button"> <template #icon><img src="../assets/close.png"
-                  style="width: 15px;" @click="closeWindow()" /></template> </a-button>
+            <a-button class="header-button no-outline-button"  @click="closeWindow()"> <template #icon><img src="../assets/close.png"
+                  style="width: 15px;" /></template> </a-button>
           </div>
         </template>
       </a-page-header>
@@ -232,6 +232,13 @@ function closeWindow() {
                   <a-card class="card-demo" title="随机字符串" :bordered="false">
                     <p :style="{ margin: 0 }">
                       生成随机字符串
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t6-3')">
+                  <a-card class="card-demo" title="随机混合串" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      生成字母数字混合串
                     </p>
                   </a-card>
                 </a-card-grid>

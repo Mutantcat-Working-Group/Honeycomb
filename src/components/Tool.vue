@@ -182,13 +182,13 @@ function clear_t2_4() {
     t2_4_out.value = ""
 }
 function process_t2_4() {
-    t2_4_out.value = t2_4_in.value.replace(/[\u4e00-\u9fa5]/g, function (c:any) {
+    t2_4_out.value = t2_4_in.value.replace(/[\u4e00-\u9fa5]/g, function (c: any) {
         return "\\u" + c.charCodeAt(0).toString(16);
     });
 }
 // 反向处理
 function process_t2_4_re() {
-    t2_4_in.value = t2_4_out.value.replace(/\\u[\d\w]{4}/gi, function (c:any) {
+    t2_4_in.value = t2_4_out.value.replace(/\\u[\d\w]{4}/gi, function (c: any) {
         return String.fromCharCode(parseInt(c.replace(/\\u/g, ""), 16));
     });
 }
@@ -250,6 +250,62 @@ function process_t5_4() {
     t5_4_out_big.value = sha256.toUpperCase()
 }
 
+// t6-1
+const t6_1_in: any = ref(0)
+const t6_1_out: any = ref("")
+function process_t6_1() {
+    if (t6_1_in.value < 1 || t6_1_in.value > 99) {
+        Message.clear()
+        Message.error({ content: '请输入1-99之间的数字', position: 'bottom' })
+        return
+    }
+    // 生成长度为t6_1_in的随机数 纯数字
+    var str = ""
+    for (var i = 0; i < t6_1_in.value; i++) {
+        str += Math.floor(Math.random() * 10)
+    }
+    t6_1_out.value = str
+
+}
+
+// t6-2
+const t6_2_in: any = ref(0)
+const t6_2_out: any = ref("")
+function process_t6_2() {
+    if (t6_2_in.value < 1 || t6_2_in.value > 99) {
+        Message.clear()
+        Message.error({ content: '请输入1-99之间的数字', position: 'bottom' })
+        return
+    }
+    // 生成长度为t6_2_in的随机数 纯字母
+    var str = ""
+    for (var i = 0; i < t6_2_in.value; i++) {
+        str += String.fromCharCode(Math.floor(Math.random() * 26) + 97)
+    }
+    t6_2_out.value = str
+}
+
+// t6-3
+const t6_3_in: any = ref(0)
+const t6_3_out: any = ref("")
+function process_t6_3() {
+    if (t6_3_in.value < 1 || t6_3_in.value > 99) {
+        Message.clear()
+        Message.error({ content: '请输入1-99之间的数字', position: 'bottom' })
+        return
+    }
+    // 生成长度为t6_3_in的随机数 数字+字母
+    var str = ""
+    for (var i = 0; i < t6_3_in.value; i++) {
+        if (Math.random() > 0.5) {
+            str += Math.floor(Math.random() * 10)
+        } else {
+            str += String.fromCharCode(Math.floor(Math.random() * 26) + 97)
+        }
+    }
+    t6_3_out.value = str
+}
+
 </script>
 
 <template>
@@ -260,13 +316,11 @@ function process_t5_4() {
                     subtitle="数字生成条形码">
                     <template #extra>
                         <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
-                                        src="../assets/min.png" style="width: 15px;"
-                                        @click="minimizeWindow()" /></template>
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
                             </a-button>
-                            <a-button class="header-button no-outline-button"> <template #icon><img
-                                        src="../assets/close.png" style="width: 15px;"
-                                        @click="closeWindow()" /></template> </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
                     </template>
                 </a-page-header>
@@ -309,13 +363,11 @@ function process_t5_4() {
                     subtitle="文字、网址生成二维码">
                     <template #extra>
                         <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
-                                        src="../assets/min.png" style="width: 15px;"
-                                        @click="minimizeWindow()" /></template>
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
                             </a-button>
-                            <a-button class="header-button no-outline-button"> <template #icon><img
-                                        src="../assets/close.png" style="width: 15px;"
-                                        @click="closeWindow()" /></template> </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
                     </template>
                 </a-page-header>
@@ -362,13 +414,11 @@ function process_t5_4() {
                     subtitle="去除字符串中的空格">
                     <template #extra>
                         <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
-                                        src="../assets/min.png" style="width: 15px;"
-                                        @click="minimizeWindow()" /></template>
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
                             </a-button>
-                            <a-button class="header-button no-outline-button"> <template #icon><img
-                                        src="../assets/close.png" style="width: 15px;"
-                                        @click="closeWindow()" /></template> </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
                     </template>
                 </a-page-header>
@@ -409,13 +459,11 @@ function process_t5_4() {
                     subtitle="去除字符串中的回车">
                     <template #extra>
                         <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
-                                        src="../assets/min.png" style="width: 15px;"
-                                        @click="minimizeWindow()" /></template>
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
                             </a-button>
-                            <a-button class="header-button no-outline-button"> <template #icon><img
-                                        src="../assets/close.png" style="width: 15px;"
-                                        @click="closeWindow()" /></template> </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
                     </template>
                 </a-page-header>
@@ -456,13 +504,11 @@ function process_t5_4() {
                     subtitle="去除其中字符回车">
                     <template #extra>
                         <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
-                                        src="../assets/min.png" style="width: 15px;"
-                                        @click="minimizeWindow()" /></template>
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
                             </a-button>
-                            <a-button class="header-button no-outline-button"> <template #icon><img
-                                        src="../assets/close.png" style="width: 15px;"
-                                        @click="closeWindow()" /></template> </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
                     </template>
                 </a-page-header>
@@ -503,13 +549,11 @@ function process_t5_4() {
                     subtitle="中文与Unicode互转">
                     <template #extra>
                         <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
-                                        src="../assets/min.png" style="width: 15px;"
-                                        @click="minimizeWindow()" /></template>
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
                             </a-button>
-                            <a-button class="header-button no-outline-button"> <template #icon><img
-                                        src="../assets/close.png" style="width: 15px;"
-                                        @click="closeWindow()" /></template> </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
                     </template>
                 </a-page-header>
@@ -550,13 +594,11 @@ function process_t5_4() {
                     subtitle="替换指定字符">
                     <template #extra>
                         <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
-                                        src="../assets/min.png" style="width: 15px;"
-                                        @click="minimizeWindow()" /></template>
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
                             </a-button>
-                            <a-button class="header-button no-outline-button"> <template #icon><img
-                                        src="../assets/close.png" style="width: 15px;"
-                                        @click="closeWindow()" /></template> </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
                     </template>
                 </a-page-header>
@@ -600,13 +642,11 @@ function process_t5_4() {
                     subtitle="替换指定字符">
                     <template #extra>
                         <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
-                                        src="../assets/min.png" style="width: 15px;"
-                                        @click="minimizeWindow()" /></template>
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
                             </a-button>
-                            <a-button class="header-button no-outline-button"> <template #icon><img
-                                        src="../assets/close.png" style="width: 15px;"
-                                        @click="closeWindow()" /></template> </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
                     </template>
                 </a-page-header>
@@ -639,13 +679,11 @@ function process_t5_4() {
                     subtitle="Windows自带指令">
                     <template #extra>
                         <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
-                                        src="../assets/min.png" style="width: 15px;"
-                                        @click="minimizeWindow()" /></template>
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
                             </a-button>
-                            <a-button class="header-button no-outline-button"> <template #icon><img
-                                        src="../assets/close.png" style="width: 15px;"
-                                        @click="closeWindow()" /></template> </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
                     </template>
                 </a-page-header>
@@ -687,36 +725,38 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                     subtitle="字符串转MD5">
                     <template #extra>
                         <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
-                                        src="../assets/min.png" style="width: 15px;"
-                                        @click="minimizeWindow()" /></template>
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
                             </a-button>
-                            <a-button class="header-button no-outline-button"> <template #icon><img
-                                        src="../assets/close.png" style="width: 15px;"
-                                        @click="closeWindow()" /></template> </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
                     </template>
                 </a-page-header>
             </div>
             <div class="one-tool-content">
                 <a-row>
-                            <a-col :span="4">
-                                <p class="t1-1-title">输入字符串：</p>
-                            </a-col>
-                            <a-col :span="16">
-                                <a-input v-model="t5_2_in" placeholder="请输入字符串" class="t1-1-inputer"></a-input>
-                            </a-col>
-                            <a-col :span="4">
-                                <a-button @click="process_t5_2" class="t1-1-button">生成MD5</a-button><br />
-                            </a-col>
+                    <a-col :span="4">
+                        <p class="t1-1-title">输入字符串：</p>
+                    </a-col>
+                    <a-col :span="16">
+                        <a-input v-model="t5_2_in" placeholder="请输入字符串" class="t1-1-inputer"></a-input>
+                    </a-col>
+                    <a-col :span="4">
+                        <a-button @click="process_t5_2" class="t1-1-button">生成MD5</a-button><br />
+                    </a-col>
                 </a-row>
-                <a-row v-show="t5_2_out_small!='' && t5_2_out_big!=''">
+                <a-row v-show="t5_2_out_small != '' && t5_2_out_big != ''">
                     <a-col :span="24">
                         <a-row style="margin-top: 10px;">
-                            <p style="text-align: center;width: 100%;margin: 0;font-size: large;">小写MD5： {{ t5_2_out_small }}</p><br />
+                            <p style="text-align: center;width: 100%;margin: 0;font-size: large;">小写MD5： {{
+                                t5_2_out_small }}</p>
+                            <br />
                         </a-row>
                         <a-row>
-                            <p  style="text-align: center;width: 100%;margin: 0;margin-top: 5px;font-size: large;">大写MD5： {{ t5_2_out_big }}</p><br />
+                            <p style="text-align: center;width: 100%;margin: 0;margin-top: 5px;font-size: large;">大写MD5：
+                                {{
+                                t5_2_out_big }}</p><br />
                         </a-row>
                     </a-col>
                 </a-row>
@@ -730,36 +770,38 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                     subtitle="字符串转SHA1">
                     <template #extra>
                         <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
-                                        src="../assets/min.png" style="width: 15px;"
-                                        @click="minimizeWindow()" /></template>
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
                             </a-button>
-                            <a-button class="header-button no-outline-button"> <template #icon><img
-                                        src="../assets/close.png" style="width: 15px;"
-                                        @click="closeWindow()" /></template> </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
                     </template>
                 </a-page-header>
             </div>
             <div class="one-tool-content">
                 <a-row>
-                            <a-col :span="4">
-                                <p class="t1-1-title">输入字符串：</p>
-                            </a-col>
-                            <a-col :span="16">
-                                <a-input v-model="t5_3_in" placeholder="请输入字符串" class="t1-1-inputer"></a-input>
-                            </a-col>
-                            <a-col :span="4">
-                                <a-button @click="process_t5_3" class="t1-1-button">生成SHA1</a-button><br />
-                            </a-col>
+                    <a-col :span="4">
+                        <p class="t1-1-title">输入字符串：</p>
+                    </a-col>
+                    <a-col :span="16">
+                        <a-input v-model="t5_3_in" placeholder="请输入字符串" class="t1-1-inputer"></a-input>
+                    </a-col>
+                    <a-col :span="4">
+                        <a-button @click="process_t5_3" class="t1-1-button">生成SHA1</a-button><br />
+                    </a-col>
                 </a-row>
-                <a-row v-show="t5_3_out_small!='' && t5_3_out_big!=''">
+                <a-row v-show="t5_3_out_small != '' && t5_3_out_big != ''">
                     <a-col :span="24">
                         <a-row style="margin-top: 10px;">
-                            <p style="text-align: center;width: 100%;margin: 0;font-size: large;">小写SHA1： {{ t5_3_out_small }}</p><br />
+                            <p style="text-align: center;width: 100%;margin: 0;font-size: large;">小写SHA1： {{
+                                t5_3_out_small }}</p>
+                            <br />
                         </a-row>
                         <a-row>
-                            <p  style="text-align: center;width: 100%;margin: 0;margin-top: 5px;font-size: large;">大写SHA1： {{ t5_3_out_big }}</p><br />
+                            <p style="text-align: center;width: 100%;margin: 0;margin-top: 5px;font-size: large;">
+                                大写SHA1： {{
+                                t5_3_out_big }}</p><br />
                         </a-row>
                     </a-col>
                 </a-row>
@@ -773,36 +815,37 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                     subtitle="字符串转SHA256">
                     <template #extra>
                         <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
-                                        src="../assets/min.png" style="width: 15px;"
-                                        @click="minimizeWindow()" /></template>
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
                             </a-button>
-                            <a-button class="header-button no-outline-button"> <template #icon><img
-                                        src="../assets/close.png" style="width: 15px;"
-                                        @click="closeWindow()" /></template> </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
                     </template>
                 </a-page-header>
             </div>
             <div class="one-tool-content">
                 <a-row>
-                            <a-col :span="4">
-                                <p class="t1-1-title">输入字符串：</p>
-                            </a-col>
-                            <a-col :span="16">
-                                <a-input v-model="t5_4_in" placeholder="请输入字符串" class="t1-1-inputer"></a-input>
-                            </a-col>
-                            <a-col :span="4">
-                                <a-button @click="process_t5_4" class="t1-1-button">生成SHA1</a-button><br />
-                            </a-col>
+                    <a-col :span="4">
+                        <p class="t1-1-title">输入字符串：</p>
+                    </a-col>
+                    <a-col :span="16">
+                        <a-input v-model="t5_4_in" placeholder="请输入字符串" class="t1-1-inputer"></a-input>
+                    </a-col>
+                    <a-col :span="4">
+                        <a-button @click="process_t5_4" class="t1-1-button">生成SHA1</a-button><br />
+                    </a-col>
                 </a-row>
-                <a-row v-show="t5_4_out_small!='' && t5_4_out_big!=''">
+                <a-row v-show="t5_4_out_small != '' && t5_4_out_big != ''">
                     <a-col :span="24">
                         <a-row style="margin-top: 10px;">
-                            <p style="text-align: center;width: 100%;margin: 0;">小写SHA256： {{ t5_4_out_small }}</p><br />
+                            <p style="text-align: center;width: 100%;margin: 0;">小写SHA256： {{ t5_4_out_small }}</p>
+                            <br />
                         </a-row>
                         <a-row>
-                            <p  style="text-align: center;width: 100%;margin: 0;margin-top: 5px;">大写SHA256： {{ t5_4_out_big }}</p><br />
+                            <p style="text-align: center;width: 100%;margin: 0;margin-top: 5px;">大写SHA256： {{
+                                t5_4_out_big }}</p>
+                            <br />
                         </a-row>
                     </a-col>
                 </a-row>
@@ -816,36 +859,31 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                     subtitle="生成随机数字">
                     <template #extra>
                         <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
-                                        src="../assets/min.png" style="width: 15px;"
-                                        @click="minimizeWindow()" /></template>
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
                             </a-button>
-                            <a-button class="header-button no-outline-button"> <template #icon><img
-                                        src="../assets/close.png" style="width: 15px;"
-                                        @click="closeWindow()" /></template> </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
                     </template>
                 </a-page-header>
             </div>
             <div class="one-tool-content">
                 <a-row>
-                            <a-col :span="4">
-                                <p class="t1-1-title">输入字符串：</p>
-                            </a-col>
-                            <a-col :span="16">
-                                <a-input v-model="t5_4_in" placeholder="请输入字符串" class="t1-1-inputer"></a-input>
-                            </a-col>
-                            <a-col :span="4">
-                                <a-button @click="process_t5_4" class="t1-1-button">生成SHA1</a-button><br />
-                            </a-col>
+                    <a-col :span="4">
+                        <p class="t1-1-title">随机数长度：</p>
+                    </a-col>
+                    <a-col :span="16">
+                        <a-input-number v-model="t6_1_in" placeholder="请输入长度" class="t1-1-inputer"></a-input-number>
+                    </a-col>
+                    <a-col :span="4">
+                        <a-button @click="process_t6_1" class="t1-1-button">生成随机数</a-button><br />
+                    </a-col>
                 </a-row>
-                <a-row v-show="t5_4_out_small!='' && t5_4_out_big!=''">
+                <a-row v-show="t6_1_out != ''">
                     <a-col :span="24">
-                        <a-row style="margin-top: 10px;">
-                            <p style="text-align: center;width: 100%;margin: 0;">小写SHA256： {{ t5_4_out_small }}</p><br />
-                        </a-row>
-                        <a-row>
-                            <p  style="text-align: center;width: 100%;margin: 0;margin-top: 5px;">大写SHA256： {{ t5_4_out_big }}</p><br />
+                        <a-row style="margin-top:10px;">
+                            <p style="text-align: center;width: 100%;margin: 0;">随机数： {{ t6_1_out }}</p><br />
                         </a-row>
                     </a-col>
                 </a-row>
@@ -859,36 +897,69 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                     subtitle="生成随机字符串">
                     <template #extra>
                         <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
-                                        src="../assets/min.png" style="width: 15px;"
-                                        @click="minimizeWindow()" /></template>
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"><template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
                             </a-button>
-                            <a-button class="header-button no-outline-button"> <template #icon><img
-                                        src="../assets/close.png" style="width: 15px;"
-                                        @click="closeWindow()" /></template> </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
                     </template>
                 </a-page-header>
             </div>
             <div class="one-tool-content">
                 <a-row>
-                            <a-col :span="4">
-                                <p class="t1-1-title">输入字符串：</p>
-                            </a-col>
-                            <a-col :span="16">
-                                <a-input v-model="t5_4_in" placeholder="请输入字符串" class="t1-1-inputer"></a-input>
-                            </a-col>
-                            <a-col :span="4">
-                                <a-button @click="process_t5_4" class="t1-1-button">生成SHA1</a-button><br />
-                            </a-col>
+                    <a-col :span="4">
+                        <p class="t1-1-title">字符串长度：</p>
+                    </a-col>
+                    <a-col :span="16">
+                        <a-input-number v-model="t6_2_in" placeholder="请输入长度" class="t1-1-inputer"></a-input-number>
+                    </a-col>
+                    <a-col :span="4">
+                        <a-button @click="process_t6_2" class="t1-1-button">生成字符串</a-button><br />
+                    </a-col>
                 </a-row>
-                <a-row v-show="t5_4_out_small!='' && t5_4_out_big!=''">
+                <a-row v-show="t6_2_out != ''">
                     <a-col :span="24">
-                        <a-row style="margin-top: 10px;">
-                            <p style="text-align: center;width: 100%;margin: 0;">小写SHA256： {{ t5_4_out_small }}</p><br />
+                        <a-row style="margin-top:10px;">
+                            <p style="text-align: center;width: 100%;margin: 0;">随机字符串： {{ t6_2_out }}</p><br />
                         </a-row>
-                        <a-row>
-                            <p  style="text-align: center;width: 100%;margin: 0;margin-top: 5px;">大写SHA256： {{ t5_4_out_big }}</p><br />
+                    </a-col>
+                </a-row>
+
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't6-3'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="随机混合串" @back="switchToMenu"
+                    subtitle="生成字母数字混合串">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"><template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row>
+                    <a-col :span="4">
+                        <p class="t1-1-title">混合串长度：</p>
+                    </a-col>
+                    <a-col :span="16">
+                        <a-input-number v-model="t6_3_in" placeholder="请输入长度" class="t1-1-inputer"></a-input-number>
+                    </a-col>
+                    <a-col :span="4">
+                        <a-button @click="process_t6_3" class="t1-1-button">生成混合串</a-button><br />
+                    </a-col>
+                </a-row>
+                <a-row v-show="t6_3_out != ''">
+                    <a-col :span="24">
+                        <a-row style="margin-top:10px;">
+                            <p style="text-align: center;width: 100%;margin: 0;">随机混合串： {{ t6_3_out }}</p><br />
                         </a-row>
                     </a-col>
                 </a-row>
