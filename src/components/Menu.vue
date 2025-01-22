@@ -34,34 +34,36 @@ function closeWindow() {
     <a-row>
       <a-col :span="24">
         <a-tabs position="left">
+          <a-tab-pane key="0" title="工具说明">
+            <div>
+              <a-rol>
+                <img src="../assets/icon.jpg" style="width: 100px; height:  100px; border-radius: 5px; margin-top: 10px;"/>
+              </a-rol>
+              <a-rol>
+                <h3>蜂巢工具箱是一个离线工具箱，提供了一些常用的工具。</h3>
+              </a-rol>
+              <a-rol>
+                <h4>官网：www.mutantcat.org</h4>
+              </a-rol>
+              <a-rol>
+                <h4>版本：1.1.2025012</h4>
+              </a-rol>
+            </div>
+          </a-tab-pane>
           <a-tab-pane key="1" title="常用工具">
             <div class="tool-container">
               <a-card :bordered="false" :style="{ width: '99%' }">
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t1')">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t1-1')">
                   <a-card class="card-demo" title="条形码生成" :bordered="false">
                     <p :style="{ margin: 0 }">
                       数字生成条形码
                     </p>
                   </a-card>
                 </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t1')">
-                  <a-card class="card-demo" title="条形码生成" :bordered="false">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t1-2')">
+                  <a-card class="card-demo" title="二维码码生成" :bordered="false">
                     <p :style="{ margin: 0 }">
-                      数字生成条形码
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t1')">
-                  <a-card class="card-demo" title="条形码生成" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      数字生成条形码
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t1')">
-                  <a-card class="card-demo" title="条形码生成" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      数字生成条形码
+                      文字生成二维码
                     </p>
                   </a-card>
                 </a-card-grid>
@@ -233,4 +235,5 @@ function closeWindow() {
   outline: none;
   /* 移除焦点时的边框 */
 }
+
 </style>
