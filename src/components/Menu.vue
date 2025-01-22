@@ -36,18 +36,23 @@ function closeWindow() {
         <a-tabs position="left">
           <a-tab-pane key="0" title="工具说明">
             <div>
-              <a-rol>
-                <img src="../assets/icon.jpg" style="width: 100px; height:  100px; border-radius: 5px; margin-top: 10px;"/>
-              </a-rol>
-              <a-rol>
-                <h3>蜂巢工具箱是一个离线工具箱，提供了一些常用的工具。</h3>
-              </a-rol>
-              <a-rol>
-                <h4>官网：www.mutantcat.org</h4>
-              </a-rol>
-              <a-rol>
-                <h4>版本：1.1.2025012</h4>
-              </a-rol>
+              <a-row><a-col :span="24">
+                  <img src="../assets/icon.jpg"
+                    style="width: 100px; height:  100px; border-radius: 5px; margin-top: 10px;" />
+                </a-col>
+              </a-row>
+              <a-row><a-col :span="24">
+                  <h3>蜂巢工具箱是一个离线工具箱，提供了一些常用的工具。</h3>
+                </a-col>
+              </a-row>
+              <a-row><a-col :span="24">
+                  <h4>官网：www.mutantcat.org</h4>
+                </a-col>
+              </a-row>
+              <a-row><a-col :span="24">
+                  <h4>版本：1.1.2025012</h4>
+                </a-col>
+              </a-row>
             </div>
           </a-tab-pane>
           <a-tab-pane key="1" title="常用工具">
@@ -148,35 +153,35 @@ function closeWindow() {
 
 /* 为所有元素定义滚动条样式 */
 * {
-  scrollbar-width: thin;
+  scrowlbar-width: thin;
   /* Firefox */
-  scrollbar-color: #888 #f1f1f1;
+  scrowlbar-color: #888 #f1f1f1;
   /* Firefox */
 }
 
 /* 仅应用于你需要的div */
-.scrollable-div {
+.scrowlable-div {
   height: 200px;
   overflow-y: auto;
 }
 
-.scrollable-div::-webkit-scrollbar {
+.scrowlable-div::-webkit-scrowlbar {
   width: 6px;
   /* 设定滚动条的宽度 */
 }
 
 /* 滚动条轨道 */
-.scrollable-div::-webkit-scrollbar-track {
+.scrowlable-div::-webkit-scrowlbar-track {
   background: #f1f1f1;
 }
 
 /* 滚动条把手 */
-.scrollable-div::-webkit-scrollbar-thumb {
+.scrowlable-div::-webkit-scrowlbar-thumb {
   background: #888;
 }
 
 /* 滚动条把手悬停 */
-.scrollable-div::-webkit-scrollbar-thumb:hover {
+.scrowlable-div::-webkit-scrowlbar-thumb:hover {
   background: #555;
 }
 
@@ -235,5 +240,4 @@ function closeWindow() {
   outline: none;
   /* 移除焦点时的边框 */
 }
-
 </style>

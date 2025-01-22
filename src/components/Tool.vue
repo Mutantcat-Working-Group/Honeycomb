@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref } from 'vue';
 import JsBarcode from 'jsbarcode';
+import { Message } from '@arco-design/web-vue';
 
 const props = defineProps({
     toolbar: Boolean,
@@ -22,17 +23,21 @@ function closeWindow() {
 
 // t1-1
 const t1_1_in: any = ref("")
-
 function generateBarcode() {
-    JsBarcode("#barcode", t1_1_in.value, {
-        format: "CODE128",
-        displayValue: true,
-        fontSize: 20,
-        width: 2,
-        height: 60,
-        textMargin: 0,
-        margin: 0
-    });
+    try {
+        Message.info({content:'This is an info message!',position:'bottom'})
+        JsBarcode("#barcode", t1_1_in.value, {
+            format: "CODE128",
+            displayValue: true,
+            fontSize: 20,
+            width: 2,
+            height: 60,
+            textMargin: 0,
+            margin: 0
+        })
+    } catch (err) {
+        Message.success('操作成功！');
+    }
 }
 </script>
 
@@ -40,7 +45,7 @@ function generateBarcode() {
     <div class="tool-container">
         <div v-show="tooltype == 't1-1'" class="one-tool">
             <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
-                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="条码生成" @back="switchToMenu"
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="条形码生成" @back="switchToMenu"
                     subtitle="数字生成条形码">
                     <template #extra>
                         <div class="can_touch">
@@ -58,16 +63,22 @@ function generateBarcode() {
             <div>
                 <a-row class="one-tool-content">
                     <a-col :span="24">
-                            <a-row>
-                                <a-col :span="4">
-                                    <p class="t1-1-title">请输入数字：</p>
-                                </a-col>
-                                <a-col :span="20">
-                                    <a-input v-model="t1_1_in" placeholder="请输入数字" class="t1-1-inputer"></a-input>
-                                </a-col>
-                            </a-row>
-                            <a-button @click="generateBarcode">生成条形码</a-button><br/>
-                            <svg id="barcode"></svg>
+                        <a-row>
+                            <a-col :span="4">
+                                <p class="t1-1-title">请输入数字：</p>
+                            </a-col>
+                            <a-col :span="16">
+                                <a-input v-model="t1_1_in" placeholder="请输入数字" class="t1-1-inputer"></a-input>
+                            </a-col>
+                            <a-col :span="4">
+                                <a-button @click="generateBarcode" class="t1-1-button">生成条形码</a-button><br />
+                            </a-col>
+                        </a-row>
+                        <a-row style="margin-top: 10px;">
+                            <a-col :span="24" style="width: 200px; overflow-x: auto; white-space: nowrap;">
+                                <svg id="barcode"></svg>
+                            </a-col>
+                        </a-row>
                     </a-col>
                 </a-row>
             </div>
@@ -97,36 +108,36 @@ function generateBarcode() {
 <style>
 /* 为所有元素定义滚动条样式 */
 * {
-  scrollbar-width: thin;
-  /* Firefox */
-  scrollbar-color: #888 #f1f1f1;
-  /* Firefox */
+    scrowlbar-width: thin;
+    /* Firefox */
+    scrowlbar-color: #888 #f1f1f1;
+    /* Firefox */
 }
 
 /* 仅应用于你需要的div */
-.scrollable-div {
-  height: 200px;
-  overflow-y: auto;
+.scrowlable-div {
+    height: 200px;
+    overflow-y: auto;
 }
 
-.scrollable-div::-webkit-scrollbar {
-  width: 6px;
-  /* 设定滚动条的宽度 */
+.scrowlable-div::-webkit-scrowlbar {
+    width: 6px;
+    /* 设定滚动条的宽度 */
 }
 
 /* 滚动条轨道 */
-.scrollable-div::-webkit-scrollbar-track {
-  background: #f1f1f1;
+.scrowlable-div::-webkit-scrowlbar-track {
+    background: #f1f1f1;
 }
 
 /* 滚动条把手 */
-.scrollable-div::-webkit-scrollbar-thumb {
-  background: #888;
+.scrowlable-div::-webkit-scrowlbar-thumb {
+    background: #888;
 }
 
 /* 滚动条把手悬停 */
-.scrollable-div::-webkit-scrollbar-thumb:hover {
-  background: #555;
+.scrowlable-div::-webkit-scrowlbar-thumb:hover {
+    background: #555;
 }
 
 .tool-container {
@@ -184,5 +195,9 @@ function generateBarcode() {
 .t1-1-inputer {
     width: 100%;
     height: 42px;
+}
+
+.t1-1-button {
+    height: 42px !important;
 }
 </style>
