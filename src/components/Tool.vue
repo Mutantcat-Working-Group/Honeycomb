@@ -173,6 +173,25 @@ function process_t2_3() {
     t2_3_out.value = t2_3_in.value.replace(/[\n\s]/g, "");
 }
 
+// t2-4
+const t2_4_in: any = ref("")
+const t2_4_out: any = ref("")
+function clear_t2_4() {
+    t2_4_in.value = ""
+    t2_4_out.value = ""
+}
+function process_t2_4() {
+    t2_4_out.value = t2_4_in.value.replace(/[\u4e00-\u9fa5]/g, function (c) {
+        return "\\u" + c.charCodeAt(0).toString(16);
+    });
+}
+// 反向处理
+function process_t2_4_re() {
+    t2_4_in.value = t2_4_out.value.replace(/\\u[\d\w]{4}/gi, function (c) {
+        return String.fromCharCode(parseInt(c.replace(/\\u/g, ""), 16));
+    });
+}
+
 
 </script>
 
@@ -415,6 +434,52 @@ function process_t2_3() {
                         </a-row>
 
 
+                    </a-col>
+                </a-row>
+
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't2-4'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="中文转Unicode" @back="switchToMenu"
+                    subtitle="中文与Unicode互转">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
+                                        src="../assets/min.png" style="width: 15px;"
+                                        @click="minimizeWindow()" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button"> <template #icon><img
+                                        src="../assets/close.png" style="width: 15px;"
+                                        @click="closeWindow()" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row>
+                    <a-col :span="24">
+                        <a-row style="margin-top: 5px;">
+                            <a-col :span="11" style="width: 200px; overflow-x: auto; white-space: nowrap;">
+                                <a-textarea placeholder="原始文本" v-model="t2_4_in" :auto-size="{
+                                    minRows: 22,
+                                    maxRows: 22
+                                }" />
+                            </a-col>
+                            <a-col :span="2"
+                                style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+                                <a-button @click="process_t2_4()" class="t1-1-button" style="width: 60px;">-></a-button><br />
+                                <a-button @click="process_t2_4_re()" class="t1-1-button" style="width: 60px;"><-</a-button><br />
+                                <a-button @click="clear_t2_4()" class="t1-1-button">清空</a-button><br />
+                            </a-col>
+                            <a-col :span="11" style="width: 200px; overflow-x: auto; white-space: nowrap;">
+                                <a-textarea placeholder="Unicode编码" v-model="t2_4_out" :auto-size="{
+                                    minRows: 22,
+                                    maxRows: 22
+                                }" />
+                            </a-col>
+                        </a-row>
                     </a-col>
                 </a-row>
 

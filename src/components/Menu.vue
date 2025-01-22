@@ -78,24 +78,31 @@ function closeWindow() {
           <a-tab-pane key="2" title="字符工具">
             <div class="tool-container">
               <a-card :bordered="false" :style="{ width: '99%' }">
-                <a-card-grid :style="{ width: '25%' }" class="one-card" @click="switchToTool('t2-1')">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-1')">
                   <a-card class="card-demo" title="字符串去空格" :bordered="false">
                     <p :style="{ margin: 0 }">
                       去除字符串中的空格
                     </p>
                   </a-card>
                 </a-card-grid>
-                <a-card-grid :style="{ width: '25%' }" class="one-card" @click="switchToTool('t2-2')">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-2')">
                   <a-card class="card-demo" title="字符串去回车" :bordered="false">
                     <p :style="{ margin: 0 }">
                       去除字符串中的回车
                     </p>
                   </a-card>
                 </a-card-grid>
-                <a-card-grid :style="{ width: '25%' }" class="one-card" @click="switchToTool('t2-3')">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-3')">
                   <a-card class="card-demo" title="去除空格回车" :bordered="false">
                     <p :style="{ margin: 0 }">
                       去除文中空格和回车
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-4')">
+                  <a-card class="card-demo" title="中文转Unicode" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      中文与Unicode互转
                     </p>
                   </a-card>
                 </a-card-grid>
@@ -105,7 +112,7 @@ function closeWindow() {
           <a-tab-pane key="3" title="JSON工具">
             <div class="tool-container">
               <a-card :bordered="false" :style="{ width: '99%' }">
-                <a-card-grid :style="{ width: '25%' }" class="one-card">
+                <a-card-grid :style="{ width: '24%' }" class="one-card">
                   <a-card class="card-demo" title="字符串去空格" :bordered="false">
                     <p :style="{ margin: 0 }">
                       去除字符串中的空格
@@ -118,7 +125,7 @@ function closeWindow() {
           <a-tab-pane key="4" title="转换工具">
             <div class="tool-container">
               <a-card :bordered="false" :style="{ width: '99%' }">
-                <a-card-grid :style="{ width: '25%' }" class="one-card">
+                <a-card-grid :style="{ width: '24%' }" class="one-card">
                   <a-card class="card-demo" title="字符串去空格" :bordered="false">
                     <p :style="{ margin: 0 }">
                       去除字符串中的空格
@@ -131,7 +138,7 @@ function closeWindow() {
           <a-tab-pane key="5" title="加密工具">
             <div class="tool-container">
               <a-card :bordered="false" :style="{ width: '99%' }">
-                <a-card-grid :style="{ width: '25%' }" class="one-card">
+                <a-card-grid :style="{ width: '24%' }" class="one-card">
                   <a-card class="card-demo" title="字符串去空格" :bordered="false">
                     <p :style="{ margin: 0 }">
                       去除字符串中的空格
@@ -144,7 +151,7 @@ function closeWindow() {
           <a-tab-pane key="6" title="随机工具">
             <div class="tool-container">
               <a-card :bordered="false" :style="{ width: '99%' }">
-                <a-card-grid :style="{ width: '25%' }" class="one-card">
+                <a-card-grid :style="{ width: '24%' }" class="one-card">
                   <a-card class="card-demo" title="字符串去空格" :bordered="false">
                     <p :style="{ margin: 0 }">
                       去除字符串中的空格
