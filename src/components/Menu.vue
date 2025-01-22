@@ -106,6 +106,13 @@ function closeWindow() {
                     </p>
                   </a-card>
                 </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-5')">
+                  <a-card class="card-demo" title="替换与转义" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      替换指定字符
+                    </p>
+                  </a-card>
+                </a-card-grid>
               </a-card>
             </div>
           </a-tab-pane>
