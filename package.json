@@ -3,7 +3,7 @@
   "version": "1.0.20250121",
   "main": "dist-electron/main/index.js",
   "description": "",
-  "author": "tyza66",
+  "author": "Mutantcat",
   "license": "Apache-2.0",
   "private": true,
   "keywords": [
