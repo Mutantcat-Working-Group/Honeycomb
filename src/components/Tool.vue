@@ -182,13 +182,13 @@ function clear_t2_4() {
     t2_4_out.value = ""
 }
 function process_t2_4() {
-    t2_4_out.value = t2_4_in.value.replace(/[\u4e00-\u9fa5]/g, function (c) {
+    t2_4_out.value = t2_4_in.value.replace(/[\u4e00-\u9fa5]/g, function (c:any) {
         return "\\u" + c.charCodeAt(0).toString(16);
     });
 }
 // 反向处理
 function process_t2_4_re() {
-    t2_4_in.value = t2_4_out.value.replace(/\\u[\d\w]{4}/gi, function (c) {
+    t2_4_in.value = t2_4_out.value.replace(/\\u[\d\w]{4}/gi, function (c:any) {
         return String.fromCharCode(parseInt(c.replace(/\\u/g, ""), 16));
     });
 }
