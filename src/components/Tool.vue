@@ -192,6 +192,33 @@ function process_t2_4_re() {
     });
 }
 
+// t2-5
+const t2_5_in: any = ref("")
+const t2_5_out: any = ref("")
+const t2_5_from: any = ref("")
+const t2_5_to: any = ref("")
+function clear_t2_5() {
+    t2_5_in.value = ""
+    t2_5_out.value = ""
+}
+function process_t2_5() {
+    t2_5_out.value = t2_5_in.value.replace(new RegExp(t2_5_from.value, 'g'), t2_5_to.value);
+}
+
+// t3-1
+const t3_1_in: any = ref("")
+function clear_t3_1() {
+    t3_1_in.value = ""
+}
+function process_t3_1() {
+    try {
+        t3_1_in.value = JSON.stringify(JSON.parse(t3_1_in.value), null, 4)
+    } catch (err) {
+        Message.clear()
+        Message.error({ content: 'JSON格式化失败,请检查输入的JSON是否正确', position: 'bottom' })
+    }
+}
+
 
 </script>
 
@@ -469,9 +496,10 @@ function process_t2_4_re() {
                             </a-col>
                             <a-col :span="2"
                                 style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
-                                <a-button @click="process_t2_4()" class="t1-1-button" style="width: 60px;">-></a-button><br />
+                                <a-button @click="process_t2_4()" class="t1-1-button"
+                                    style="width: 60px;">-></a-button><br />
                                 <a-button @click="process_t2_4_re()" class="t1-1-button" style="width: 60px;"><-</a-button><br />
-                                <a-button @click="clear_t2_4()" class="t1-1-button">清空</a-button><br />
+                                        <a-button @click="clear_t2_4()" class="t1-1-button">清空</a-button><br />
                             </a-col>
                             <a-col :span="11" style="width: 200px; overflow-x: auto; white-space: nowrap;">
                                 <a-textarea placeholder="Unicode编码" v-model="t2_4_out" :auto-size="{
@@ -486,16 +514,178 @@ function process_t2_4_re() {
             </div>
         </div>
 
+        <div v-show="tooltype == 't2-5'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="替换与转义" @back="switchToMenu"
+                    subtitle="替换指定字符">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
+                                        src="../assets/min.png" style="width: 15px;"
+                                        @click="minimizeWindow()" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button"> <template #icon><img
+                                        src="../assets/close.png" style="width: 15px;"
+                                        @click="closeWindow()" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row>
+                    <a-col :span="24">
+                        <a-row style="margin-top: 5px;">
+                            <a-col :span="11" style="width: 200px; overflow-x: auto; white-space: nowrap;">
+                                <a-textarea placeholder="原始文本" v-model="t2_5_in" :auto-size="{
+                                    minRows: 22,
+                                    maxRows: 22
+                                }" />
+                            </a-col>
+                            <a-col :span="2"
+                                style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+                                <input type="text" v-model="t2_5_from" placeholder="原本" class="t1-1-inputer"
+                                    style="width: 45px;" /><br />
+                                <input type="text" v-model="t2_5_to" placeholder="替换" class="t1-1-inputer"
+                                    style="width: 45px;" /><br />
+                                <a-button @click="process_t2_5()" class="t1-1-button"
+                                    style="width: 60px;">-></a-button><br />
+                                <a-button @click="clear_t2_5()" class="t1-1-button">清空</a-button><br />
+                            </a-col>
+                            <a-col :span="11" style="width: 200px; overflow-x: auto; white-space: nowrap;">
+                                <a-textarea placeholder="Unicode编码" v-model="t2_5_out" :auto-size="{
+                                    minRows: 22,
+                                    maxRows: 22
+                                }" />
+                            </a-col>
+                        </a-row>
+                    </a-col>
+                </a-row>
+
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't3-1'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="JSON格式化" @back="switchToMenu"
+                    subtitle="替换指定字符">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
+                                        src="../assets/min.png" style="width: 15px;"
+                                        @click="minimizeWindow()" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button"> <template #icon><img
+                                        src="../assets/close.png" style="width: 15px;"
+                                        @click="closeWindow()" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row>
+                    <a-col :span="22">
+                        <a-row style="margin-top: 5px;">
+                            <a-col :span="24" style="width: 200px; overflow-x: auto; white-space: nowrap;">
+                                <a-textarea placeholder="待格式化JSON" v-model="t3_1_in" :auto-size="{
+                                    minRows: 22,
+                                    maxRows: 22
+                                }" />
+                            </a-col>
+                        </a-row>
+                    </a-col>
+                    <a-col :span="2"
+                        style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;margin-top: 5px;">
+                        <a-button @click="process_t3_1()" class="t1-1-button" style="width: 60px;">格式化</a-button><br />
+                        <a-button @click="clear_t3_1()" class="t1-1-button">清空</a-button><br />
+                    </a-col>
+                </a-row>
+
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't5-1'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="Windows加密" @back="switchToMenu"
+                    subtitle="Windows自带指令">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click=""> <template #icon><img
+                                        src="../assets/min.png" style="width: 15px;"
+                                        @click="minimizeWindow()" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button"> <template #icon><img
+                                        src="../assets/close.png" style="width: 15px;"
+                                        @click="closeWindow()" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content  custom-scrollbar">
+                    <a-col :span="24">
+                        <h1>计算文件哈希值</h1>
+
+                        <h2>方法一：使用 PowerShell</h2>
+                        <p>打开 PowerShell，并运行以下命令：</p>
+                        <pre><code>Get-FileHash 文件路径 -Algorithm MD5(可以换成其他算法) | Format-List</code></pre>
+                        <p>例如：</p>
+                        <pre><code>Get-FileHash C:\Windows\notepad.exe -Algorithm MD5 | Format-List</code></pre>
+                        <p>输出示例：</p>
+                        <pre><code>Algorithm : MD5
+Hash : 9E107D9D372BB6826BD81D3542A419D6
+Path : C:\Windows\notepad.exe</code></pre>
+
+                        <h2>方法二：使用 CertUtil 工具</h2>
+                        <p>打开命令提示符，并运行以下命令：</p>
+                        <pre><code>certutil -hashfile 文件路径 MD5</code></pre>
+                        <p>例如：</p>
+                        <pre><code>certutil -hashfile C:\Windows\notepad.exe MD5(可以换成其他算法)</code></pre>
+                        <p>输出示例：</p>
+                        <pre><code>MD5 哈希 (MD5) 的 C:\Windows\notepad.exe:
+9E107D9D372BB6826BD81D3542A419D6
+CertUtil: -hashfile 命令成功完成。</code></pre>
+
+                    </a-col>
+                </a-row>
+
+            </div>
+        </div>
+
     </div>
 </template>
 
 <style>
-/* 为所有元素定义滚动条样式 */
-* {
-    scrowlbar-width: thin;
-    /* Firefox */
-    scrowlbar-color: #888 #f1f1f1;
-    /* Firefox */
+/* 自定义滚动条样式 */
+.custom-scrollbar {
+    width: 300px;
+    height: 200px;
+    overflow-y: scroll;
+}
+
+/* 隐藏默认的滚动条 */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    /* 设置滚动条的宽度 */
+}
+
+/* 滚动条的轨道 */
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* 滚动条轨道的背景颜色 */
+}
+
+/* 滚动条滑块 */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #888;
+    /* 滚动条滑块的背景颜色 */
+    border-radius: 4px;
+    /* 滚动条滑块的圆角半径 */
+}
+
+/* 滚动条滑块在悬停时的样式 */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    /* 滚动条滑块在悬停时的背景颜色 */
 }
 
 .tool-container {
@@ -557,5 +747,26 @@ function process_t2_4_re() {
 
 .t1-1-button {
     height: 42px !important;
+}
+
+pre {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+
+code {
+    font-family: Consolas, monospace;
+    color: #c7254e;
+    background-color: #f9f2f4;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.page-content {
+    height: 510px;
+    width: 100%;
 }
 </style>
