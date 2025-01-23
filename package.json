@@ -22,6 +22,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build && electron-builder",
+    "electron:generate-icons": "electron-icon-builder --input=./public/icon.jpg --output=build --flatten",
     "preview": "vite preview"
   },
   "devDependencies": {
@@ -40,6 +41,7 @@
   "dependencies": {
     "@types/file-saver": "^2.0.7",
     "crypto-js": "^4.2.0",
+    "electron-icon-builder": "^2.0.1",
     "file-saver": "^2.0.5",
     "html-to-image": "^1.11.11",
     "jsbarcode": "^3.11.6",
