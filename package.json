@@ -30,7 +30,7 @@
     "@types/crypto-js": "^4.2.2",
     "@vitejs/plugin-vue": "^5.0.4",
     "electron": "^29.1.1",
-    "electron-builder": "^24.13.3",
+    "electron-builder": "^25.1.8",
     "typescript": "^5.4.2",
     "vite": "^5.1.5",
     "vite-plugin-electron": "^0.28.4",
