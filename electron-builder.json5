@@ -11,6 +11,7 @@
     "dist",
     "dist-electron"
   ],
+  "forceCodeSigning": false,
   "mac": {
     "target": [
       "dmg"

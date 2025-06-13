@@ -1645,8 +1645,8 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                 <a-button :disabled="!ws_connected" @click="disconnectWebSocket">断开</a-button>
                             </div>
                             <div style="margin-top: 10px;">
-                                <a-alert v-if="ws_connected" type="success" message="WebSocket已连接" />
-                                <a-alert v-else type="info" message="WebSocket未连接" />
+                                <a-alert v-if="ws_connected" type="success">WebSocket已连接</a-alert>
+                                <a-alert v-else type="info">WebSocket未连接</a-alert>
                             </div>
                         </a-card>
 
@@ -1721,12 +1721,12 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                 <a-button @click="prettifyJson" style="margin-right: 10px;">美化JSON</a-button>
                             </div>
                             <div style="margin-top: 10px;">
-                                <a-alert v-if="rest_loading" type="info" message="正在发送请求..." />
-                                <a-alert v-else-if="rest_error" type="error" :message="rest_error" />
-                                <a-alert v-else-if="rest_status" type="success" :message="rest_status" />
-                                <a-alert v-else-if="rest_response" type="info" :message="rest_response" />
-                                <a-alert v-else-if="rest_response_time" type="info" :message="`响应时间：${rest_response_time}ms`" />
-                                <a-alert v-else-if="rest_response_size" type="info" :message="`响应大小：${rest_response_size}字节`" />
+                                <a-alert v-if="rest_loading" type="info">正在发送请求...</a-alert>
+                                <a-alert v-else-if="rest_error" type="error">{{ rest_error }}</a-alert>
+                                <a-alert v-else-if="rest_status" type="success">{{ rest_status }}</a-alert>
+                                <a-alert v-else-if="rest_response" type="info">{{ rest_response }}</a-alert>
+                                <a-alert v-else-if="rest_response_time" type="info">响应时间：{{ rest_response_time }}ms</a-alert>
+                                <a-alert v-else-if="rest_response_size" type="info">响应大小：{{ rest_response_size }}字节</a-alert>
                             </div>
                         </a-card>
 
