@@ -50,12 +50,12 @@ function closeWindow() {
                 </a-col>
               </a-row>
               <a-row><a-col :span="24">
-                  <h4>版本：1.1.2025012</h4>
+                  <h4>版本：1.1.20250613</h4>
                 </a-col>
               </a-row>
             </div>
           </a-tab-pane>
-          <a-tab-pane key="1" title="常用工具">
+          <a-tab-pane key="1" title="编码工具">
             <div class="tool-container">
               <a-card :bordered="false" :style="{ width: '99%' }">
                 <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t1-1')">
@@ -69,20 +69,6 @@ function closeWindow() {
                   <a-card class="card-demo" title="二维码码生成" :bordered="false">
                     <p :style="{ margin: 0 }">
                       文字生成二维码
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t3-1')">
-                  <a-card class="card-demo" title="JSON格式化" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      将JSON格式化输出
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-1')">
-                  <a-card class="card-demo" title="Windows加密" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      Windows自带指令
                     </p>
                   </a-card>
                 </a-card-grid>
@@ -127,24 +113,24 @@ function closeWindow() {
                     </p>
                   </a-card>
                 </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-2')">
-                  <a-card class="card-demo" title="MD5加密" :bordered="false">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-6')">
+                  <a-card class="card-demo" title="ASCII码表" :bordered="false">
                     <p :style="{ margin: 0 }">
-                      字符串转MD5
+                      ASCII码对照表
                     </p>
                   </a-card>
                 </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-3')">
-                  <a-card class="card-demo" title="SHA1加密" :bordered="false">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-7')">
+                  <a-card class="card-demo" title="字数统计" :bordered="false">
                     <p :style="{ margin: 0 }">
-                      字符串转SHA1
+                      文本字符分析
                     </p>
                   </a-card>
                 </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-4')">
-                  <a-card class="card-demo" title="SHA256加密" :bordered="false">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-8')">
+                  <a-card class="card-demo" title="文本对比" :bordered="false">
                     <p :style="{ margin: 0 }">
-                      字符串转SHA256
+                      比较文本差异
                     </p>
                   </a-card>
                 </a-card-grid>
@@ -161,30 +147,17 @@ function closeWindow() {
                     </p>
                   </a-card>
                 </a-card-grid>
-              </a-card>
-            </div>
-          </a-tab-pane>
-          <a-tab-pane key="4" title="转换工具">
-            <div class="tool-container">
-              <a-card :bordered="false" :style="{ width: '99%' }">
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-4')">
-                  <a-card class="card-demo" title="中文转Unicode" :bordered="false">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t3-2')">
+                  <a-card class="card-demo" title="JSON转YAML" :bordered="false">
                     <p :style="{ margin: 0 }">
-                      中文与Unicode互转
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-5')">
-                  <a-card class="card-demo" title="替换与转义" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      替换指定字符
+                      JSON与YAML转换
                     </p>
                   </a-card>
                 </a-card-grid>
               </a-card>
             </div>
           </a-tab-pane>
-          <a-tab-pane key="5" title="加密工具">
+          <a-tab-pane key="4" title="加密工具">
             <div class="tool-container custom-scrollbar">
               <a-card :bordered="false" :style="{ width: '99%' }">
                 <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-1')">
@@ -218,7 +191,7 @@ function closeWindow() {
               </a-card>
             </div>
           </a-tab-pane>
-          <a-tab-pane key="6" title="随机工具">
+          <a-tab-pane key="5" title="随机工具">
             <div class="tool-container">
               <a-card :bordered="false" :style="{ width: '99%' }">
                 <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t6-1')">
@@ -239,6 +212,26 @@ function closeWindow() {
                   <a-card class="card-demo" title="随机混合串" :bordered="false">
                     <p :style="{ margin: 0 }">
                       生成字母数字混合串
+                    </p>
+                  </a-card>
+                </a-card-grid>
+              </a-card>
+            </div>
+          </a-tab-pane>
+          <a-tab-pane key="7" title="网络工具">
+            <div class="tool-container">
+              <a-card :bordered="false" :style="{ width: '99%' }">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t7-1')">
+                  <a-card class="card-demo" title="WebSocket测试" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      WebSocket测试
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t7-2')">
+                  <a-card class="card-demo" title="RESTful测试" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      API接口测试
                     </p>
                   </a-card>
                 </a-card-grid>
