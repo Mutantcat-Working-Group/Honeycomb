@@ -257,7 +257,17 @@ watch(() => t2_7_in.value, () => {
 // t2-8 文本对比工具 
 const t2_8_left: any = ref("")
 const t2_8_right: any = ref("")
-const t2_8_diff: any = ref([])
+
+interface DiffItem {
+    lineNum: number;
+    left: string;
+    right: string;
+    leftHighlight?: number[];
+    rightHighlight?: number[];
+    different: boolean;
+}
+
+const t2_8_diff = ref<DiffItem[]>([])
 
 // 计算两个文本的差异，并对不同之处进行标记
 function processDiff() {
@@ -301,7 +311,7 @@ function processDiff() {
 }
 
 // 查找两行文本中字符级的差异
-function findDiffChars(str1, str2) {
+function findDiffChars(str1: string, str2: string) {
     const len1 = str1.length;
     const len2 = str2.length;
     const maxLen = Math.max(len1, len2);
@@ -586,7 +596,14 @@ const rest_loading = ref(false);
 const rest_response_time = ref(0);
 const rest_response_size = ref(0);
 const rest_error = ref('');
-const rest_history = ref([]);
+const rest_history = ref<Array<{
+    time: string;
+    method: string;
+    url: string;
+    status: number;
+    duration: number;
+    id: number;
+}>>([]);
 const rest_content_type = ref('json');
 
 // 发送请求
@@ -599,7 +616,7 @@ async function sendRequest() {
     rest_response_size.value = 0;
     
     try {
-        let headers = {};
+        let headers: Record<string, string> = {};
         try {
             headers = JSON.parse(rest_headers.value);
         } catch (e) {
@@ -623,7 +640,7 @@ async function sendRequest() {
                     data = params;
                     // 自动设置Content-Type
                     if (!headers['Content-Type']) {
-                        headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                        headers = { ...headers, 'Content-Type': 'application/x-www-form-urlencoded' };
                     }
                 } else if (rest_content_type.value === 'raw') {
                     // 作为原始字符串发送
@@ -676,7 +693,7 @@ async function sendRequest() {
         if (rest_history.value.length > 10) {
             rest_history.value = rest_history.value.slice(0, 10);
         }
-    } catch (error) {
+    } catch (error: any) {
         rest_error.value = `请求失败: ${error.message}`;
     } finally {
         rest_loading.value = false;
@@ -693,7 +710,14 @@ function clearRestInputs() {
 }
 
 // 加载历史记录
-function loadHistory(item) {
+function loadHistory(item: {
+    time: string;
+    method: string;
+    url: string;
+    status: number;
+    duration: number;
+    id: number;
+}) {
     rest_url.value = item.url;
     rest_method.value = item.method;
 }
@@ -1554,7 +1578,7 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                         <!-- 对比结果区 -->
                         <div v-if="t2_8_diff && t2_8_diff.length > 0">
                             <div class="diff-header" style="margin-bottom: 10px;">
-                                差异结果 (不同行: {{ t2_8_diff.filter(item => item.different).length }}/{{ t2_8_diff.length }})
+                                差异结果 (不同行: {{ t2_8_diff.filter((item: DiffItem) => item.different).length }}/{{ t2_8_diff.length }})
                             </div>
                             <div style="display: flex; border: 1px solid #ddd; border-radius: 4px;">
                                 <div style="flex: 1; border-right: 1px solid #ddd; padding: 0 5px;">
