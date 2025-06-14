@@ -1758,9 +1758,9 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                             <div style="display: flex; align-items: center;">
                                 <span style="width: 80px;">数据类型：</span>
                                 <a-select v-model="rest_content_type" style="flex: 1; margin-right: 15px;">
-                                    <a-select-option value="json">JSON</a-select-option>
-                                    <a-select-option value="form">表单数据</a-select-option>
-                                    <a-select-option value="raw">原始字符串</a-select-option>
+                                    <a-option value="json">JSON</a-option>
+                                    <a-option value="form">表单数据</a-option>
+                                    <a-option value="raw">原始字符串</a-option>
                                 </a-select>
                                 <a-textarea v-model="rest_body" placeholder="请输入请求体" :auto-size="{ minRows: 4, maxRows: 4 }"
                                             style="flex: 1; margin-right: 15px;" />
