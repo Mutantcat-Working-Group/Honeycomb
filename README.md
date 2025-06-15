@@ -16,11 +16,11 @@
 ### 二、软件界面
 
 - 欢迎界面
-- ![_20250123085332.png](https://s2.loli.net/2025/01/23/T7CQUs6mgGjwiaW.jpg)
+- ![_20250123085332.png](https://s2.loli.net/2025/06/15/AFtGaCTi4ecHsOn.png)
 - 功能列表
-- ![_20250123092654.png](https://s2.loli.net/2025/01/23/PfKNz4ewBUFiQOT.jpg)
+- ![_20250123092654.png](https://s2.loli.net/2025/06/15/qFIiXnpmW7vuwyk.png)
 - 功能界面
-- ![_20250123092708.png](https://s2.loli.net/2025/01/23/rnDKdtlpVe4fC1y.jpg)
+- ![_20250123092708.png](https://s2.loli.net/2025/06/15/e1V7jp5OhxLBUim.png)
 
 ### 三、功能列表
 
