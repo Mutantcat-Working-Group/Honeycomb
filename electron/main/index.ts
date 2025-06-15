@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain, Menu } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, Menu, desktopCapturer, screen } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -128,3 +128,40 @@ ipcMain.handle('open-win', (_, arg) => {
 // 监听最小化和关闭事件 
 ipcMain.on('minimize-window', () => { win.minimize(); }); 
 ipcMain.on('close-window', () => { win.close(); });
+
+// 处理屏幕截图
+ipcMain.on('capture-screen', async (event) => {
+  try {
+    const { sender } = event;
+    
+    // 获取当前窗口所在的显示器
+    const currentWindow = BrowserWindow.fromWebContents(sender);
+    const currentDisplayId = screen.getDisplayNearestPoint(currentWindow.getBounds()).id;
+    const currentDisplay = screen.getDisplayMatching(currentWindow.getBounds());
+    const { width, height } = currentDisplay.size;
+    
+    // 捕获屏幕截图
+    const sources = await desktopCapturer.getSources({
+      types: ['screen'],
+      thumbnailSize: { width, height }
+    });
+    
+    // 找到当前窗口所在屏幕的源
+    const currentSource = sources.find(source => {
+      // 有些系统的display_id可能是字符串形式的数字，需要做比较
+      return source.display_id === currentDisplayId.toString() || 
+             source.display_id === String(currentDisplayId);
+    }) || sources[0];
+    
+    if (currentSource && currentSource.thumbnail) {
+      // 将截图转换为Base64格式并发送回渲染进程
+      const imageDataUrl = currentSource.thumbnail.toDataURL();
+      sender.send('screen-captured', imageDataUrl);
+    } else {
+      sender.send('screen-captured', null);
+    }
+  } catch (error) {
+    console.error('截图失败:', error);
+    event.sender.send('screen-captured', null);
+  }
+});

@@ -50,7 +50,7 @@ function closeWindow() {
                 </a-col>
               </a-row>
               <a-row><a-col :span="24">
-                  <h4>版本：1.1.20250614</h4>
+                  <h4>版本：1.1.20250615</h4>
                 </a-col>
               </a-row>
             </div>
@@ -69,6 +69,34 @@ function closeWindow() {
                   <a-card class="card-demo" title="二维码码生成" :bordered="false">
                     <p :style="{ margin: 0 }">
                       文字生成二维码
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t1-3')">
+                  <a-card class="card-demo" title="时间戳转换" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      时间戳与日期互转
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t1-4')">
+                  <a-card class="card-demo" title="颜色值转换" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      颜色编码转换
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-4')">
+                  <a-card class="card-demo" title="中文转Unicode" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      中文与Unicode互转
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-6')">
+                  <a-card class="card-demo" title="ASCII码表" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      ASCII码对照表
                     </p>
                   </a-card>
                 </a-card-grid>
@@ -99,24 +127,10 @@ function closeWindow() {
                     </p>
                   </a-card>
                 </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-4')">
-                  <a-card class="card-demo" title="中文转Unicode" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      中文与Unicode互转
-                    </p>
-                  </a-card>
-                </a-card-grid>
                 <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-5')">
                   <a-card class="card-demo" title="替换与转义" :bordered="false">
                     <p :style="{ margin: 0 }">
                       替换指定字符
-                    </p>
-                  </a-card>
-                </a-card-grid>
-                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-6')">
-                  <a-card class="card-demo" title="ASCII码表" :bordered="false">
-                    <p :style="{ margin: 0 }">
-                      ASCII码对照表
                     </p>
                   </a-card>
                 </a-card-grid>
@@ -134,10 +148,24 @@ function closeWindow() {
                     </p>
                   </a-card>
                 </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-9')">
+                  <a-card class="card-demo" title="正则测试" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      测试正则表达式
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t2-10')">
+                  <a-card class="card-demo" title="大小写转换" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      文本大小写转换
+                    </p>
+                  </a-card>
+                </a-card-grid>
               </a-card>
             </div>
           </a-tab-pane>
-          <a-tab-pane key="3" title="JSON工具">
+          <a-tab-pane key="3" title="开发工具">
             <div class="tool-container">
               <a-card :bordered="false" :style="{ width: '99%' }">
                 <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t3-1')">
@@ -151,6 +179,41 @@ function closeWindow() {
                   <a-card class="card-demo" title="JSON转YAML" :bordered="false">
                     <p :style="{ margin: 0 }">
                       JSON与YAML转换
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t3-3')">
+                  <a-card class="card-demo" title="屏幕取色器" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      拾取屏幕任意颜色
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t3-4')">
+                  <a-card class="card-demo" title="颜色选择器" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      从色板中选择颜色
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t3-5')">
+                  <a-card class="card-demo" title="常用HTML颜色" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      常用网页色系和色块
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t3-6')">
+                  <a-card class="card-demo" title="回车转br标签" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      换行符转HTML标签
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t3-7')">
+                  <a-card class="card-demo" title="常用浏览器UA" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      浏览器User-Agent
                     </p>
                   </a-card>
                 </a-card-grid>
@@ -188,6 +251,14 @@ function closeWindow() {
                     </p>
                   </a-card>
                 </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-5')">
+                  <a-card class="card-demo" title="密码强度分析" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      分析密码安全强度
+                    </p>
+                  </a-card>
+                </a-card-grid>
+
               </a-card>
             </div>
           </a-tab-pane>
@@ -212,6 +283,34 @@ function closeWindow() {
                   <a-card class="card-demo" title="随机混合串" :bordered="false">
                     <p :style="{ margin: 0 }">
                       生成字母数字混合串
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t6-4')">
+                  <a-card class="card-demo" title="随机MAC地址" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      生成网络设备MAC地址
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t6-5')">
+                  <a-card class="card-demo" title="随机IPv4地址" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      生成随机IPv4地址
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t6-6')">
+                  <a-card class="card-demo" title="随机IPv6地址" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      生成随机IPv6地址
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t5-6')">
+                  <a-card class="card-demo" title="生成UUID" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      生成唯一标识符
                     </p>
                   </a-card>
                 </a-card-grid>
