@@ -943,15 +943,15 @@ async function startScreenColorPicker() {
                     document.body.style.cursor = 'crosshair';
                     
                     // 打开取色器
-                    const result = await eyeDropper.open();
-                    t3_3_picked_color.value = result.sRGBHex;
-                    Message.success({ content: `颜色已选取: ${result.sRGBHex}`, position: 'bottom' });
+        const result = await eyeDropper.open();
+        t3_3_picked_color.value = result.sRGBHex;
+        Message.success({ content: `颜色已选取: ${result.sRGBHex}`, position: 'bottom' });
                     
                     // 清理
                     document.body.removeChild(tempContainer);
                     document.body.style.cursor = '';
                 } catch (error) {
-                    Message.info({ content: '已取消取色', position: 'bottom' });
+        Message.info({ content: '已取消取色', position: 'bottom' });
                     
                     // 确保清理
                     const tempContainer = document.querySelector('div[style*="z-index: 9999"]');
@@ -959,7 +959,7 @@ async function startScreenColorPicker() {
                         document.body.removeChild(tempContainer);
                     }
                     document.body.style.cursor = '';
-                } finally {
+    } finally {
                     t3_3_is_picking.value = false;
                 }
             };
@@ -3321,7 +3321,7 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                 </div>
                             </div>
 
-                            <div class="ws-log-container custom-scrollbar" style="height: 250px; overflow-y: auto; border: 1px solid #eee; padding: 10px; border-radius: 4px;">
+                            <div class="ws-log-container custom-scrollbar" style="height: 250px; overflow-y: auto; border: 1px solid #eee; padding: 10px; border-radius: 4px;width: 96%;margin: 0 auto;">
                                 <div v-for="log in ws_logs" :key="log.id" class="ws-log-item" :class="`ws-log-${log.type}`">
                                     <span class="ws-log-time">[{{ log.timestamp }}]</span>
                                     <span class="ws-log-type">
