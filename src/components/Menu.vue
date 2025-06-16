@@ -334,6 +334,13 @@ function closeWindow() {
                     </p>
                   </a-card>
                 </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t7-3')">
+                  <a-card class="card-demo" title="MQTT监听" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      MQTT订阅监听
+                    </p>
+                  </a-card>
+                </a-card-grid>
               </a-card>
             </div>
           </a-tab-pane>

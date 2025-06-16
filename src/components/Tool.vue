@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, defineEmits, ref, watch } from 'vue';
+import { defineProps, defineEmits, ref, watch, onBeforeUnmount, onMounted } from 'vue';
 import JsBarcode from 'jsbarcode';
 import { Message } from '@arco-design/web-vue';
 import { toPng } from 'html-to-image';
@@ -8,6 +8,7 @@ import QrcodeVue from 'qrcode.vue';
 import CryptoJS from 'crypto-js';
 import { load as yamlLoad, dump as yamlDump } from 'js-yaml';
 import axios from 'axios';
+import mqtt from 'mqtt';
 
 const props = defineProps({
     toolbar: Boolean,
@@ -2046,6 +2047,229 @@ function clear_t3_6() {
     t3_6_output.value = '';
 }
 
+// t7-3 MQTT监听工具
+const mqtt_host = ref('127.0.0.1');
+const mqtt_port = ref(1883);
+const mqtt_topic = ref('test/test');
+const mqtt_username = ref('');
+const mqtt_password = ref('');
+const mqtt_connection = ref<any>(null);
+const mqtt_connected = ref(false);
+const mqtt_logs = ref<Array<{
+    id: number;
+    type: string;
+    message: string;
+    timestamp: string;
+    rawData: any;
+}>>([]);
+const mqtt_auto_scroll = ref(true);
+
+// 记录MQTT日志
+function addMqttLog(type: string, message: string, rawData: any = null) {
+    const timestamp = new Date().toLocaleTimeString();
+    let formattedMessage = message;
+    
+    // 如果有原始数据并且是JSON，尝试格式化它
+    let jsonData = null;
+    if (rawData) {
+        try {
+            jsonData = JSON.parse(rawData);
+            if (type === 'received') {
+                formattedMessage = JSON.stringify(jsonData, null, 2);
+            }
+        } catch (e) {
+            // 不是JSON格式，使用原始消息
+            if (type === 'received') {
+                formattedMessage = rawData;
+            }
+        }
+    }
+    
+    mqtt_logs.value.push({
+        id: Date.now() + Math.random(),
+        type,
+        message: formattedMessage,
+        timestamp,
+        rawData: jsonData || rawData
+    });
+    
+    // 自动滚动到底部
+    if (mqtt_auto_scroll.value) {
+        setTimeout(() => {
+            const container = document.querySelector('.mqtt-log-container');
+            if (container) {
+                container.scrollTop = container.scrollHeight;
+            }
+        }, 50);
+    }
+}
+
+// 使用Electron主进程连接MQTT服务器
+function connectMqtt() {
+    if (mqtt_connected.value) {
+        addMqttLog('warning', '已经连接到MQTT服务器，请先断开连接');
+        return;
+    }
+    
+    // 使用Electron主进程来连接MQTT
+    addMqttLog('info', '正在连接到MQTT服务器...');
+    
+    // 发送连接请求到主进程
+    window.ipcRenderer.send('test-mqtt-connection', {
+        host: mqtt_host.value,
+        port: mqtt_port.value,
+        topic: mqtt_topic.value,
+        username: mqtt_username.value || undefined,
+        password: mqtt_password.value || undefined
+    });
+    
+    // 监听连接结果
+    window.ipcRenderer.once('mqtt-connection-result', (event, result) => {
+        if (result.success) {
+            mqtt_connected.value = true;
+            addMqttLog('success', '已连接到MQTT服务器并订阅主题: ' + mqtt_topic.value);
+        } else {
+            addMqttLog('error', '连接失败: ' + result.error);
+        }
+    });
+}
+
+// 断开MQTT连接
+function disconnectMqtt() {
+    if (!mqtt_connected.value) {
+        addMqttLog('warning', '没有活动的MQTT连接');
+        return;
+    }
+    
+    addMqttLog('info', '正在断开连接...');
+    
+    // 通知主进程断开连接
+    window.ipcRenderer.send('mqtt-disconnect');
+    
+    // 设置状态为未连接
+    mqtt_connected.value = false;
+    addMqttLog('info', '已断开与MQTT服务器的连接');
+}
+
+// 取消订阅主题
+function unsubscribeTopic() {
+    if (!mqtt_connected.value || !mqtt_connection.value) {
+        addMqttLog('error', '未连接到MQTT服务器');
+        return;
+    }
+    
+    mqtt_connection.value.unsubscribe(mqtt_topic.value, function(err) {
+        if (err) {
+            addMqttLog('error', '取消订阅失败: ' + err);
+        } else {
+            addMqttLog('success', '已成功取消订阅主题: ' + mqtt_topic.value);
+        }
+    });
+}
+
+// 清空MQTT日志
+function clearMqttLogs() {
+    mqtt_logs.value = [];
+}
+
+// 设置监听MQTT消息
+function setupMQTTMessageListener() {
+    // 监听从主进程发送的MQTT消息
+    window.ipcRenderer.on('mqtt-message', (event, data) => {
+        try {
+            addMqttLog('received', `收到来自主题 [${data.topic}] 的消息: ${data.message}`);
+        } catch (err) {
+            console.error('处理MQTT消息时出错:', err);
+        }
+    });
+}
+
+// 在组件挂载时设置监听器
+onMounted(() => {
+    setupMQTTMessageListener();
+});
+
+// 在组件销毁前断开连接
+onBeforeUnmount(() => {
+    // 如果还有连接，先断开连接
+    if (mqtt_connected.value) {
+        disconnectMqtt();
+    }
+});
+
+// 在Electron环境中尝试MQTT连接（使用ipcRenderer）
+function electronMQTTTest() {
+    addMqttLog('info', '尝试通过Electron的IPC方式连接MQTT...');
+    
+    // 检查是否存在ipcRenderer
+    if (window.ipcRenderer) {
+        // 向主进程发送MQTT连接请求
+        window.ipcRenderer.send('test-mqtt-connection', {
+            host: mqtt_host.value,
+            port: mqtt_port.value,
+            topic: mqtt_topic.value
+        });
+        
+        // 监听连接结果
+        window.ipcRenderer.once('mqtt-connection-result', (event, result) => {
+            if (result.success) {
+                addMqttLog('success', '主进程MQTT连接成功: ' + result.message);
+            } else {
+                addMqttLog('error', '主进程MQTT连接失败: ' + result.error);
+            }
+        });
+    } else {
+        addMqttLog('error', '无法访问Electron IPC渲染进程');
+    }
+}
+
+// 尝试直接在渲染进程中使用Node.js方式连接MQTT
+function nodeMQTTTest() {
+    addMqttLog('info', '尝试使用浏览器方式直接连接MQTT...');
+    
+    try {
+        // 尝试使用MQTT.js的浏览器版本
+        // 注意：直接使用导入的mqtt实例
+        
+        // 完全按照原始示例代码的方式配置
+        const url = 'mqtt://' + mqtt_host.value + ':' + mqtt_port.value;
+        const clientId = 'mqtt_browser_test_' + Math.random().toString(16).substr(2, 8);
+        
+        console.log('尝试浏览器方式连接MQTT:', url);
+        
+        // 创建客户端连接 - 注意不使用options参数，而是直接在URL中指定
+        const testClient = mqtt.connect(url, {
+            clientId: clientId,
+            clean: true
+        });
+        
+        // 添加事件处理
+        testClient.on('connect', function() {
+            addMqttLog('success', '浏览器连接方式成功连接到MQTT服务器');
+            console.log('浏览器连接方式连接成功！');
+            
+            // 连接成功后关闭连接
+            setTimeout(() => {
+                testClient.end();
+                addMqttLog('info', '测试连接已关闭');
+            }, 3000);
+        });
+        
+        testClient.on('error', function(err) {
+            addMqttLog('error', '浏览器连接方式错误: ' + err);
+            console.error('浏览器连接方式错误:', err);
+            testClient.end();
+        });
+        
+        testClient.on('close', function() {
+            console.log('浏览器连接方式关闭');
+        });
+    } catch (error) {
+        addMqttLog('error', '无法使用浏览器方式连接: ' + error);
+        console.error('浏览器方式连接错误:', error);
+    }
+}
+
 </script>
 
 <template>
@@ -3321,7 +3545,7 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                 </div>
                             </div>
 
-                            <div class="ws-log-container custom-scrollbar" style="height: 250px; overflow-y: auto; border: 1px solid #eee; padding: 10px; border-radius: 4px;">
+                            <div class="ws-log-container custom-scrollbar" style="height: 250px; overflow-y: auto; border: 1px solid #eee; padding: 10px; border-radius: 4px;width: 96%;margin: 0 auto;">
                                 <div v-for="log in ws_logs" :key="log.id" class="ws-log-item" :class="`ws-log-${log.type}`">
                                     <span class="ws-log-time">[{{ log.timestamp }}]</span>
                                     <span class="ws-log-type">
@@ -4488,6 +4712,145 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
             </div>
         </div>
 
+        <div v-show="tooltype == 't7-3'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="MQTT监听工具" @back="switchToMenu"
+                    subtitle="MQTT连接测试工具">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar">
+                    <a-col :span="24">
+                                                                          <!-- 连接设置区 -->
+                         <a-card title="连接设置" :style="{ marginBottom: '15px', borderRadius: '8px' }" :bordered="true" :hover="true">
+                             <div style="display: flex; align-items: center; flex-wrap: wrap;">
+                                 <span style="width: 120px; font-weight: 500;">MQTT服务器地址：</span>
+                                 <a-input v-model="mqtt_host" :disabled="mqtt_connected" placeholder="MQTT服务器地址" 
+                                          style="flex: 1; margin-right: 15px;" />
+                                 <span style="width: 60px; font-weight: 500;">端口：</span>
+                                 <a-input-number v-model="mqtt_port" :disabled="mqtt_connected" :min="1" :max="65535" style="width: 100px; margin-right: 15px;" />
+                             </div>
+                             <div style="margin-top: 15px; display: flex; align-items: center; flex-wrap: wrap;">
+                                 <span style="width: 120px; font-weight: 500;">主题：</span>
+                                 <a-input v-model="mqtt_topic" :disabled="mqtt_connected" placeholder="请输入要订阅的主题" style="flex: 1; margin-right: 15px;" />
+                             </div>
+                             
+                             <a-collapse :bordered="false" style="margin-top: 15px; background: transparent;">
+                                 <a-collapse-item header="认证设置（可选）" key="1">
+                                     <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                         <span style="width: 120px; font-weight: 500;">用户名：</span>
+                                         <a-input v-model="mqtt_username" :disabled="mqtt_connected" placeholder="可选，不填则不使用认证" style="flex: 1;" />
+                                     </div>
+                                     <div style="display: flex; align-items: center;">
+                                         <span style="width: 120px; font-weight: 500;">密码：</span>
+                                         <a-input-password v-model="mqtt_password" :disabled="mqtt_connected" placeholder="可选，不填则不使用认证" style="flex: 1;" />
+                                     </div>
+                                 </a-collapse-item>
+                             </a-collapse>
+                             <div style="margin-top: 15px; display: flex; justify-content: flex-end;">
+                                 <a-button type="primary" :disabled="mqtt_connected" @click="connectMqtt"
+                                           style="margin-right: 10px; width: 120px;">连接</a-button>
+                                 <a-button :disabled="!mqtt_connected" @click="disconnectMqtt" 
+                                          style="width: 120px;">断开</a-button>
+                             </div>
+                             <div style="margin-top: 15px;">
+                                 <a-alert v-if="mqtt_connected" type="success" :style="{ fontWeight: '500' }">已连接到MQTT服务器并订阅主题: {{ mqtt_topic }}</a-alert>
+                                 <a-alert v-else type="info">MQTT未连接</a-alert>
+                             </div>
+                         </a-card>
+
+                         <!-- 日志区域 -->
+                         <a-card title="通信日志" :style="{ marginBottom: '15px', borderRadius: '8px' }" :bordered="true" :hover="true">
+                             <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding: 0 2%;">
+                                 <div>
+                                     <a-checkbox v-model="mqtt_auto_scroll">自动滚动</a-checkbox>
+                                 </div>
+                                 <div>
+                                     <a-button size="small" @click="clearMqttLogs" type="outline">清空日志</a-button>
+                                 </div>
+                             </div>
+
+                             <div class="mqtt-log-container custom-scrollbar" style="height: 300px; overflow-y: auto; border: 1px solid #eee; padding: 15px; border-radius: 8px; width: 96%; margin: 0 auto; box-shadow: inset 0 0 5px rgba(0,0,0,0.05);">
+                                 <div v-for="log in mqtt_logs" :key="log.id" class="mqtt-log-item" :class="`mqtt-log-${log.type}`">
+                                     <span class="mqtt-log-time">[{{ log.timestamp }}]</span>
+                                     <span class="mqtt-log-type">
+                                         <a-tag v-if="log.type === 'success'" color="green">成功</a-tag>
+                                         <a-tag v-else-if="log.type === 'error'" color="red">错误</a-tag>
+                                         <a-tag v-else-if="log.type === 'received'" color="purple">接收</a-tag>
+                                         <a-tag v-else-if="log.type === 'sent'" color="blue">发送</a-tag>
+                                         <a-tag v-else-if="log.type === 'warning'" color="orange">警告</a-tag>
+                                         <a-tag v-else color="gray">信息</a-tag>
+                                     </span>
+                                     <span class="mqtt-log-message">{{ log.message }}</span>
+                                 </div>
+                                 <div v-if="mqtt_logs.length === 0" class="mqtt-log-empty">
+                                     暂无日志记录
+                                 </div>
+                             </div>
+                         </a-card>
+                         
+                         <!-- 使用说明 -->
+                         <a-card title="使用说明" :style="{ marginBottom: '15px', borderRadius: '8px' }" :bordered="true" :hover="true">
+                             <div class="mqtt-usage-guide">
+                                 <div style="padding: 5px 15px; background-color: #f8f9fa; border-radius: 6px; margin-bottom: 15px;">
+                                     <h4 style="margin-bottom: 10px; color: #1890ff;">连接说明</h4>
+                                     <p>本工具实现订阅连接MQTT服务器的特定主题，支持实时接收和显示消息</p>
+                                 </div>
+                                 
+                                 <div style="padding: 5px 15px; background-color: #f8f9fa; border-radius: 6px; margin-bottom: 15px;">
+                                     <h4 style="margin-bottom: 10px; color: #1890ff;">默认参数</h4>
+                                     <div style="display: flex; flex-wrap: wrap;">
+                                         <div style="flex: 1; min-width: 150px; margin: 5px;">
+                                             <a-tag color="blue">QoS: 0</a-tag>
+                                         </div>
+                                         <div style="flex: 1; min-width: 150px; margin: 5px;">
+                                             <a-tag color="blue">Clean Session: true</a-tag>
+                                         </div>
+                                         <div style="flex: 1; min-width: 150px; margin: 5px;">
+                                             <a-tag color="blue">Client ID: 自动生成</a-tag>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 
+                                 <div style="padding: 12px 18px; background-color: #f0f7ff; border-radius: 8px; border-left: 4px solid #1890ff;">
+                                     <h4 style="margin-bottom: 12px; color: #1890ff; font-weight: 600;">认证选项</h4>
+                                     <p style="margin-bottom: 8px; line-height: 1.5;">MQTT连接支持以下认证方式：</p>
+                                     <div style="display: flex; margin: 10px 0;">
+                                         <div style="flex: 1; border-radius: 6px; background-color: white; padding: 10px; margin-right: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                             <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                                                 <a-tag color="green">基础连接</a-tag>
+                                             </div>
+                                             <p>无需认证，直接连接MQTT服务器</p>
+                                             <div style="color: #888; font-size: 12px; margin-top: 5px;">适用于无认证要求的服务器</div>
+                                         </div>
+                                         <div style="flex: 1; border-radius: 6px; background-color: white; padding: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                             <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                                                 <a-tag color="blue">用户名+密码</a-tag>
+                                             </div>
+                                             <p>提供用户名和密码进行身份验证</p>
+                                             <div style="color: #888; font-size: 12px; margin-top: 5px;">适用于需要身份验证的MQTT服务器</div>
+                                         </div>
+                                     </div>
+                                     <div style="font-size: 12px; color: #555; font-style: italic; margin-top: 8px; line-height: 1.5;">
+                                         提示: 如果您不确定连接参数，请联系您的MQTT服务器管理员获取正确的配置信息。
+                                     </div>
+                                 </div>
+                             </div>
+                         </a-card>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -4669,5 +5032,66 @@ code {
 }
 .rest-history-status.error-status {
     color: #d9534f;
+}
+
+/* MQTT工具样式 */
+.mqtt-log-item {
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    line-height: 1.5;
+}
+.mqtt-log-item:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+.mqtt-log-received {
+    border-left: 3px solid #722ed1;
+    background-color: rgba(114, 46, 209, 0.05);
+}
+.mqtt-log-error {
+    border-left: 3px solid #f5222d;
+    background-color: rgba(245, 34, 45, 0.05);
+}
+.mqtt-log-success {
+    border-left: 3px solid #52c41a;
+    background-color: rgba(82, 196, 26, 0.05);
+}
+.mqtt-log-warning {
+    border-left: 3px solid #fa8c16;
+    background-color: rgba(250, 140, 22, 0.05);
+}
+.mqtt-log-time {
+    margin-right: 5px;
+    color: #888;
+    display: inline-block;
+    width: 75px;
+    font-family: monospace;
+}
+.mqtt-log-type {
+    display: inline-block;
+    width: 60px;
+    margin-right: 8px;
+    text-align: center;
+}
+.mqtt-log-message {
+    word-break: break-all;
+    padding-left: 5px;
+    font-family: "Consolas", monospace;
+}
+.mqtt-log-empty {
+    text-align: center;
+    color: #aaa;
+    padding: 30px 0;
+    font-style: italic;
+}
+.mqtt-usage-guide {
+    padding: 10px;
+}
+.mqtt-usage-guide h4 {
+    margin: 15px 0 8px;
+}
+.mqtt-usage-guide p {
+    line-height: 1.6;
 }
 </style>

@@ -7,6 +7,14 @@ import os from 'node:os'
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+// 导入MQTT模块以便在主进程中测试
+let mqtt;
+try {
+  mqtt = require('mqtt');
+} catch (error) {
+  console.error('无法导入MQTT模块:', error);
+}
+
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -163,5 +171,149 @@ ipcMain.on('capture-screen', async (event) => {
   } catch (error) {
     console.error('截图失败:', error);
     event.sender.send('screen-captured', null);
+  }
+});
+
+// MQTT客户端对象
+let mqttClient: any = null;
+let mqttSender: any = null;
+
+// 处理MQTT断开连接
+ipcMain.on('mqtt-disconnect', (event) => {
+  console.log('收到MQTT断开连接请求');
+  
+  if (mqttClient) {
+    try {
+      // 断开MQTT客户端连接
+      mqttClient.end(true);
+      console.log('MQTT客户端已断开连接');
+    } catch (err) {
+      console.error('断开MQTT连接时出错:', err);
+    } finally {
+      mqttClient = null;
+      mqttSender = null;
+    }
+  } else {
+    console.log('没有活动的MQTT客户端连接');
+  }
+});
+
+// 处理MQTT连接
+ipcMain.on('test-mqtt-connection', async (event, options) => {
+  console.log('收到MQTT连接请求:', options);
+  mqttSender = event.sender;
+  
+  // 如果已有连接，先断开
+  if (mqttClient) {
+    try {
+      mqttClient.end();
+      mqttClient = null;
+    } catch (err) {
+      console.error('断开现有MQTT连接时出错:', err);
+    }
+  }
+  
+  try {
+    if (!mqtt) {
+      event.sender.send('mqtt-connection-result', {
+        success: false,
+        error: '主进程无法加载MQTT模块'
+      });
+      return;
+    }
+    
+    // 创建MQTT客户端配置
+    const mqttOptions: any = {
+      clientId: 'mqtt_subscriber_' + Math.random().toString(16).substr(2, 8),
+      clean: true
+    };
+    
+    // 添加认证信息（如果提供）
+    if (options.username) {
+      mqttOptions.username = options.username;
+    }
+    if (options.password) {
+      mqttOptions.password = options.password;
+    }
+    
+    console.log('尝试连接MQTT服务器:', options.host, options.port);
+    
+    // 创建客户端并连接
+    mqttClient = mqtt.connect(`mqtt://${options.host}:${options.port}`, mqttOptions);
+    
+    // 设置超时
+    const timeout = setTimeout(() => {
+      if (mqttClient) {
+        mqttClient.end();
+        mqttClient = null;
+      }
+      event.sender.send('mqtt-connection-result', {
+        success: false,
+        error: '连接超时'
+      });
+    }, 10000);
+    
+    // 连接成功
+    mqttClient.on('connect', () => {
+      clearTimeout(timeout);
+      console.log('主进程成功连接到MQTT服务器');
+      
+      // 通知渲染进程
+      event.sender.send('mqtt-connection-result', {
+        success: true,
+        message: '成功连接到MQTT服务器'
+      });
+      
+      // 订阅主题
+      if (options.topic) {
+        console.log('订阅主题:', options.topic);
+        mqttClient.subscribe(options.topic);
+      }
+    });
+    
+    // 接收消息
+    mqttClient.on('message', (topic: string, message: Buffer) => {
+      console.log('主进程收到MQTT消息:', topic);
+      if (mqttSender) {
+        try {
+          // 尝试解析JSON
+          let messageStr = message.toString();
+          let jsonData = null;
+          try {
+            jsonData = JSON.parse(messageStr);
+            messageStr = JSON.stringify(jsonData, null, 2);
+          } catch (e) {
+            // 消息不是JSON格式
+          }
+          
+          mqttSender.send('mqtt-message', {
+            topic: topic,
+            message: messageStr
+          });
+        } catch (err) {
+          console.error('处理MQTT消息时出错:', err);
+        }
+      }
+    });
+    
+    // 错误处理
+    mqttClient.on('error', (err: Error) => {
+      clearTimeout(timeout);
+      console.error('主进程MQTT连接错误:', err);
+      
+      // 通知渲染进程
+      event.sender.send('mqtt-connection-result', {
+        success: false,
+        error: err.toString()
+      });
+      
+      mqttClient = null;
+    });
+  } catch (error) {
+    console.error('处理MQTT连接时出错:', error);
+    event.sender.send('mqtt-connection-result', {
+      success: false,
+      error: (error as Error).toString()
+    });
   }
 });
