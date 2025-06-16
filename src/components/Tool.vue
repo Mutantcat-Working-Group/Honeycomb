@@ -2184,6 +2184,123 @@ function setupMQTTMessageListener() {
     });
 }
 
+// t7-4 MQTT广播工具
+const mqtt_pub_host = ref('127.0.0.1');
+const mqtt_pub_port = ref(1883);
+const mqtt_pub_topic = ref('test/test');
+const mqtt_pub_username = ref('');
+const mqtt_pub_password = ref('');
+const mqtt_pub_message = ref(JSON.stringify({ data: '测试消息', timestamp: new Date().toISOString() }, null, 2));
+const mqtt_pub_connected = ref(false);
+const mqtt_pub_interval = ref<any>(null);
+const mqtt_pub_interval_time = ref(3);
+const mqtt_pub_logs = ref<Array<{
+    id: number;
+    type: string;
+    message: string;
+    timestamp: string;
+}>>([]);
+const mqtt_pub_auto_scroll = ref(true);
+
+// 记录MQTT广播日志
+function addMqttPubLog(type: string, message: string) {
+    const timestamp = new Date().toLocaleTimeString();
+    mqtt_pub_logs.value.push({
+        id: Date.now() + Math.random(),
+        type,
+        message,
+        timestamp
+    });
+    
+    // 自动滚动到底部
+    if (mqtt_pub_auto_scroll.value) {
+        setTimeout(() => {
+            const container = document.querySelector('.mqtt-pub-log-container');
+            if (container) {
+                container.scrollTop = container.scrollHeight;
+            }
+        }, 50);
+    }
+}
+
+// 单次广播消息
+function publishMqttMessage() {
+    // 发送单次广播请求到主进程
+    window.ipcRenderer.send('mqtt-publish', {
+        host: mqtt_pub_host.value,
+        port: mqtt_pub_port.value,
+        topic: mqtt_pub_topic.value,
+        message: mqtt_pub_message.value,
+        username: mqtt_pub_username.value || undefined,
+        password: mqtt_pub_password.value || undefined
+    });
+    
+    // 监听发布结果
+    window.ipcRenderer.once('mqtt-publish-result', (event, result) => {
+        if (result.success) {
+            addMqttPubLog('success', '消息发送成功: ' + mqtt_pub_message.value);
+        } else {
+            addMqttPubLog('error', '消息发送失败: ' + result.error);
+        }
+    });
+}
+
+// 开始持续广播
+function startContinuousPublish() {
+    if (mqtt_pub_connected.value) {
+        addMqttPubLog('warning', '已经在持续广播中');
+        return;
+    }
+    
+    // 发送连接请求到主进程
+    window.ipcRenderer.send('mqtt-publish-connect', {
+        host: mqtt_pub_host.value,
+        port: mqtt_pub_port.value,
+        topic: mqtt_pub_topic.value,
+        message: mqtt_pub_message.value,
+        interval: mqtt_pub_interval_time.value,
+        username: mqtt_pub_username.value || undefined,
+        password: mqtt_pub_password.value || undefined
+    });
+    
+    // 监听连接结果
+    window.ipcRenderer.once('mqtt-publish-connect-result', (event, result) => {
+        if (result.success) {
+            mqtt_pub_connected.value = true;
+            addMqttPubLog('success', '已连接到MQTT服务器并开始持续广播');
+            
+            // 监听发布消息
+            window.ipcRenderer.on('mqtt-publish-message', (event, data) => {
+                addMqttPubLog('sent', '发送消息: ' + data.message);
+            });
+        } else {
+            addMqttPubLog('error', '连接失败: ' + result.error);
+        }
+    });
+}
+
+// 停止持续广播
+function stopContinuousPublish() {
+    if (!mqtt_pub_connected.value) {
+        addMqttPubLog('warning', '没有活动的持续广播');
+        return;
+    }
+    
+    // 发送断开连接请求到主进程
+    window.ipcRenderer.send('mqtt-publish-disconnect');
+    
+    mqtt_pub_connected.value = false;
+    addMqttPubLog('info', '已停止持续广播');
+    
+    // 移除消息监听
+    window.ipcRenderer.off('mqtt-publish-message');
+}
+
+// 清空MQTT广播日志
+function clearMqttPubLogs() {
+    mqtt_pub_logs.value = [];
+}
+
 // 在组件挂载时设置监听器
 onMounted(() => {
     setupMQTTMessageListener();
@@ -4846,6 +4963,123 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                  </div>
                              </div>
                          </a-card>
+                                         </a-col>
+                </a-row>
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't7-4'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="MQTT广播工具" @back="switchToMenu"
+                    subtitle="MQTT消息发布工具">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar">
+                    <a-col :span="24">
+                        <!-- 连接设置区 -->
+                        <a-card title="广播设置" :style="{ marginBottom: '15px', borderRadius: '8px' }" :bordered="true" :hover="true">
+                            <div style="display: flex; align-items: center; flex-wrap: wrap;">
+                                <span style="width: 120px; font-weight: 500;">MQTT服务器地址：</span>
+                                <a-input v-model="mqtt_pub_host" :disabled="mqtt_pub_connected" placeholder="MQTT服务器地址" 
+                                         style="flex: 1; margin-right: 15px;" />
+                                <span style="width: 60px; font-weight: 500;">端口：</span>
+                                <a-input-number v-model="mqtt_pub_port" :disabled="mqtt_pub_connected" :min="1" :max="65535" style="width: 100px; margin-right: 15px;" />
+                            </div>
+                            
+                            <div style="margin-top: 15px; display: flex; align-items: center; flex-wrap: wrap;">
+                                <span style="width: 120px; font-weight: 500;">主题：</span>
+                                <a-input v-model="mqtt_pub_topic" :disabled="mqtt_pub_connected" placeholder="请输入要发布的主题" style="flex: 1; margin-right: 15px;" />
+                            </div>
+                            
+                            <a-collapse :bordered="false" style="margin-top: 15px; background: transparent;">
+                                <a-collapse-item header="认证设置（可选）" key="1">
+                                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                        <span style="width: 120px; font-weight: 500;">用户名：</span>
+                                        <a-input v-model="mqtt_pub_username" :disabled="mqtt_pub_connected" placeholder="可选，不填则不使用认证" style="flex: 1;" />
+                                    </div>
+                                    <div style="display: flex; align-items: center;">
+                                        <span style="width: 120px; font-weight: 500;">密码：</span>
+                                        <a-input-password v-model="mqtt_pub_password" :disabled="mqtt_pub_connected" placeholder="可选，不填则不使用认证" style="flex: 1;" />
+                                    </div>
+                                </a-collapse-item>
+                            </a-collapse>
+
+                            <div style="margin-top: 15px;">
+                                <span style="font-weight: 500; display: block; margin-bottom: 10px;">消息内容：</span>
+                                <a-textarea v-model="mqtt_pub_message" :disabled="mqtt_pub_connected" 
+                                   placeholder="请输入要发布的消息内容，支持JSON格式" 
+                                   :auto-size="{ minRows: 5, maxRows: 10 }" 
+                                   style="font-family: monospace; width: 100%;" />
+                            </div>
+
+                            <div style="margin-top: 15px; display: flex; align-items: center; flex-wrap: wrap; justify-content: center;" 
+                                 v-show="!mqtt_pub_connected">
+                                <a-button type="primary" @click="publishMqttMessage" 
+                                          style="margin-right: 15px;">单次广播</a-button>
+                                
+                                <span style="margin-right: 10px;">或</span>
+                                
+                                <span style="margin-right: 10px;">每</span>
+                                <a-input-number v-model="mqtt_pub_interval_time" :min="1" :max="60" 
+                                                style="width: 80px; margin-right: 10px;" />
+                                <span style="margin-right: 15px;">秒广播一次</span>
+                                
+                                <a-button type="primary" status="success" @click="startContinuousPublish">
+                                    开始持续广播
+                                </a-button>
+                            </div>
+                            
+                            <div style="margin-top: 15px; display: flex; justify-content: center;" 
+                                 v-show="mqtt_pub_connected">
+                                <a-button type="primary" status="danger" @click="stopContinuousPublish"
+                                         style="width: 160px;">停止持续广播</a-button>
+                            </div>
+                            
+                            <div style="margin-top: 15px;">
+                                <a-alert v-if="mqtt_pub_connected" type="success" :style="{ fontWeight: '500' }">
+                                    正在持续广播中，每 {{ mqtt_pub_interval_time }} 秒发送一次消息到主题: {{ mqtt_pub_topic }}
+                                </a-alert>
+                            </div>
+                        </a-card>
+
+                        <!-- 日志区域 -->
+                        <a-card title="广播日志" :style="{ marginBottom: '15px', borderRadius: '8px' }" :bordered="true" :hover="true">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding: 0 2%;">
+                                <div>
+                                    <a-checkbox v-model="mqtt_pub_auto_scroll">自动滚动</a-checkbox>
+                                </div>
+                                <div>
+                                    <a-button size="small" @click="clearMqttPubLogs" type="outline">清空日志</a-button>
+                                </div>
+                            </div>
+
+                            <div class="mqtt-pub-log-container custom-scrollbar" style="height: 250px; overflow-y: auto; border: 1px solid #eee; padding: 15px; border-radius: 8px; width: 96%; margin: 0 auto; box-shadow: inset 0 0 5px rgba(0,0,0,0.05);">
+                                <div v-for="log in mqtt_pub_logs" :key="log.id" class="mqtt-log-item" :class="`mqtt-log-${log.type}`">
+                                    <span class="mqtt-log-time">[{{ log.timestamp }}]</span>
+                                    <span class="mqtt-log-type">
+                                        <a-tag v-if="log.type === 'success'" color="green">成功</a-tag>
+                                        <a-tag v-else-if="log.type === 'error'" color="red">错误</a-tag>
+                                        <a-tag v-else-if="log.type === 'sent'" color="blue">发送</a-tag>
+                                        <a-tag v-else-if="log.type === 'warning'" color="orange">警告</a-tag>
+                                        <a-tag v-else color="gray">信息</a-tag>
+                                    </span>
+                                    <span class="mqtt-log-message">{{ log.message }}</span>
+                                </div>
+                                <div v-if="mqtt_pub_logs.length === 0" class="mqtt-log-empty">
+                                    暂无日志记录
+                                </div>
+                            </div>
+                        </a-card>
                     </a-col>
                 </a-row>
             </div>

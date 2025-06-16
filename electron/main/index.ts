@@ -177,6 +177,9 @@ ipcMain.on('capture-screen', async (event) => {
 // MQTT客户端对象
 let mqttClient: any = null;
 let mqttSender: any = null;
+// MQTT发布者客户端
+let mqttPublisher: any = null;
+let mqttPublisherInterval: any = null;
 
 // 处理MQTT断开连接
 ipcMain.on('mqtt-disconnect', (event) => {
@@ -315,5 +318,236 @@ ipcMain.on('test-mqtt-connection', async (event, options) => {
       success: false,
       error: (error as Error).toString()
     });
+  }
+});
+
+// 处理MQTT单次广播
+ipcMain.on('mqtt-publish', async (event, options) => {
+  console.log('收到MQTT单次广播请求:', options);
+  
+  try {
+    if (!mqtt) {
+      event.sender.send('mqtt-publish-result', {
+        success: false,
+        error: '主进程无法加载MQTT模块'
+      });
+      return;
+    }
+    
+    // 创建MQTT客户端配置
+    const mqttOptions: any = {
+      clientId: 'mqtt_publisher_' + Math.random().toString(16).substr(2, 8),
+      clean: true
+    };
+    
+    // 添加认证信息（如果提供）
+    if (options.username) {
+      mqttOptions.username = options.username;
+    }
+    if (options.password) {
+      mqttOptions.password = options.password;
+    }
+    
+    console.log('尝试连接MQTT服务器进行单次广播:', options.host, options.port);
+    
+    // 创建一个临时客户端
+    const tempClient = mqtt.connect(`mqtt://${options.host}:${options.port}`, mqttOptions);
+    
+    // 设置超时
+    const timeout = setTimeout(() => {
+      if (tempClient) {
+        tempClient.end();
+      }
+      event.sender.send('mqtt-publish-result', {
+        success: false,
+        error: '连接超时'
+      });
+    }, 5000);
+    
+    // 连接成功
+    tempClient.on('connect', () => {
+      clearTimeout(timeout);
+      console.log('主进程成功连接到MQTT服务器进行单次广播');
+      
+      // 发布消息
+      tempClient.publish(options.topic, options.message, { qos: 0 }, (err) => {
+        if (err) {
+          console.error('发布消息失败:', err);
+          event.sender.send('mqtt-publish-result', {
+            success: false,
+            error: err.toString()
+          });
+        } else {
+          console.log('消息发布成功');
+          event.sender.send('mqtt-publish-result', {
+            success: true,
+            message: '消息发布成功'
+          });
+        }
+        
+        // 完成后断开连接
+        tempClient.end();
+      });
+    });
+    
+    // 错误处理
+    tempClient.on('error', (err: Error) => {
+      clearTimeout(timeout);
+      console.error('主进程MQTT连接错误:', err);
+      
+      // 通知渲染进程
+      event.sender.send('mqtt-publish-result', {
+        success: false,
+        error: err.toString()
+      });
+      
+      tempClient.end();
+    });
+  } catch (error) {
+    console.error('处理MQTT单次广播时出错:', error);
+    event.sender.send('mqtt-publish-result', {
+      success: false,
+      error: (error as Error).toString()
+    });
+  }
+});
+
+// 处理持续MQTT广播连接
+ipcMain.on('mqtt-publish-connect', async (event, options) => {
+  console.log('收到MQTT持续广播连接请求:', options);
+  
+  // 如果已有发布者连接，先断开
+  if (mqttPublisher) {
+    try {
+      clearInterval(mqttPublisherInterval);
+      mqttPublisherInterval = null;
+      mqttPublisher.end();
+      mqttPublisher = null;
+    } catch (err) {
+      console.error('断开现有MQTT发布者连接时出错:', err);
+    }
+  }
+  
+  try {
+    if (!mqtt) {
+      event.sender.send('mqtt-publish-connect-result', {
+        success: false,
+        error: '主进程无法加载MQTT模块'
+      });
+      return;
+    }
+    
+    // 创建MQTT客户端配置
+    const mqttOptions: any = {
+      clientId: 'mqtt_continuous_publisher_' + Math.random().toString(16).substr(2, 8),
+      clean: true
+    };
+    
+    // 添加认证信息（如果提供）
+    if (options.username) {
+      mqttOptions.username = options.username;
+    }
+    if (options.password) {
+      mqttOptions.password = options.password;
+    }
+    
+    console.log('尝试连接MQTT服务器进行持续广播:', options.host, options.port);
+    
+    // 创建客户端并连接
+    mqttPublisher = mqtt.connect(`mqtt://${options.host}:${options.port}`, mqttOptions);
+    
+    // 设置超时
+    const timeout = setTimeout(() => {
+      if (mqttPublisher) {
+        mqttPublisher.end();
+        mqttPublisher = null;
+      }
+      event.sender.send('mqtt-publish-connect-result', {
+        success: false,
+        error: '连接超时'
+      });
+    }, 10000);
+    
+    // 连接成功
+    mqttPublisher.on('connect', () => {
+      clearTimeout(timeout);
+      console.log('主进程成功连接到MQTT服务器进行持续广播');
+      
+      // 通知渲染进程
+      event.sender.send('mqtt-publish-connect-result', {
+        success: true,
+        message: '成功连接到MQTT服务器'
+      });
+      
+      // 设置定时广播
+      mqttPublisherInterval = setInterval(() => {
+        if (mqttPublisher && mqttPublisher.connected) {
+          // 发布消息
+          mqttPublisher.publish(options.topic, options.message, { qos: 0 }, (err) => {
+            if (err) {
+              console.error('发布消息失败:', err);
+            } else {
+              console.log('持续广播消息发布成功');
+              event.sender.send('mqtt-publish-message', {
+                message: options.message
+              });
+            }
+          });
+        } else {
+          console.log('MQTT发布者未连接，跳过定时发布');
+        }
+      }, options.interval * 1000); // 转换为毫秒
+    });
+    
+    // 错误处理
+    mqttPublisher.on('error', (err: Error) => {
+      clearTimeout(timeout);
+      console.error('主进程MQTT发布者连接错误:', err);
+      
+      // 通知渲染进程
+      event.sender.send('mqtt-publish-connect-result', {
+        success: false,
+        error: err.toString()
+      });
+      
+      // 清除定时器
+      if (mqttPublisherInterval) {
+        clearInterval(mqttPublisherInterval);
+        mqttPublisherInterval = null;
+      }
+      
+      mqttPublisher = null;
+    });
+  } catch (error) {
+    console.error('处理MQTT持续广播连接时出错:', error);
+    event.sender.send('mqtt-publish-connect-result', {
+      success: false,
+      error: (error as Error).toString()
+    });
+  }
+});
+
+// 处理MQTT广播断开连接
+ipcMain.on('mqtt-publish-disconnect', (event) => {
+  console.log('收到MQTT广播断开连接请求');
+  
+  if (mqttPublisher) {
+    try {
+      // 清除定时器
+      if (mqttPublisherInterval) {
+        clearInterval(mqttPublisherInterval);
+        mqttPublisherInterval = null;
+      }
+      
+      // 断开MQTT客户端连接
+      mqttPublisher.end(true);
+      console.log('MQTT发布者客户端已断开连接');
+    } catch (err) {
+      console.error('断开MQTT发布者连接时出错:', err);
+    } finally {
+      mqttPublisher = null;
+    }
+  } else {
+    console.log('没有活动的MQTT发布者客户端连接');
   }
 });
