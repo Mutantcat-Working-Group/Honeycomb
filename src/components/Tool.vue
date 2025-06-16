@@ -2158,7 +2158,7 @@ function unsubscribeTopic() {
         return;
     }
     
-    mqtt_connection.value.unsubscribe(mqtt_topic.value, function(err) {
+    mqtt_connection.value.unsubscribe(mqtt_topic.value, function(err: any) {
         if (err) {
             addMqttLog('error', '取消订阅失败: ' + err);
         } else {
@@ -2194,6 +2194,7 @@ const mqtt_pub_message = ref(JSON.stringify({ data: '测试消息', timestamp: n
 const mqtt_pub_connected = ref(false);
 const mqtt_pub_interval = ref<any>(null);
 const mqtt_pub_interval_time = ref(3);
+const mqtt_pub_message_handler = ref<((event: any, data: any) => void) | null>(null);
 const mqtt_pub_logs = ref<Array<{
     id: number;
     type: string;
@@ -2270,9 +2271,12 @@ function startContinuousPublish() {
             addMqttPubLog('success', '已连接到MQTT服务器并开始持续广播');
             
             // 监听发布消息
-            window.ipcRenderer.on('mqtt-publish-message', (event, data) => {
+            const messageHandler = (event: any, data: any) => {
                 addMqttPubLog('sent', '发送消息: ' + data.message);
-            });
+            };
+            // 保存处理函数的引用
+            mqtt_pub_message_handler.value = messageHandler;
+            window.ipcRenderer.on('mqtt-publish-message', messageHandler);
         } else {
             addMqttPubLog('error', '连接失败: ' + result.error);
         }
@@ -2293,7 +2297,10 @@ function stopContinuousPublish() {
     addMqttPubLog('info', '已停止持续广播');
     
     // 移除消息监听
-    window.ipcRenderer.off('mqtt-publish-message');
+    if (mqtt_pub_message_handler.value) {
+        window.ipcRenderer.off('mqtt-publish-message', mqtt_pub_message_handler.value);
+        mqtt_pub_message_handler.value = null;
+    }
 }
 
 // 清空MQTT广播日志
@@ -2311,6 +2318,11 @@ onBeforeUnmount(() => {
     // 如果还有连接，先断开连接
     if (mqtt_connected.value) {
         disconnectMqtt();
+    }
+    
+    // 如果还有广播连接，也断开
+    if (mqtt_pub_connected.value) {
+        stopContinuousPublish();
     }
 });
 
