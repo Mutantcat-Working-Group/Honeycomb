@@ -944,15 +944,15 @@ async function startScreenColorPicker() {
                     document.body.style.cursor = 'crosshair';
                     
                     // 打开取色器
-                    const result = await eyeDropper.open();
-                    t3_3_picked_color.value = result.sRGBHex;
-                    Message.success({ content: `颜色已选取: ${result.sRGBHex}`, position: 'bottom' });
+        const result = await eyeDropper.open();
+        t3_3_picked_color.value = result.sRGBHex;
+        Message.success({ content: `颜色已选取: ${result.sRGBHex}`, position: 'bottom' });
                     
                     // 清理
                     document.body.removeChild(tempContainer);
                     document.body.style.cursor = '';
                 } catch (error) {
-                    Message.info({ content: '已取消取色', position: 'bottom' });
+        Message.info({ content: '已取消取色', position: 'bottom' });
                     
                     // 确保清理
                     const tempContainer = document.querySelector('div[style*="z-index: 9999"]');
@@ -960,7 +960,7 @@ async function startScreenColorPicker() {
                         document.body.removeChild(tempContainer);
                     }
                     document.body.style.cursor = '';
-                } finally {
+    } finally {
                     t3_3_is_picking.value = false;
                 }
             };
@@ -2126,7 +2126,7 @@ function connectMqtt() {
     // 监听连接结果
     window.ipcRenderer.once('mqtt-connection-result', (event, result) => {
         if (result.success) {
-            mqtt_connected.value = true;
+        mqtt_connected.value = true;
             addMqttLog('success', '已连接到MQTT服务器并订阅主题: ' + mqtt_topic.value);
         } else {
             addMqttLog('error', '连接失败: ' + result.error);
@@ -2306,6 +2306,17 @@ function stopContinuousPublish() {
 // 清空MQTT广播日志
 function clearMqttPubLogs() {
     mqtt_pub_logs.value = [];
+}
+
+// 复制文本到剪贴板
+function copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text)
+        .then(() => {
+            Message.success('已复制到剪贴板');
+        })
+        .catch(err => {
+            Message.error('复制失败: ' + err);
+        });
 }
 
 // 在组件挂载时设置监听器
@@ -4775,6 +4786,241 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                 <div style="border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
                                     <div v-html="t3_6_output"></div>
                                 </div>
+                            </div>
+                        </div>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't3-8'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="Go交叉编译" @back="switchToMenu"
+                    subtitle="Go语言跨平台编译指南">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar">
+                    <a-col :span="24">
+                        <h3 style="margin: 15px 0px;">Go语言交叉编译命令参考</h3>
+                        <p style="margin-bottom: 15px;">通过设置环境变量 <code>GOOS</code> 和 <code>GOARCH</code> 即可实现跨平台编译</p>
+                        
+                        <a-alert type="info" banner style="margin-bottom: 20px;">
+                            <strong>基本用法</strong>: <code>GOOS=目标系统 GOARCH=目标架构 go build</code><br/>
+                            示例: <code>GOOS=windows GOARCH=amd64 go build -o myapp.exe main.go</code>
+                        </a-alert>
+
+                        <h4 style="margin: 15px 0px;">Windows 系统编译命令</h4>
+                        <a-table :bordered="true" :data="[
+                            { os: 'Windows', arch: 'x86 (32位)', cmd: 'GOOS=windows GOARCH=386 go build -o myapp.exe main.go' },
+                            { os: 'Windows', arch: 'x64 (64位)', cmd: 'GOOS=windows GOARCH=amd64 go build -o myapp.exe main.go' },
+                            { os: 'Windows', arch: 'ARM (32位)', cmd: 'GOOS=windows GOARCH=arm go build -o myapp.exe main.go' },
+                            { os: 'Windows', arch: 'ARM64 (64位)', cmd: 'GOOS=windows GOARCH=arm64 go build -o myapp.exe main.go' }
+                        ]" :pagination="false" style="margin-bottom: 20px;">
+                            <template #columns>
+                                <a-table-column title="操作系统" data-index="os" />
+                                <a-table-column title="架构" data-index="arch" />
+                                <a-table-column title="编译命令" data-index="cmd">
+                                    <template #cell="{ record }">
+                                        <a-button size="mini" style="margin-right: 8px;" 
+                                            @click="copyToClipboard(record.cmd)">复制</a-button>
+                                        <code>{{ record.cmd }}</code>
+                                    </template>
+                                </a-table-column>
+                            </template>
+                        </a-table>
+
+                        <h4 style="margin: 15px 0px;">macOS 系统编译命令</h4>
+                        <a-table :bordered="true" :data="[
+                            { os: 'macOS', arch: 'Intel (64位)', cmd: 'GOOS=darwin GOARCH=amd64 go build -o myapp main.go' },
+                            { os: 'macOS', arch: 'Apple Silicon (M1/M2)', cmd: 'GOOS=darwin GOARCH=arm64 go build -o myapp main.go' }
+                        ]" :pagination="false" style="margin-bottom: 20px;">
+                            <template #columns>
+                                <a-table-column title="操作系统" data-index="os" />
+                                <a-table-column title="架构" data-index="arch" />
+                                <a-table-column title="编译命令" data-index="cmd">
+                                    <template #cell="{ record }">
+                                        <a-button size="mini" style="margin-right: 8px;" 
+                                            @click="copyToClipboard(record.cmd)">复制</a-button>
+                                        <code>{{ record.cmd }}</code>
+                                    </template>
+                                </a-table-column>
+                            </template>
+                        </a-table>
+
+                        <h4 style="margin: 15px 0px;">Linux 系统编译命令</h4>
+                        <a-table :bordered="true" :data="[
+                            { os: 'Linux', arch: 'x86 (32位)', cmd: 'GOOS=linux GOARCH=386 go build -o myapp main.go' },
+                            { os: 'Linux', arch: 'x64 (64位)', cmd: 'GOOS=linux GOARCH=amd64 go build -o myapp main.go' },
+                            { os: 'Linux', arch: 'ARM (32位)', cmd: 'GOOS=linux GOARCH=arm go build -o myapp main.go' },
+                            { os: 'Linux', arch: 'ARM64 (64位)', cmd: 'GOOS=linux GOARCH=arm64 go build -o myapp main.go' },
+                            { os: 'Linux', arch: 'MIPS (32位小端)', cmd: 'GOOS=linux GOARCH=mipsle go build -o myapp main.go' },
+                            { os: 'Linux', arch: 'MIPS (64位小端)', cmd: 'GOOS=linux GOARCH=mips64le go build -o myapp main.go' }
+                        ]" :pagination="false" style="margin-bottom: 20px;">
+                            <template #columns>
+                                <a-table-column title="操作系统" data-index="os" />
+                                <a-table-column title="架构" data-index="arch" />
+                                <a-table-column title="编译命令" data-index="cmd">
+                                    <template #cell="{ record }">
+                                        <a-button size="mini" style="margin-right: 8px;" 
+                                            @click="copyToClipboard(record.cmd)">复制</a-button>
+                                        <code>{{ record.cmd }}</code>
+                                    </template>
+                                </a-table-column>
+                            </template>
+                        </a-table>
+
+                        <h4 style="margin: 15px 0px;">其他操作系统编译命令</h4>
+                        <a-table :bordered="true" :data="[
+                            { os: 'Android', arch: 'ARM (32位)', cmd: 'GOOS=android GOARCH=arm go build -o myapp main.go' },
+                            { os: 'Android', arch: 'ARM64 (64位)', cmd: 'GOOS=android GOARCH=arm64 go build -o myapp main.go' },
+                            { os: 'FreeBSD', arch: 'x64 (64位)', cmd: 'GOOS=freebsd GOARCH=amd64 go build -o myapp main.go' },
+                            { os: 'OpenBSD', arch: 'x64 (64位)', cmd: 'GOOS=openbsd GOARCH=amd64 go build -o myapp main.go' },
+                            { os: 'Solaris', arch: 'x64 (64位)', cmd: 'GOOS=solaris GOARCH=amd64 go build -o myapp main.go' },
+                            { os: 'DragonFly', arch: 'x64 (64位)', cmd: 'GOOS=dragonfly GOARCH=amd64 go build -o myapp main.go' }
+                        ]" :pagination="false" style="margin-bottom: 20px;">
+                            <template #columns>
+                                <a-table-column title="操作系统" data-index="os" />
+                                <a-table-column title="架构" data-index="arch" />
+                                <a-table-column title="编译命令" data-index="cmd">
+                                    <template #cell="{ record }">
+                                        <a-button size="mini" style="margin-right: 8px;" 
+                                            @click="copyToClipboard(record.cmd)">复制</a-button>
+                                        <code>{{ record.cmd }}</code>
+                                    </template>
+                                </a-table-column>
+                            </template>
+                        </a-table>
+
+                        <h4 style="margin: 15px 0px;">Windows中的交叉编译批处理示例</h4>
+                        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                            <pre style="margin: 0; white-space: pre-wrap; font-family: Consolas, monospace;">@echo off
+setlocal
+
+set APP_NAME=myapp
+set MAIN_GO=main.go
+
+echo 开始编译 %APP_NAME% 到多个平台...
+
+:: Windows 64位
+set GOOS=windows
+set GOARCH=amd64
+go build -o %APP_NAME%_windows_amd64.exe %MAIN_GO%
+if %ERRORLEVEL% neq 0 goto :error
+
+:: Linux 64位
+set GOOS=linux
+set GOARCH=amd64
+go build -o %APP_NAME%_linux_amd64 %MAIN_GO%
+if %ERRORLEVEL% neq 0 goto :error
+
+:: macOS 64位
+set GOOS=darwin
+set GOARCH=amd64
+go build -o %APP_NAME%_darwin_amd64 %MAIN_GO%
+if %ERRORLEVEL% neq 0 goto :error
+
+echo 编译完成！
+goto :end
+
+:error
+echo 编译失败，错误代码: %ERRORLEVEL%
+
+:end
+endlocal
+</pre>
+                        </div>
+
+                        <h4 style="margin: 15px 0px;">macOS/Linux中的交叉编译脚本示例</h4>
+                        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                            <pre style="margin: 0; white-space: pre-wrap; font-family: Consolas, monospace;">#!/bin/bash
+
+APP_NAME="myapp"
+MAIN_GO="main.go"
+
+echo "开始编译 $APP_NAME 到多个平台..."
+
+# Windows 64位
+GOOS=windows GOARCH=amd64 go build -o ${APP_NAME}_windows_amd64.exe $MAIN_GO
+if [ $? -ne 0 ]; then
+    echo "编译失败!"
+    exit 1
+fi
+
+# Linux 64位
+GOOS=linux GOARCH=amd64 go build -o ${APP_NAME}_linux_amd64 $MAIN_GO
+if [ $? -ne 0 ]; then
+    echo "编译失败!"
+    exit 1
+fi
+
+# macOS 64位
+GOOS=darwin GOARCH=amd64 go build -o ${APP_NAME}_darwin_amd64 $MAIN_GO
+if [ $? -ne 0 ]; then
+    echo "编译失败!"
+    exit 1
+fi
+
+echo "编译完成！"
+</pre>
+                        </div>
+
+                        <h4 style="margin: 15px 0px;">使用标签和编译约束</h4>
+                        <p>在交叉编译中，您可能需要处理平台特定的代码：</p>
+                        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                            <pre style="margin: 0; white-space: pre-wrap; font-family: Consolas, monospace;">// +build windows
+
+package main
+
+import (
+    "fmt"
+    "os"
+    "os/exec"
+)
+
+func openBrowser(url string) error {
+    cmd := exec.Command("cmd", "/c", "start", url)
+    return cmd.Start()
+}
+</pre>
+                        </div>
+
+                        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                            <pre style="margin: 0; white-space: pre-wrap; font-family: Consolas, monospace;">// +build linux
+
+package main
+
+import (
+    "fmt"
+    "os"
+    "os/exec"
+)
+
+func openBrowser(url string) error {
+    cmd := exec.Command("xdg-open", url)
+    return cmd.Start()
+}
+</pre>
+                        </div>
+
+                        <h4 style="margin: 15px 0px;">支持的GOOS和GOARCH值</h4>
+                        <p>Go语言支持的操作系统(GOOS)和架构(GOARCH)组合：</p>
+                        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                            <div style="font-family: Consolas, monospace;">
+                                <strong>GOOS（操作系统）</strong>：
+                                <p>android, darwin, dragonfly, freebsd, illumos, ios, js, linux, netbsd, openbsd, plan9, solaris, windows</p>
+                                
+                                <strong>GOARCH（架构）</strong>：
+                                <p>386, amd64, arm, arm64, loong64, mips, mips64, mips64le, mipsle, ppc64, ppc64le, riscv64, s390x, wasm</p>
                             </div>
                         </div>
                     </a-col>
