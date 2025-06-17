@@ -18,7 +18,7 @@
 - 欢迎界面
 - ![_20250123085332.png](https://s2.loli.net/2025/06/15/AFtGaCTi4ecHsOn.png)
 - 功能列表
-- ![_20250123092654.png](https://s2.loli.net/2025/06/15/qFIiXnpmW7vuwyk.png)
+- ![_20250123092654.png](https://s2.loli.net/2025/06/17/ZJsMDCbOFXfdLo5.png)
 - 功能界面
 - ![_20250123092708.png](https://s2.loli.net/2025/06/15/e1V7jp5OhxLBUim.png)
 
