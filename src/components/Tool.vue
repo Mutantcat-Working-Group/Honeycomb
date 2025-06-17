@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { IconCopy } from '@arco-design/web-vue/es/icon';
 import { defineProps, defineEmits, ref, watch, onBeforeUnmount, onMounted } from 'vue';
 import JsBarcode from 'jsbarcode';
 import { Message } from '@arco-design/web-vue';
@@ -158,6 +159,751 @@ const t7_5_firstUsableIp = ref('');
 const t7_5_lastUsableIp = ref('');
 const t7_5_totalHosts = ref(0);
 const t7_5_usableHosts = ref(0);
+
+// t3-9 htaccess转nginx功能
+const t3_9_input = ref('');
+const t3_9_output = ref('');
+const t3_9_error = ref('');
+
+// t3-10 Android Manifest权限大全
+const t3_10_search = ref('');
+const t3_10_categoryFilter = ref('all');
+
+// t3-11 HTTP状态码
+const t3_11_search = ref('');
+const t3_11_categoryFilter = ref('all');
+
+// t3-12 Content-Type对照表
+const t3_12_search = ref('');
+const t3_12_categoryFilter = ref('all');
+
+// t3-13 HTML特殊字符转义
+const t3_13_input = ref('');
+const t3_13_output = ref('');
+const t3_13_direction = ref('encode'); // encode 或 decode
+
+// htaccess转nginx的转换函数
+function convertHtaccessToNginx() {
+    const htaccess = t3_9_input.value.trim();
+    if (!htaccess) {
+        t3_9_error.value = '请输入htaccess规则';
+        return;
+    }
+
+    t3_9_error.value = '';
+    try {
+        // 按行拆分
+        const lines = htaccess.split('\n');
+        let nginx = '';
+        let insideLocation = false;
+        let currentLocation = '';
+
+        // 处理每一行
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            
+            // 跳过空行和注释
+            if (!line || line.startsWith('#')) {
+                nginx += '# ' + line.replace(/^#\s*/, '') + '\n';
+                continue;
+            }
+
+            // 处理重写引擎开关
+            if (line.match(/^\s*RewriteEngine\s+on\s*$/i)) {
+                // Nginx不需要显式开启重写引擎
+                nginx += '# RewriteEngine On - Nginx默认已启用重写功能\n';
+                continue;
+            }
+
+            // 处理RewriteBase
+            const rewriteBaseMatch = line.match(/^\s*RewriteBase\s+(.+?)\s*$/i);
+            if (rewriteBaseMatch) {
+                nginx += '# RewriteBase ' + rewriteBaseMatch[1] + ' - 在Nginx中不需要\n';
+                continue;
+            }
+
+            // 处理RewriteCond
+            const rewriteCondMatch = line.match(/^\s*RewriteCond\s+(.+?)\s+(.+?)(?:\s+\[(.+?)\])?\s*$/i);
+            if (rewriteCondMatch) {
+                const variable = rewriteCondMatch[1];
+                const pattern = rewriteCondMatch[2];
+                const flags = rewriteCondMatch[3] || '';
+                
+                // 转换常见的变量
+                let nginxVariable = '';
+                if (variable === '%{REQUEST_FILENAME}') {
+                    nginxVariable = '$request_filename';
+                } else if (variable === '%{HTTP_HOST}') {
+                    nginxVariable = '$host';
+                } else if (variable === '%{HTTPS}') {
+                    nginxVariable = '$https';
+                } else if (variable.startsWith('%{HTTP:')) {
+                    nginxVariable = '$http_' + variable.substring(7, variable.length - 1).toLowerCase();
+                } else if (variable.startsWith('%{ENV:')) {
+                    nginxVariable = '$' + variable.substring(6, variable.length - 1).toLowerCase();
+                } else {
+                    // 默认尝试转换为小写的Nginx变量
+                    nginxVariable = '$' + variable.replace(/^%\{|\}$/g, '').toLowerCase();
+                }
+                
+                nginx += '# 条件: if (' + nginxVariable + ' ' + (pattern.startsWith('!') ? '!= ' : '= ') + pattern.replace(/^!/, '') + ')\n';
+                continue;
+            }
+
+            // 处理RewriteRule
+            const rewriteRuleMatch = line.match(/^\s*RewriteRule\s+(.+?)\s+(.+?)(?:\s+\[(.+?)\])?\s*$/i);
+            if (rewriteRuleMatch) {
+                const pattern = rewriteRuleMatch[1];
+                let substitution = rewriteRuleMatch[2];
+                const flags = rewriteRuleMatch[3] || '';
+                
+                // 处理标志
+                let nginxFlags = '';
+                if (flags.includes('R=301') || flags.includes('R')) {
+                    nginxFlags += ' permanent';
+                } else if (flags.includes('R=302')) {
+                    nginxFlags += ' redirect';
+                }
+                
+                if (flags.includes('L')) {
+                    nginxFlags += ' last';
+                }
+                
+                // 处理代理传递
+                if (substitution.startsWith('http')) {
+                    nginx += 'location ~ ' + pattern + ' {\n';
+                    nginx += '    proxy_pass ' + substitution + ';\n';
+                    nginx += '}\n';
+                } else {
+                    // 处理普通重写规则
+                    substitution = substitution.replace(/\$(\d)/g, '$$1'); // $1 变成 $1
+                    nginx += 'rewrite ' + pattern + ' ' + substitution + nginxFlags + ';\n';
+                }
+                continue;
+            }
+
+            // 处理RedirectMatch
+            const redirectMatch = line.match(/^\s*RedirectMatch\s+(\d+)?\s+(.+?)\s+(.+?)\s*$/i);
+            if (redirectMatch) {
+                const statusCode = redirectMatch[1] || '302';
+                const pattern = redirectMatch[2];
+                const destination = redirectMatch[3];
+                
+                nginx += 'location ~ ' + pattern + ' {\n';
+                nginx += '    return ' + statusCode + ' ' + destination + ';\n';
+                nginx += '}\n';
+                continue;
+            }
+
+            // 处理Redirect
+            const redirectDirectMatch = line.match(/^\s*Redirect\s+(\d+)?\s+(.+?)\s+(.+?)\s*$/i);
+            if (redirectDirectMatch) {
+                const statusCode = redirectDirectMatch[1] || '302';
+                const path = redirectDirectMatch[2];
+                const destination = redirectDirectMatch[3];
+                
+                nginx += 'location ' + path + ' {\n';
+                nginx += '    return ' + statusCode + ' ' + destination + ';\n';
+                nginx += '}\n';
+                continue;
+            }
+
+            // 处理DirectoryIndex
+            const directoryIndexMatch = line.match(/^\s*DirectoryIndex\s+(.+?)\s*$/i);
+            if (directoryIndexMatch) {
+                const indexes = directoryIndexMatch[1].split(/\s+/);
+                nginx += 'index ' + indexes.join(' ') + ';\n';
+                continue;
+            }
+            
+            // 处理其他未识别的规则
+            nginx += '# 未转换: ' + line + '\n';
+        }
+
+        // 设置输出结果
+        t3_9_output.value = nginx;
+    } catch (error: any) {
+        t3_9_error.value = '转换出错: ' + error.message;
+    }
+}
+
+// 清空htaccess转nginx的输入和输出
+function clear_t3_9() {
+    t3_9_input.value = '';
+    t3_9_output.value = '';
+    t3_9_error.value = '';
+}
+
+// 复制htaccess转nginx的输出结果
+function copy_t3_9_result() {
+    if (!t3_9_output.value) {
+        Message.warning({ content: '没有可复制的内容', position: 'bottom' });
+        return;
+    }
+    
+    navigator.clipboard.writeText(t3_9_output.value).then(() => {
+        Message.success({ content: '已复制到剪贴板!', position: 'bottom' });
+    }).catch(() => {
+        Message.error({ content: '复制失败', position: 'bottom' });
+    });
+}
+
+// Android权限数据
+const androidPermissions = [
+    {
+        name: "android.permission.INTERNET",
+        description: "允许应用程序打开网络套接字",
+        category: "network",
+        protection: "normal",
+        constant: "android.Manifest.permission.INTERNET"
+    },
+    {
+        name: "android.permission.ACCESS_NETWORK_STATE",
+        description: "允许应用程序访问有关网络的信息",
+        category: "network",
+        protection: "normal",
+        constant: "android.Manifest.permission.ACCESS_NETWORK_STATE"
+    },
+    {
+        name: "android.permission.ACCESS_WIFI_STATE",
+        description: "允许应用程序访问有关Wi-Fi网络的信息",
+        category: "network",
+        protection: "normal",
+        constant: "android.Manifest.permission.ACCESS_WIFI_STATE"
+    },
+    {
+        name: "android.permission.CHANGE_WIFI_STATE",
+        description: "允许应用程序更改Wi-Fi连接状态",
+        category: "network",
+        protection: "normal",
+        constant: "android.Manifest.permission.CHANGE_WIFI_STATE"
+    },
+    {
+        name: "android.permission.ACCESS_FINE_LOCATION",
+        description: "允许应用程序访问精确位置",
+        category: "location",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.ACCESS_FINE_LOCATION"
+    },
+    {
+        name: "android.permission.ACCESS_COARSE_LOCATION",
+        description: "允许应用程序访问大致位置",
+        category: "location",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.ACCESS_COARSE_LOCATION"
+    },
+    {
+        name: "android.permission.READ_EXTERNAL_STORAGE",
+        description: "允许应用程序从外部存储读取",
+        category: "storage",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.READ_EXTERNAL_STORAGE"
+    },
+    {
+        name: "android.permission.WRITE_EXTERNAL_STORAGE",
+        description: "允许应用程序写入外部存储",
+        category: "storage",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.WRITE_EXTERNAL_STORAGE"
+    },
+    {
+        name: "android.permission.CAMERA",
+        description: "允许应用程序访问相机设备",
+        category: "hardware",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.CAMERA"
+    },
+    {
+        name: "android.permission.RECORD_AUDIO",
+        description: "允许应用程序录制音频",
+        category: "hardware",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.RECORD_AUDIO"
+    },
+    {
+        name: "android.permission.READ_CONTACTS",
+        description: "允许应用程序读取用户的联系人数据",
+        category: "contacts",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.READ_CONTACTS"
+    },
+    {
+        name: "android.permission.WRITE_CONTACTS",
+        description: "允许应用程序写入用户的联系人数据",
+        category: "contacts",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.WRITE_CONTACTS"
+    },
+    {
+        name: "android.permission.READ_CALENDAR",
+        description: "允许应用程序读取用户的日历数据",
+        category: "calendar",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.READ_CALENDAR"
+    },
+    {
+        name: "android.permission.WRITE_CALENDAR",
+        description: "允许应用程序写入用户的日历数据",
+        category: "calendar",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.WRITE_CALENDAR"
+    },
+    {
+        name: "android.permission.READ_CALL_LOG",
+        description: "允许应用程序读取用户的通话记录",
+        category: "phone",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.READ_CALL_LOG"
+    },
+    {
+        name: "android.permission.WRITE_CALL_LOG",
+        description: "允许应用程序写入用户的通话记录",
+        category: "phone",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.WRITE_CALL_LOG"
+    },
+    {
+        name: "android.permission.CALL_PHONE",
+        description: "允许应用程序拨打电话",
+        category: "phone",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.CALL_PHONE"
+    },
+    {
+        name: "android.permission.READ_SMS",
+        description: "允许应用程序读取短信",
+        category: "messages",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.READ_SMS"
+    },
+    {
+        name: "android.permission.SEND_SMS",
+        description: "允许应用程序发送短信",
+        category: "messages",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.SEND_SMS"
+    },
+    {
+        name: "android.permission.RECEIVE_SMS",
+        description: "允许应用程序接收短信",
+        category: "messages",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.RECEIVE_SMS"
+    },
+    {
+        name: "android.permission.BLUETOOTH",
+        description: "允许应用程序连接到已配对的蓝牙设备",
+        category: "hardware",
+        protection: "normal",
+        constant: "android.Manifest.permission.BLUETOOTH"
+    },
+    {
+        name: "android.permission.BLUETOOTH_ADMIN",
+        description: "允许应用程序发现和配对蓝牙设备",
+        category: "hardware",
+        protection: "normal",
+        constant: "android.Manifest.permission.BLUETOOTH_ADMIN"
+    },
+    {
+        name: "android.permission.NFC",
+        description: "允许应用程序通过NFC执行I/O操作",
+        category: "hardware",
+        protection: "normal",
+        constant: "android.Manifest.permission.NFC"
+    },
+    {
+        name: "android.permission.VIBRATE",
+        description: "允许访问振动器",
+        category: "hardware",
+        protection: "normal",
+        constant: "android.Manifest.permission.VIBRATE"
+    },
+    {
+        name: "android.permission.WAKE_LOCK",
+        description: "允许使用PowerManager WakeLocks防止处理器休眠或屏幕变暗",
+        category: "system",
+        protection: "normal",
+        constant: "android.Manifest.permission.WAKE_LOCK"
+    },
+    {
+        name: "android.permission.GET_ACCOUNTS",
+        description: "允许访问帐户服务中的帐户列表",
+        category: "accounts",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.GET_ACCOUNTS"
+    },
+    {
+        name: "android.permission.MANAGE_ACCOUNTS",
+        description: "允许管理帐户列表",
+        category: "accounts",
+        protection: "dangerous",
+        constant: "android.Manifest.permission.MANAGE_ACCOUNTS"
+    },
+    {
+        name: "android.permission.FOREGROUND_SERVICE",
+        description: "允许应用程序使用前台服务",
+        category: "system",
+        protection: "normal",
+        constant: "android.Manifest.permission.FOREGROUND_SERVICE"
+    },
+    {
+        name: "android.permission.RECEIVE_BOOT_COMPLETED",
+        description: "允许应用程序接收系统启动完成的广播",
+        category: "system",
+        protection: "normal",
+        constant: "android.Manifest.permission.RECEIVE_BOOT_COMPLETED"
+    },
+    {
+        name: "android.permission.REQUEST_INSTALL_PACKAGES",
+        description: "允许应用程序请求安装软件包",
+        category: "system",
+        protection: "normal",
+        constant: "android.Manifest.permission.REQUEST_INSTALL_PACKAGES"
+    }
+];
+
+// Android权限过滤函数
+function filterAndroidPermissions() {
+    if (!t3_10_search.value && t3_10_categoryFilter.value === 'all') {
+        return androidPermissions;
+    }
+    
+    return androidPermissions.filter(permission => {
+        const matchesSearch = t3_10_search.value === '' || 
+            permission.name.toLowerCase().includes(t3_10_search.value.toLowerCase()) ||
+            permission.description.toLowerCase().includes(t3_10_search.value.toLowerCase());
+            
+        const matchesCategory = t3_10_categoryFilter.value === 'all' || 
+            permission.category === t3_10_categoryFilter.value;
+            
+        return matchesSearch && matchesCategory;
+    });
+}
+
+// Android权限复制函数
+function copyAndroidPermission(permission: string) {
+    navigator.clipboard.writeText(permission)
+        .then(() => {
+            Message.success({ content: '已复制权限: ' + permission, position: 'bottom' });
+        })
+        .catch(() => {
+            Message.error({ content: '复制失败', position: 'bottom' });
+        });
+}
+
+// HTTP状态码数据
+const httpStatusCodes = [
+    { code: "100", name: "Continue", description: "请求者应该继续提出请求。服务器返回此代码表示已收到请求的第一部分，正在等待其余部分", category: "1xx" },
+    { code: "101", name: "Switching Protocols", description: "请求者已要求服务器切换协议，服务器已确认并准备切换", category: "1xx" },
+    { code: "102", name: "Processing", description: "服务器已收到并正在处理该请求，但无响应可用", category: "1xx" },
+    { code: "103", name: "Early Hints", description: "与Link链接头字段结合使用，允许用户代理在服务器仍在准备响应时开始预加载资源", category: "1xx" },
+    
+    { code: "200", name: "OK", description: "请求成功。一般用于GET与POST请求", category: "2xx" },
+    { code: "201", name: "Created", description: "请求已完成，并且已创建了新资源。通常是在POST请求，或是某些PUT请求之后返回的响应", category: "2xx" },
+    { code: "202", name: "Accepted", description: "服务器已接受请求，但尚未处理。最终该请求可能会也可能不会被执行，并且可能在处理发生时被禁止", category: "2xx" },
+    { code: "203", name: "Non-Authoritative Information", description: "服务器是一个转换代理服务器，源站使用200响应，但回应了原始响应的修改版本", category: "2xx" },
+    { code: "204", name: "No Content", description: "服务器成功处理了请求，没有返回任何内容", category: "2xx" },
+    { code: "205", name: "Reset Content", description: "服务器成功处理了请求，但没有返回任何内容，与204不同，此响应要求请求者重置文档视图", category: "2xx" },
+    { code: "206", name: "Partial Content", description: "服务器已经成功处理了部分GET请求。常用于断点续传或者将一个大文档分解为多个下载段同时下载", category: "2xx" },
+    { code: "207", name: "Multi-Status", description: "代表之后的消息体将是一个XML消息，并且可能依照之前子请求数量的不同，包含一系列独立的响应代码", category: "2xx" },
+    { code: "208", name: "Already Reported", description: "在DAV里面使用，用于避免多状态响应重复枚举多个绑定的内部成员", category: "2xx" },
+    { code: "226", name: "IM Used", description: "服务器已经完成了对资源的GET请求，并且响应是对当前实例应用的一个或多个实例操作结果的表示", category: "2xx" },
+    
+    { code: "300", name: "Multiple Choices", description: "被请求的资源有一系列可供选择的回馈信息，每个都有自己特定的地址和浏览器驱动的商议信息", category: "3xx" },
+    { code: "301", name: "Moved Permanently", description: "被请求的资源已永久移动到新位置，并且将来任何对此资源的引用都应该使用本响应返回的若干个URI之一", category: "3xx" },
+    { code: "302", name: "Found", description: "请求的资源现在临时从不同的URI响应请求", category: "3xx" },
+    { code: "303", name: "See Other", description: "对应当前请求的响应可以在另一个URI上被找到，而且客户端应当采用GET的方式访问那个资源", category: "3xx" },
+    { code: "304", name: "Not Modified", description: "如果客户端发送了一个带条件的GET请求且该请求已被允许，而文档的内容未被修改，则服务器应当返回这个状态码", category: "3xx" },
+    { code: "305", name: "Use Proxy", description: "被请求的资源必须通过指定的代理才能被访问", category: "3xx" },
+    { code: "306", name: "Switch Proxy", description: "在最新版的规范中，已经不再使用这个状态码", category: "3xx" },
+    { code: "307", name: "Temporary Redirect", description: "请求的资源现在临时从不同的URI响应请求，与302不同的是，客户端应保持原有的请求方法", category: "3xx" },
+    { code: "308", name: "Permanent Redirect", description: "请求的资源已永久移动到新位置，与301不同的是，客户端应保持原有的请求方法", category: "3xx" },
+    
+    { code: "400", name: "Bad Request", description: "由于语法无效，服务器无法理解该请求", category: "4xx" },
+    { code: "401", name: "Unauthorized", description: "类似于403，但特别用于需要身份验证的情况，并且服务器期望的响应是身份验证凭证", category: "4xx" },
+    { code: "402", name: "Payment Required", description: "此响应码保留以便将来使用，创造此响应码的最初目的是用于数字支付系统", category: "4xx" },
+    { code: "403", name: "Forbidden", description: "服务器理解请求但拒绝执行它，与401不同的是，身份验证也无济于事", category: "4xx" },
+    { code: "404", name: "Not Found", description: "请求失败，请求所希望得到的资源未在服务器上发现", category: "4xx" },
+    { code: "405", name: "Method Not Allowed", description: "请求行中指定的请求方法不能被用于请求相应的资源", category: "4xx" },
+    { code: "406", name: "Not Acceptable", description: "请求的资源的内容特性无法满足请求头中的条件，因而无法生成响应实体", category: "4xx" },
+    { code: "407", name: "Proxy Authentication Required", description: "与401响应类似，只不过客户端必须在代理服务器上进行身份验证", category: "4xx" },
+    { code: "408", name: "Request Timeout", description: "请求超时。客户端没有在服务器预备等待的时间内完成一个请求的发送", category: "4xx" },
+    { code: "409", name: "Conflict", description: "由于和被请求的资源的当前状态之间存在冲突，请求无法完成", category: "4xx" },
+    { code: "410", name: "Gone", description: "被请求的资源在服务器上已经不再可用，而且没有任何已知的转发地址", category: "4xx" },
+    { code: "411", name: "Length Required", description: "服务器拒绝在没有定义Content-Length头的情况下接受请求", category: "4xx" },
+    { code: "412", name: "Precondition Failed", description: "服务器在验证在请求的头字段中给出先决条件时，没能满足其中的一个或多个", category: "4xx" },
+    { code: "413", name: "Payload Too Large", description: "服务器拒绝处理当前请求，因为该请求提交的实体数据大小超过了服务器愿意或者能够处理的范围", category: "4xx" },
+    { code: "414", name: "URI Too Long", description: "请求的URI长度超过了服务器能够解释的长度，因此服务器拒绝对该请求提供服务", category: "4xx" },
+    { code: "415", name: "Unsupported Media Type", description: "对于当前请求的方法和所请求的资源，请求中提交的实体并不是服务器所支持的格式", category: "4xx" },
+    { code: "416", name: "Range Not Satisfiable", description: "如果请求中包含了Range请求头，并且Range中指定的任何数据范围都与当前资源的可用范围不重合，服务器返回此状态码", category: "4xx" },
+    { code: "417", name: "Expectation Failed", description: "此响应码表明服务器无法满足Expect请求头字段指定的期望值", category: "4xx" },
+    { code: "418", name: "I'm a teapot", description: "服务器拒绝尝试用茶壶冲泡咖啡(这是一个笑话，参见1998年愚人节的玩笑)", category: "4xx" },
+    { code: "421", name: "Misdirected Request", description: "请求被定向到无法生成响应的服务器(例如，由于连接重用)", category: "4xx" },
+    { code: "422", name: "Unprocessable Entity", description: "请求格式正确，但由于含有语义错误，无法响应", category: "4xx" },
+    { code: "423", name: "Locked", description: "当前资源被锁定", category: "4xx" },
+    { code: "424", name: "Failed Dependency", description: "由于之前的某个请求发生的错误，导致当前请求失败", category: "4xx" },
+    { code: "425", name: "Too Early", description: "服务器不愿意冒着风险去处理可能重播的请求", category: "4xx" },
+    { code: "426", name: "Upgrade Required", description: "客户端应当切换到TLS/1.0", category: "4xx" },
+    { code: "428", name: "Precondition Required", description: "原始服务器要求该请求是有条件的", category: "4xx" },
+    { code: "429", name: "Too Many Requests", description: "用户在给定的时间内发送了太多的请求(限制速率)", category: "4xx" },
+    { code: "431", name: "Request Header Fields Too Large", description: "服务器不愿处理请求，因为它的请求头字段太大", category: "4xx" },
+    { code: "451", name: "Unavailable For Legal Reasons", description: "用户请求非法资源，例如：由于政府的要求而被拒绝访问的网页", category: "4xx" },
+    
+    { code: "500", name: "Internal Server Error", description: "服务器遇到了不知道如何处理的情况", category: "5xx" },
+    { code: "501", name: "Not Implemented", description: "此请求方法不被服务器支持且无法被处理，只有GET和HEAD是要求服务器支持的", category: "5xx" },
+    { code: "502", name: "Bad Gateway", description: "作为网关或者代理工作的服务器尝试执行请求时，从上游服务器接收到无效的响应", category: "5xx" },
+    { code: "503", name: "Service Unavailable", description: "服务器没有准备好处理请求。常见原因是服务器因维护或重载而停机", category: "5xx" },
+    { code: "504", name: "Gateway Timeout", description: "作为网关或者代理工作的服务器尝试执行请求时，未能及时从上游服务器收到响应", category: "5xx" },
+    { code: "505", name: "HTTP Version Not Supported", description: "服务器不支持请求中所使用的HTTP协议版本", category: "5xx" },
+    { code: "506", name: "Variant Also Negotiates", description: "服务器有一个内部配置错误：被请求的协商变元资源被配置为在透明内容协商中使用自己，因此在一个协商处理中不是一个合适的重点", category: "5xx" },
+    { code: "507", name: "Insufficient Storage", description: "服务器无法存储完成请求所必须的内容", category: "5xx" },
+    { code: "508", name: "Loop Detected", description: "服务器在处理请求时检测到无限循环", category: "5xx" },
+    { code: "510", name: "Not Extended", description: "获取资源所需要的策略并没有被满足", category: "5xx" },
+    { code: "511", name: "Network Authentication Required", description: "客户端需要进行身份验证才能获得网络访问权限", category: "5xx" }
+];
+
+// HTTP状态码过滤函数
+function filterHttpStatusCodes() {
+    if (!t3_11_search.value && t3_11_categoryFilter.value === 'all') {
+        return httpStatusCodes;
+    }
+    
+    return httpStatusCodes.filter(status => {
+        const matchesSearch = t3_11_search.value === '' || 
+            status.code.includes(t3_11_search.value) ||
+            status.name.toLowerCase().includes(t3_11_search.value.toLowerCase()) ||
+            status.description.toLowerCase().includes(t3_11_search.value.toLowerCase());
+            
+        const matchesCategory = t3_11_categoryFilter.value === 'all' || 
+            status.category === t3_11_categoryFilter.value;
+            
+        return matchesSearch && matchesCategory;
+    });
+}
+
+// 复制HTTP状态码
+function copyHttpStatusCode(code: string) {
+    navigator.clipboard.writeText(code)
+        .then(() => {
+            Message.success({ content: '已复制状态码: ' + code, position: 'bottom' });
+        })
+        .catch(() => {
+            Message.error({ content: '复制失败', position: 'bottom' });
+        });
+}
+
+// Content-Type数据
+const contentTypes = [
+    { type: "text/plain", extension: ".txt", description: "纯文本文件", category: "text" },
+    { type: "text/html", extension: ".html, .htm", description: "HTML文档", category: "text" },
+    { type: "text/css", extension: ".css", description: "CSS样式表", category: "text" },
+    { type: "text/javascript", extension: ".js", description: "JavaScript文件", category: "text" },
+    { type: "text/markdown", extension: ".md", description: "Markdown文本", category: "text" },
+    { type: "text/xml", extension: ".xml", description: "XML文档", category: "text" },
+    { type: "text/csv", extension: ".csv", description: "CSV表格数据", category: "text" },
+    
+    { type: "image/jpeg", extension: ".jpg, .jpeg", description: "JPEG图像", category: "image" },
+    { type: "image/png", extension: ".png", description: "PNG图像", category: "image" },
+    { type: "image/gif", extension: ".gif", description: "GIF图像", category: "image" },
+    { type: "image/svg+xml", extension: ".svg", description: "SVG矢量图像", category: "image" },
+    { type: "image/webp", extension: ".webp", description: "WebP图像", category: "image" },
+    { type: "image/bmp", extension: ".bmp", description: "BMP图像", category: "image" },
+    { type: "image/tiff", extension: ".tif, .tiff", description: "TIFF图像", category: "image" },
+    { type: "image/x-icon", extension: ".ico", description: "ICO图标", category: "image" },
+    
+    { type: "audio/mpeg", extension: ".mp3", description: "MP3音频", category: "audio" },
+    { type: "audio/wav", extension: ".wav", description: "WAV音频", category: "audio" },
+    { type: "audio/ogg", extension: ".ogg", description: "OGG音频", category: "audio" },
+    { type: "audio/aac", extension: ".aac", description: "AAC音频", category: "audio" },
+    { type: "audio/webm", extension: ".weba", description: "WebM音频", category: "audio" },
+    { type: "audio/midi", extension: ".mid, .midi", description: "MIDI音频", category: "audio" },
+    
+    { type: "video/mp4", extension: ".mp4", description: "MP4视频", category: "video" },
+    { type: "video/mpeg", extension: ".mpeg, .mpg", description: "MPEG视频", category: "video" },
+    { type: "video/webm", extension: ".webm", description: "WebM视频", category: "video" },
+    { type: "video/ogg", extension: ".ogv", description: "OGG视频", category: "video" },
+    { type: "video/quicktime", extension: ".mov", description: "QuickTime视频", category: "video" },
+    { type: "video/x-ms-wmv", extension: ".wmv", description: "Windows Media视频", category: "video" },
+    { type: "video/x-msvideo", extension: ".avi", description: "AVI视频", category: "video" },
+    { type: "video/3gpp", extension: ".3gp", description: "3GPP视频", category: "video" },
+    
+    { type: "application/json", extension: ".json", description: "JSON数据", category: "application" },
+    { type: "application/xml", extension: ".xml", description: "XML应用数据", category: "application" },
+    { type: "application/pdf", extension: ".pdf", description: "PDF文档", category: "application" },
+    { type: "application/zip", extension: ".zip", description: "ZIP压缩文件", category: "application" },
+    { type: "application/x-rar-compressed", extension: ".rar", description: "RAR压缩文件", category: "application" },
+    { type: "application/x-7z-compressed", extension: ".7z", description: "7-Zip压缩文件", category: "application" },
+    { type: "application/msword", extension: ".doc", description: "MS Word文档", category: "application" },
+    { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", extension: ".docx", description: "MS Word文档(OOXML)", category: "application" },
+    { type: "application/vnd.ms-excel", extension: ".xls", description: "MS Excel表格", category: "application" },
+    { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", extension: ".xlsx", description: "MS Excel表格(OOXML)", category: "application" },
+    { type: "application/vnd.ms-powerpoint", extension: ".ppt", description: "MS PowerPoint演示文稿", category: "application" },
+    { type: "application/vnd.openxmlformats-officedocument.presentationml.presentation", extension: ".pptx", description: "MS PowerPoint演示文稿(OOXML)", category: "application" },
+    { type: "application/javascript", extension: ".js", description: "JavaScript(替代方案)", category: "application" },
+    { type: "application/octet-stream", extension: "任意", description: "二进制数据流", category: "application" },
+    { type: "application/x-www-form-urlencoded", extension: "-", description: "HTML表单数据(URL编码)", category: "application" },
+    
+    { type: "multipart/form-data", extension: "-", description: "多部分表单数据(文件上传)", category: "multipart" },
+    { type: "multipart/byteranges", extension: "-", description: "多部分字节范围", category: "multipart" },
+    { type: "multipart/mixed", extension: "-", description: "多部分混合内容", category: "multipart" },
+    
+    { type: "font/ttf", extension: ".ttf", description: "TrueType字体", category: "font" },
+    { type: "font/otf", extension: ".otf", description: "OpenType字体", category: "font" },
+    { type: "font/woff", extension: ".woff", description: "Web开放字体格式", category: "font" },
+    { type: "font/woff2", extension: ".woff2", description: "Web开放字体格式2", category: "font" }
+];
+
+// Content-Type过滤函数
+function filterContentTypes() {
+    if (!t3_12_search.value && t3_12_categoryFilter.value === 'all') {
+        return contentTypes;
+    }
+    
+    return contentTypes.filter(contentType => {
+        const matchesSearch = t3_12_search.value === '' || 
+            contentType.type.toLowerCase().includes(t3_12_search.value.toLowerCase()) ||
+            contentType.extension.toLowerCase().includes(t3_12_search.value.toLowerCase()) ||
+            contentType.description.toLowerCase().includes(t3_12_search.value.toLowerCase());
+            
+        const matchesCategory = t3_12_categoryFilter.value === 'all' || 
+            contentType.category === t3_12_categoryFilter.value;
+            
+        return matchesSearch && matchesCategory;
+    });
+}
+
+// 复制Content-Type
+function copyContentType(type: string) {
+    navigator.clipboard.writeText(type)
+        .then(() => {
+            Message.success({ content: '已复制: ' + type, position: 'bottom' });
+        })
+        .catch(() => {
+            Message.error({ content: '复制失败', position: 'bottom' });
+        });
+}
+
+// HTML特殊字符参考表
+const htmlSpecialChars = [
+    { char: '&', entity: '&amp;', numeric: '&#38;', description: '与号' },
+    { char: '<', entity: '&lt;', numeric: '&#60;', description: '小于号' },
+    { char: '>', entity: '&gt;', numeric: '&#62;', description: '大于号' },
+    { char: '"', entity: '&quot;', numeric: '&#34;', description: '双引号' },
+    { char: "'", entity: '&apos;', numeric: '&#39;', description: '单引号/撇号' },
+    { char: ' ', entity: '&nbsp;', numeric: '&#160;', description: '不换行空格' },
+    { char: '¢', entity: '&cent;', numeric: '&#162;', description: '分' },
+    { char: '£', entity: '&pound;', numeric: '&#163;', description: '英镑' },
+    { char: '¥', entity: '&yen;', numeric: '&#165;', description: '日元/人民币' },
+    { char: '€', entity: '&euro;', numeric: '&#8364;', description: '欧元' },
+    { char: '©', entity: '&copy;', numeric: '&#169;', description: '版权' },
+    { char: '®', entity: '&reg;', numeric: '&#174;', description: '注册商标' },
+    { char: '™', entity: '&trade;', numeric: '&#8482;', description: '商标' },
+    { char: '×', entity: '&times;', numeric: '&#215;', description: '乘号' },
+    { char: '÷', entity: '&divide;', numeric: '&#247;', description: '除号' },
+    { char: '±', entity: '&plusmn;', numeric: '&#177;', description: '加减号' },
+    { char: '°', entity: '&deg;', numeric: '&#176;', description: '度' },
+    { char: '²', entity: '&sup2;', numeric: '&#178;', description: '平方（上标2）' },
+    { char: '³', entity: '&sup3;', numeric: '&#179;', description: '立方（上标3）' },
+    { char: '½', entity: '&frac12;', numeric: '&#189;', description: '二分之一' },
+    { char: '¼', entity: '&frac14;', numeric: '&#188;', description: '四分之一' },
+    { char: '¾', entity: '&frac34;', numeric: '&#190;', description: '四分之三' },
+    { char: 'α', entity: '&alpha;', numeric: '&#945;', description: '希腊字母alpha' },
+    { char: 'β', entity: '&beta;', numeric: '&#946;', description: '希腊字母beta' },
+    { char: 'π', entity: '&pi;', numeric: '&#960;', description: '圆周率' },
+    { char: '—', entity: '&mdash;', numeric: '&#8212;', description: '破折号' },
+    { char: '–', entity: '&ndash;', numeric: '&#8211;', description: '连字符' },
+    { char: '…', entity: '&hellip;', numeric: '&#8230;', description: '省略号' },
+    { char: '•', entity: '&bull;', numeric: '&#8226;', description: '项目符号' },
+    { char: '→', entity: '&rarr;', numeric: '&#8594;', description: '右箭头' },
+    { char: '←', entity: '&larr;', numeric: '&#8592;', description: '左箭头' },
+    { char: '↑', entity: '&uarr;', numeric: '&#8593;', description: '上箭头' },
+    { char: '↓', entity: '&darr;', numeric: '&#8595;', description: '下箭头' },
+    { char: '♥', entity: '&hearts;', numeric: '&#9829;', description: '心形' },
+    { char: '♠', entity: '&spades;', numeric: '&#9824;', description: '黑桃' },
+    { char: '♣', entity: '&clubs;', numeric: '&#9827;', description: '梅花' },
+    { char: '♦', entity: '&diams;', numeric: '&#9830;', description: '方块' }
+];
+
+// HTML特殊字符转义函数
+function htmlEncode(text: string): string {
+    if (!text) return '';
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+}
+
+// HTML特殊字符解码函数
+function htmlDecode(text: string): string {
+    if (!text) return '';
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = text;
+    return textarea.value;
+}
+
+// 处理HTML特殊字符转义
+function processHtmlSpecialChars() {
+    if (t3_13_direction.value === 'encode') {
+        t3_13_output.value = htmlEncode(t3_13_input.value);
+    } else {
+        t3_13_output.value = htmlDecode(t3_13_input.value);
+    }
+}
+
+// 复制HTML特殊字符转义结果
+function copyHtmlSpecialCharsResult() {
+    if (!t3_13_output.value) {
+        Message.warning({ content: '没有可复制的内容', position: 'bottom' });
+        return;
+    }
+    
+    navigator.clipboard.writeText(t3_13_output.value).then(() => {
+        Message.success({ content: '已复制到剪贴板!', position: 'bottom' });
+    }).catch(() => {
+        Message.error({ content: '复制失败', position: 'bottom' });
+    });
+}
+
+// 清空HTML特殊字符转义输入和输出
+function clearHtmlSpecialChars() {
+    t3_13_input.value = '';
+    t3_13_output.value = '';
+}
+
+// 加载示例htaccess规则
+function load_t3_9_example() {
+    t3_9_input.value = `# 开启重写引擎
+RewriteEngine On
+RewriteBase /
+
+# 不是文件且不是目录则重写
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?/$1 [L]
+
+# 强制HTTPS重定向
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+# 禁止访问隐藏文件
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# 设置默认首页文件
+DirectoryIndex index.php index.html
+
+# 简单URL重定向
+Redirect 301 /oldpage.html /newpage.html
+
+# 设置缓存
+<FilesMatch "\\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf)$">
+    Header set Cache-Control "max-age=2592000, public"
+</FilesMatch>`;
+}
 
 // 计算CIDR表示法（如果提供了子网掩码）
 function calculateCIDR() {
@@ -2886,7 +3632,7 @@ function nodeMQTTTest() {
                         </a-row>
                     </a-col>
                     <a-col :span="2"
-                        style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;margin-top: 5px;">
+                        style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 5px;">
                         <a-button @click="process_t3_1()" class="t1-1-button" style="width: 60px;">格式化</a-button><br />
                         <a-button @click="clear_t3_1()" class="t1-1-button">清空</a-button><br />
                     </a-col>
@@ -4226,7 +4972,7 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
 
                         <!-- 错误信息 -->
                         <a-alert v-if="t2_9_error" type="error" style="margin-bottom: 16px;">
-                            {{ t2_9_error }}
+                                {{ t2_9_error }}
                         </a-alert>
 
                         <!-- 匹配结果 -->
@@ -4517,8 +5263,8 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                         <a-radio value="v4">版本4 (随机)</a-radio>
                                         <a-radio value="v1">版本1 (时间)</a-radio>
                                     </a-radio-group>
-                                </div>
-                                
+                        </div>
+
                                 <!-- 生成数量 -->
                                     <div style="margin-bottom: 18px;">
                                     <div style="margin-bottom: 8px; font-weight: 500; color: #1d2129;">生成数量</div>
@@ -4528,8 +5274,8 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                         :max="100" 
                                         style="width: 120px;"
                                     />
-                                </div>
-                                
+                        </div>
+
                                 <!-- 格式选项 -->
                                 <div>
                                     <div style="margin-bottom: 8px; font-weight: 500; color: #1d2129;">格式选项</div>
@@ -4581,13 +5327,13 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                 >
                                         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                                             <span style="font-family: monospace; word-break: break-all; overflow-wrap: break-word; flex: 1; padding-right: 10px; font-size: 14px;">{{ uuid }}</span>
-                                        <a-button 
+                                    <a-button 
                                             @click="copyColorValue(uuid)" 
                                             size="small" 
-                                            type="text"
-                                        >
+                                        type="text" 
+                                    >
                                             复制
-                                        </a-button>
+                                    </a-button>
                                 </div>
                             </div>
                         </div>
@@ -4677,8 +5423,8 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                             </a-button>
                             <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
                                     #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
-                        </div>
-                    </template>
+                                </div>
+                            </template>
                 </a-page-header>
             </div>
             <div class="one-tool-content">
@@ -4715,7 +5461,7 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                 <div style="text-align: center; margin-bottom: 20px;">
                                     <a-tag :color="t5_5_strength_color" style="font-size: 18px; padding: 5px 15px;">
                                         {{ t5_5_feedback }}级强度
-                                    </a-tag>
+                                </a-tag>
                                 </div>
                                 
                                 <a-progress 
@@ -5056,7 +5802,7 @@ echo 编译失败，错误代码: %ERRORLEVEL%
 :end
 endlocal
 </pre>
-                        </div>
+                                    </div>
 
                         <h4 style="margin: 15px 0px;">macOS/Linux中的交叉编译脚本示例</h4>
                         <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
@@ -5197,7 +5943,7 @@ func openBrowser(url string) error {
                                 <li>网站访问统计分析</li>
                                 <li>针对不同设备提供响应式内容</li>
                                 <li>网络爬虫开发</li>
-                            </ul>
+                                        </ul>
                             <p style="margin-bottom: 0;">注意：过度依赖User-Agent进行功能判断可能导致兼容性问题，现代Web开发更推荐使用特性检测。</p>
                         </div>
                     </a-col>
@@ -5246,15 +5992,15 @@ func openBrowser(url string) error {
                                      <div style="display: flex; align-items: center;">
                                          <span style="width: 120px; font-weight: 500;">密码：</span>
                                          <a-input-password v-model="mqtt_password" :disabled="mqtt_connected" placeholder="可选，不填则不使用认证" style="flex: 1;" />
-                                     </div>
-                                 </a-collapse-item>
-                             </a-collapse>
+                                    </div>
+                                </a-collapse-item>
+                            </a-collapse>
                              <div style="margin-top: 15px; display: flex; justify-content: flex-end;">
                                  <a-button type="primary" :disabled="mqtt_connected" @click="connectMqtt"
                                            style="margin-right: 10px; width: 120px;">连接</a-button>
                                  <a-button :disabled="!mqtt_connected" @click="disconnectMqtt" 
                                           style="width: 120px;">断开</a-button>
-                             </div>
+                        </div>
                              <div style="margin-top: 15px;">
                                  <a-alert v-if="mqtt_connected" type="success" :style="{ fontWeight: '500' }">已连接到MQTT服务器并订阅主题: {{ mqtt_topic }}</a-alert>
                                  <a-alert v-else type="info">MQTT未连接</a-alert>
@@ -5355,8 +6101,8 @@ func openBrowser(url string) error {
                             </a-button>
                             <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
                                     #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
-                        </div>
-                    </template>
+    </div>
+</template>
                 </a-page-header>
             </div>
             <div class="one-tool-content">
@@ -5538,15 +6284,685 @@ func openBrowser(url string) error {
             </div>
         </div>
 
+        <div v-show="tooltype == 't3-10'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="Android Manifest权限大全" @back="switchToMenu"
+                    subtitle="Android权限对照表">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar" style="overflow-x: hidden; max-width: 100%;">
+                    <a-col :span="24">
+                        <div style="margin-bottom: 20px;">
+                            <a-alert type="info" show-icon>
+                                这个工具提供了常用的Android权限列表，包含权限名称、描述、类别和保护级别等信息。您可以直接复制需要的权限到项目中使用。
+                            </a-alert>
+                        </div>
+
+                        <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+                            <a-input-search
+                                v-model="t3_10_search"
+                                placeholder="搜索权限名称或描述"
+                                style="width: 300px;"
+                                allow-clear
+                            />
+                            <a-radio-group v-model="t3_10_categoryFilter" type="button">
+                                <a-radio value="all">全部</a-radio>
+                                <a-radio value="network">网络</a-radio>
+                                <a-radio value="storage">存储</a-radio>
+                                <a-radio value="location">位置</a-radio>
+                                <a-radio value="hardware">硬件</a-radio>
+                                <a-radio value="system">系统</a-radio>
+                            </a-radio-group>
+                        </div>
+
+                        <a-table
+                            :columns="[
+                                { title: '权限名', dataIndex: 'name', width: 320 },
+                                { title: '描述', dataIndex: 'description' },
+                                { title: '保护级别', dataIndex: 'protection', width: 130 }
+                            ]"
+                            :data="filterAndroidPermissions()"
+                            :bordered="false"
+                            :pagination="{ pageSize: 10 }"
+                            :scroll="{ x: '100%' }"
+                            row-key="name"
+                            :row-class="() => 'permission-table-row'"
+                        >
+                            <template #name="{ record }">
+                                <div style="display: flex; align-items: center;">
+                                    <span style="flex: 1; overflow: hidden; text-overflow: ellipsis;">{{ record.name }}</span>
+                                    <a-button 
+                                        type="text" 
+                                        size="mini" 
+                                        @click="copyAndroidPermission(record.name)" 
+                                        style="margin-left: 4px; padding: 0 4px;"
+                                    >
+                                        <template #icon><icon-copy /></template>
+                                    </a-button>
+                                </div>
+                            </template>
+                            <template #protection="{ record }">
+                                <a-tag 
+                                    :color="record.protection === 'dangerous' ? 'red' : 'green'"
+                                    style="min-width: 80px; text-align: center; padding: 0 8px;"
+                                >
+                                    {{ record.protection === 'dangerous' ? '危险权限' : '普通权限' }}
+                                </a-tag>
+                            </template>
+                        </a-table>
+
+                        <div style="margin-top: 20px;">
+                            <a-collapse style="max-width: 100%;">
+                                <a-collapse-item header="Android权限保护级别说明" key="1">
+                                    <div style="padding: 10px;">
+                                        <h3>权限保护级别:</h3>
+                                        <p><strong>普通权限 (normal)</strong>: 低风险权限，在安装时自动授予，无需用户确认。</p>
+                                        <p><strong>危险权限 (dangerous)</strong>: 高风险权限，需要在运行时明确请求用户授权。</p>
+                                        <p><strong>签名权限 (signature)</strong>: 只有当应用使用与声明该权限的应用相同的证书签名时才会被授予。</p>
+                                        <p><strong>特权权限 (privileged)</strong>: 只授予系统应用或与系统映像相同的证书签名的应用。</p>
+                                    </div>
+                                </a-collapse-item>
+                                <a-collapse-item header="权限的请求方式" key="2">
+                                    <div style="padding: 10px;">
+                                        <h3>在AndroidManifest.xml中声明权限:</h3>
+                                        <pre style="background-color: #f5f5f5; padding: 10px; border-radius: 5px;"><code>&lt;manifest ...&gt;
+    &lt;uses-permission android:name="android.permission.INTERNET" /&gt;
+    &lt;uses-permission android:name="android.permission.CAMERA" /&gt;
+    &lt;application ...&gt;
+        ...
+    &lt;/application&gt;
+&lt;/manifest&gt;</code></pre>
+
+                                        <h3>危险权限的运行时请求 (Android 6.0+):</h3>
+                                        <pre style="background-color: #f5f5f5; padding: 10px; border-radius: 5px;"><code>// 检查权限
+if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+        != PackageManager.PERMISSION_GRANTED) {
+    // 请求权限
+    ActivityCompat.requestPermissions(this,
+            new String[]{Manifest.permission.CAMERA},
+            MY_PERMISSIONS_REQUEST_CAMERA);
+}</code></pre>
+                                    </div>
+                                </a-collapse-item>
+                            </a-collapse>
+                        </div>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't3-9'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="htaccess转nginx" @back="switchToMenu"
+                    subtitle="转换htaccess规则到nginx配置">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+    </div>
+</template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar" style="overflow-x: hidden; max-width: 100%;">
+                    <a-col :span="24">
+                        <div style="margin-bottom: 20px;">
+                            <a-alert type="info" show-icon>
+                                这个工具可以将Apache的.htaccess规则转换为Nginx配置格式。目前支持基本的重写规则、重定向和文件设置。
+                            </a-alert>
+                        </div>
+
+                        <div style="margin-bottom: 16px; text-align: right;margin-right: 8px;">
+                            <a-button type="outline" @click="load_t3_9_example" style="margin-right: 8px;">
+                                加载示例
+                            </a-button>
+                            <a-button type="outline" @click="clear_t3_9" style="margin-right: 8px;">
+                                清空
+                            </a-button>
+                            <a-button type="primary" @click="convertHtaccessToNginx">
+                                转换
+                            </a-button>
+                        </div>
+
+                        <a-row :gutter="16" style="max-width: 100%; margin: 0;">
+                            <a-col :span="12" style="padding: 0 8px;">
+                                <div style="margin-bottom: 8px;">
+                                    <strong>htaccess规则 (输入)</strong>
+                                </div>
+                                <a-textarea
+                                    v-model="t3_9_input"
+                                    placeholder="请输入.htaccess规则内容"
+                                    :auto-size="{ minRows: 20, maxRows: 20 }"
+                                    style="width: 100%;"
+                                />
+                            </a-col>
+                            <a-col :span="12" style="padding: 0 8px;">
+                                <div style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                    <strong>nginx配置 (输出)</strong>
+                                    <a-button v-if="t3_9_output" size="small" @click="copy_t3_9_result">
+                                        复制结果
+                                    </a-button>
+                                </div>
+                                <a-textarea
+                                    v-model="t3_9_output"
+                                    placeholder="转换后的nginx配置将显示在这里"
+                                    :auto-size="{ minRows: 20, maxRows: 20 }"
+                                    style="width: 100%;"
+                                    readonly
+                                />
+                                <a-alert
+                                    v-if="t3_9_error"
+                                    type="error"
+                                    style="margin-top: 8px;"
+                                    show-icon
+                                >
+                                    {{ t3_9_error }}
+                                </a-alert>
+                            </a-col>
+                        </a-row>
+
+                        <div style="margin-top: 20px; max-width: 100%;">
+                            <a-collapse style="max-width: 100%;">
+                                <a-collapse-item header="htaccess与nginx配置对照参考" key="1">
+                                    <a-table
+                                        :scroll="{ x: '100%' }"
+                                        :columns="[
+                                            { title: 'Apache (.htaccess)', dataIndex: 'apache', width: '50%' },
+                                            { title: 'Nginx 配置', dataIndex: 'nginx' }
+                                        ]"
+                                        :data="[
+                                            { 
+                                                apache: 'RewriteEngine On', 
+                                                nginx: '# Nginx默认已启用重写功能，无需显式配置' 
+                                            },
+                                            { 
+                                                apache: 'RewriteBase /path', 
+                                                nginx: '# Nginx不需要RewriteBase，直接在location块中定义路径' 
+                                            },
+                                            { 
+                                                apache: 'RewriteRule ^/old$ /new [R=301,L]', 
+                                                nginx: 'rewrite ^/old$ /new permanent;' 
+                                            },
+                                            { 
+                                                apache: 'RewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^(.*)$ index.php?/$1 [L]', 
+                                                nginx: 'location / {\n    try_files $uri $uri/ /index.php?$args;\n}' 
+                                            },
+                                            { 
+                                                apache: 'ErrorDocument 404 /404.html', 
+                                                nginx: 'error_page 404 /404.html;' 
+                                            },
+                                            { 
+                                                apache: 'DirectoryIndex index.php index.html', 
+                                                nginx: 'index index.php index.html;' 
+                                            },
+                                            { 
+                                                apache: 'Redirect 301 /oldpage.html /newpage.html', 
+                                                nginx: 'location /oldpage.html {\n    return 301 /newpage.html;\n}' 
+                                            }
+                                        ]"
+                                        :bordered="false"
+                                        :pagination="false"
+                                    />
+                                </a-collapse-item>
+                                <a-collapse-item header="重写规则标志对照表" key="2">
+                                    <a-table
+                                        :scroll="{ x: '100%' }"
+                                        :columns="[
+                                            { title: 'Apache标志', dataIndex: 'apache', width: '30%' },
+                                            { title: 'Nginx等效项', dataIndex: 'nginx', width: '30%' },
+                                            { title: '说明', dataIndex: 'description' }
+                                        ]"
+                                        :data="[
+                                            { 
+                                                apache: '[L]', 
+                                                nginx: 'last', 
+                                                description: '停止处理后续规则' 
+                                            },
+                                            { 
+                                                apache: '[R=301]', 
+                                                nginx: 'permanent', 
+                                                description: '301永久重定向' 
+                                            },
+                                            { 
+                                                apache: '[R] 或 [R=302]', 
+                                                nginx: 'redirect', 
+                                                description: '302临时重定向' 
+                                            },
+                                            { 
+                                                apache: '[F]', 
+                                                nginx: 'return 403', 
+                                                description: '返回403禁止访问' 
+                                            },
+                                            { 
+                                                apache: '[G]', 
+                                                nginx: 'return 410', 
+                                                description: '返回410资源永久删除' 
+                                            },
+                                            { 
+                                                apache: '[NC]', 
+                                                nginx: '~*', 
+                                                description: '不区分大小写匹配' 
+                                            }
+                                        ]"
+                                        :bordered="false"
+                                        :pagination="false"
+                                    />
+                                </a-collapse-item>
+                            </a-collapse>
+                        </div>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't3-13'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="HTML特殊字符转义" @back="switchToMenu"
+                    subtitle="HTML字符编解码">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar" style="overflow-x: hidden; max-width: 100%;">
+                    <a-col :span="24">
+                        <div style="margin-bottom: 20px;">
+                            <a-alert type="info" show-icon>
+                                将HTML文本中的特殊字符进行编码或解码，避免在HTML页面中产生歧义。常用于防止XSS攻击和确保HTML正确显示。
+                            </a-alert>
+                        </div>
+
+                        <a-radio-group v-model="t3_13_direction" type="button" style="margin-bottom: 16px;">
+                            <a-radio value="encode">编码 (字符 → 实体)</a-radio>
+                            <a-radio value="decode">解码 (实体 → 字符)</a-radio>
+                        </a-radio-group>
+
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="font-weight: bold;">{{ t3_13_direction === 'encode' ? '输入文本' : 'HTML实体文本' }}</span>
+                                    <div>
+                                        <a-button size="small" @click="clearHtmlSpecialChars" style="margin-right: 8px;">
+                                            清空
+                                        </a-button>
+                                    </div>
+                                </div>
+                                <a-textarea
+                                    v-model="t3_13_input"
+                                    :placeholder="t3_13_direction === 'encode' ? '请输入需要编码的文本' : '请输入需要解码的HTML实体文本'"
+                                    :auto-size="{ minRows: 6, maxRows: 6 }"
+                                    style="width: 100%;"
+                                />
+                            </div>
+
+                            <div style="display: flex; justify-content: center;">
+                                <a-button type="primary" @click="processHtmlSpecialChars">
+                                    {{ t3_13_direction === 'encode' ? '编码' : '解码' }}
+                                </a-button>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="font-weight: bold;">{{ t3_13_direction === 'encode' ? 'HTML实体结果' : '解码结果' }}</span>
+                                    <a-button size="small" @click="copyHtmlSpecialCharsResult" :disabled="!t3_13_output">
+                                        复制结果
+                                    </a-button>
+                                </div>
+                                <a-textarea
+                                    v-model="t3_13_output"
+                                    :placeholder="t3_13_direction === 'encode' ? '编码后的HTML实体将显示在这里' : '解码后的文本将显示在这里'"
+                                    :auto-size="{ minRows: 6, maxRows: 6 }"
+                                    style="width: 100%;"
+                                    readonly
+                                />
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <a-collapse style="max-width: 100%;">
+                                <a-collapse-item header="常用HTML特殊字符参考表" key="1">
+                                    <a-table
+                                        :columns="[
+                                            { title: '字符', dataIndex: 'char', width: 80 },
+                                            { title: '实体名称', dataIndex: 'entity', width: 150 },
+                                            { title: '数字编码', dataIndex: 'numeric', width: 150 },
+                                            { title: '描述', dataIndex: 'description' }
+                                        ]"
+                                        :data="htmlSpecialChars"
+                                        :bordered="false"
+                                        :pagination="{ pageSize: 8 }"
+                                        :scroll="{ x: '100%' }"
+                                        row-key="entity"
+                                        :row-class="() => 'html-char-table-row'"
+                                    >
+                                        <template #char="{ record }">
+                                            <span class="html-char-display">{{ record.char }}</span>
+                                        </template>
+                                        <template #entity="{ record }">
+                                            <div style="display: flex; align-items: center;">
+                                                <span style="flex: 1; font-family: monospace;">{{ record.entity }}</span>
+                                                <a-button 
+                                                    type="text" 
+                                                    size="mini" 
+                                                    @click="copyContentType(record.entity)" 
+                                                    style="padding: 0 4px;"
+                                                >
+                                                    <template #icon><icon-copy /></template>
+                                                </a-button>
+                                            </div>
+                                        </template>
+                                        <template #numeric="{ record }">
+                                            <span style="font-family: monospace;">{{ record.numeric }}</span>
+                                        </template>
+                                    </a-table>
+                                </a-collapse-item>
+                                <a-collapse-item header="HTML特殊字符转义的使用场景" key="2">
+                                    <div style="padding: 10px;">
+                                        <h4>1. 安全性 - 防止XSS攻击</h4>
+                                        <p>当用户输入内容需要显示在网页上时，对特殊字符进行编码可以防止恶意代码注入，避免XSS攻击。</p>
+                                        
+                                        <h4>2. 正确显示HTML标记</h4>
+                                        <p>当需要在网页中显示HTML标记本身而不是让浏览器解析它们时，需要对特殊字符进行编码。</p>
+                                        <pre style="background-color: #f5f5f5; padding: 10px; border-radius: 5px;"><code>// 未编码
+&lt;p&gt;这是一个段落&lt;/p&gt;
+// 显示效果：这是一个段落
+
+// 编码后
+&amp;lt;p&amp;gt;这是一个段落&amp;lt;/p&amp;gt;
+// 显示效果：&lt;p&gt;这是一个段落&lt;/p&gt;</code></pre>
+                                        
+                                        <h4>3. 处理XML/HTML数据</h4>
+                                        <p>在处理XML或HTML数据时，需要确保特殊字符不会干扰文档结构。</p>
+                                    </div>
+                                </a-collapse-item>
+                            </a-collapse>
+                        </div>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't3-12'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="Content-Type对照表" @back="switchToMenu"
+                    subtitle="MIME类型参考大全">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar" style="overflow-x: hidden; max-width: 100%;">
+                    <a-col :span="24">
+                        <div style="margin-bottom: 20px;">
+                            <a-alert type="info" show-icon>
+                                Content-Type指定了HTTP消息中的多媒体类型信息，也称为MIME类型。本工具提供常见MIME类型对照参考。
+                            </a-alert>
+                        </div>
+
+                        <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+                            <a-input-search
+                                v-model="t3_12_search"
+                                placeholder="搜索类型、扩展名或描述"
+                                style="width: 300px;"
+                                allow-clear
+                            />
+                            <a-radio-group v-model="t3_12_categoryFilter" type="button">
+                                <a-radio value="all">全部</a-radio>
+                                <a-radio value="text">文本</a-radio>
+                                <a-radio value="image">图像</a-radio>
+                                <a-radio value="audio">音频</a-radio>
+                                <a-radio value="video">视频</a-radio>
+                                <a-radio value="application">应用</a-radio>
+                            </a-radio-group>
+                        </div>
+
+                        <a-table
+                            :columns="[
+                                { title: 'Content-Type', dataIndex: 'type', width: 300 },
+                                { title: '文件扩展名', dataIndex: 'extension', width: 120 },
+                                { title: '描述', dataIndex: 'description' },
+                                { title: '类别', dataIndex: 'category', width: 100 }
+                            ]"
+                            :data="filterContentTypes()"
+                            :bordered="false"
+                            :pagination="{ pageSize: 10 }"
+                            :scroll="{ x: '100%' }"
+                            row-key="type"
+                            :row-class="() => 'content-type-table-row'"
+                        >
+                            <template #type="{ record }">
+                                <div style="display: flex; align-items: center;">
+                                    <span style="flex: 1; overflow: hidden; text-overflow: ellipsis;">{{ record.type }}</span>
+                                    <a-button 
+                                        type="text" 
+                                        size="mini" 
+                                        @click="copyContentType(record.type)" 
+                                        style="padding: 0 4px;"
+                                    >
+                                        <template #icon><icon-copy /></template>
+                                    </a-button>
+                                </div>
+                            </template>
+                            <template #category="{ record }">
+                                <a-tag :color="
+                                    record.category === 'text' ? 'blue' : 
+                                    record.category === 'image' ? 'green' : 
+                                    record.category === 'audio' ? 'gold' : 
+                                    record.category === 'video' ? 'magenta' : 
+                                    record.category === 'application' ? 'purple' : 
+                                    record.category === 'multipart' ? 'orange' :
+                                    record.category === 'font' ? 'cyan' : 'default'
+                                " style="text-align: center; min-width: 60px;">
+                                    {{ 
+                                        record.category === 'text' ? '文本' : 
+                                        record.category === 'image' ? '图像' : 
+                                        record.category === 'audio' ? '音频' : 
+                                        record.category === 'video' ? '视频' : 
+                                        record.category === 'application' ? '应用' : 
+                                        record.category === 'multipart' ? '多部分' :
+                                        record.category === 'font' ? '字体' : record.category
+                                    }}
+                                </a-tag>
+                            </template>
+                        </a-table>
+
+                        <div style="margin-top: 20px;">
+                            <a-collapse style="max-width: 100%;">
+                                <a-collapse-item header="Content-Type使用说明" key="1">
+                                    <div style="padding: 10px;">
+                                        <h3>Content-Type的基本用法:</h3>
+                                        <p>在HTTP头部，Content-Type指定了消息体的媒体类型，格式为：</p>
+                                        <pre style="background-color: #f5f5f5; padding: 10px; border-radius: 5px;">Content-Type: [媒体类型]; [可选参数]</pre>
+                                        <p>例如：</p>
+                                        <pre style="background-color: #f5f5f5; padding: 10px; border-radius: 5px;">Content-Type: text/html; charset=UTF-8</pre>
+                                        <p>其中，<code>text/html</code>是媒体类型，<code>charset=UTF-8</code>是可选参数，指定了字符编码。</p>
+                                    </div>
+                                </a-collapse-item>
+                                <a-collapse-item header="常见Content-Type示例" key="2">
+                                    <div style="padding: 10px;">
+                                        <h4>在HTML表单中使用：</h4>
+                                        <pre style="background-color: #f5f5f5; padding: 10px; border-radius: 5px;"><code>&lt;form action="/upload" method="post" enctype="multipart/form-data"&gt;
+  &lt;input type="file" name="fileUpload"&gt;
+  &lt;input type="submit" value="上传"&gt;
+&lt;/form&gt;</code></pre>
+                                        
+                                        <h4>在AJAX请求中使用：</h4>
+                                        <pre style="background-color: #f5f5f5; padding: 10px; border-radius: 5px;"><code>const xhr = new XMLHttpRequest();
+xhr.open('POST', '/api/data');
+xhr.setRequestHeader('Content-Type', 'application/json');
+xhr.send(JSON.stringify({ name: 'example' }));</code></pre>
+                                        
+                                        <h4>在Fetch API中使用：</h4>
+                                        <pre style="background-color: #f5f5f5; padding: 10px; border-radius: 5px;"><code>fetch('/api/data', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ name: 'example' })
+});</code></pre>
+                                    </div>
+                                </a-collapse-item>
+                            </a-collapse>
+                        </div>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't3-11'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="HTTP状态码" @back="switchToMenu"
+                    subtitle="HTTP状态码大全">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar" style="overflow-x: hidden; max-width: 100%;">
+                    <a-col :span="24">
+                        <div style="margin-bottom: 20px;">
+                            <a-alert type="info" show-icon>
+                                HTTP状态码是用于表示HTTP请求处理结果的三位数字代码。本工具提供了常见HTTP状态码的查询和参考。
+                            </a-alert>
+                        </div>
+
+                        <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+                            <a-input-search
+                                v-model="t3_11_search"
+                                placeholder="搜索状态码、名称或描述"
+                                style="width: 300px;"
+                                allow-clear
+                            />
+                            <a-radio-group v-model="t3_11_categoryFilter" type="button">
+                                <a-radio value="all">全部</a-radio>
+                                <a-radio value="1xx">1xx</a-radio>
+                                <a-radio value="2xx">2xx</a-radio>
+                                <a-radio value="3xx">3xx</a-radio>
+                                <a-radio value="4xx">4xx</a-radio>
+                                <a-radio value="5xx">5xx</a-radio>
+                            </a-radio-group>
+                        </div>
+
+                        <a-table
+                            :columns="[
+                                { title: '状态码', dataIndex: 'code', width: 100 },
+                                { title: '名称', dataIndex: 'name', width: 200 },
+                                { title: '描述', dataIndex: 'description' },
+                                { title: '类别', dataIndex: 'category', width: 100 }
+                            ]"
+                            :data="filterHttpStatusCodes()"
+                            :bordered="false"
+                            :pagination="{ pageSize: 10 }"
+                            :scroll="{ x: '100%' }"
+                            row-key="code"
+                            :row-class="() => 'status-code-table-row'"
+                        >
+                            <template #code="{ record }">
+                                <div style="display: flex; align-items: center;">
+                                    <a-button 
+                                        type="text" 
+                                        size="mini" 
+                                        @click="copyHttpStatusCode(record.code)" 
+                                        style="padding: 0 4px; font-weight: bold;"
+                                    >
+                                        {{ record.code }}
+                                    </a-button>
+                                </div>
+                            </template>
+                            <template #category="{ record }">
+                                <a-tag :color="
+                                    record.category === '1xx' ? 'blue' : 
+                                    record.category === '2xx' ? 'green' : 
+                                    record.category === '3xx' ? 'orange' : 
+                                    record.category === '4xx' ? 'red' : 
+                                    record.category === '5xx' ? 'purple' : 'default'
+                                " style="text-align: center; min-width: 60px;">
+                                    {{ record.category }}
+                                </a-tag>
+                            </template>
+                        </a-table>
+
+                        <div style="margin-top: 20px;">
+                            <a-collapse style="max-width: 100%;">
+                                <a-collapse-item header="HTTP状态码类别说明" key="1">
+                                    <div style="padding: 10px;">
+                                        <h3>HTTP状态码分类:</h3>
+                                        <p><strong>1xx 信息响应</strong>: 请求已被接收，需要继续处理。这类响应是临时响应，只包含状态行和某些可选的响应头信息，并以空行结束。</p>
+                                        <p><strong>2xx 成功响应</strong>: 请求已成功被服务器接收、理解并接受。</p>
+                                        <p><strong>3xx 重定向</strong>: 需要后续操作才能完成这一请求。通常，这些状态码用来重定向。</p>
+                                        <p><strong>4xx 客户端错误</strong>: 请求包含语法错误或者无法完成请求。这些状态码代表了客户端看起来可能发生了错误。</p>
+                                        <p><strong>5xx 服务器错误</strong>: 服务器在处理请求的过程中发生了错误。这些状态码代表了服务器在处理请求的过程中有错误或者异常状态发生。</p>
+                                    </div>
+                                </a-collapse-item>
+                                <a-collapse-item header="最常用的HTTP状态码" key="2">
+                                    <div style="padding: 10px;">
+                                        <ul style="padding-left: 20px;">
+                                            <li><strong>200 OK</strong>: 请求成功。一般用于GET与POST请求</li>
+                                            <li><strong>201 Created</strong>: 请求已完成，并且已创建了新资源</li>
+                                            <li><strong>301 Moved Permanently</strong>: 被请求的资源已永久移动到新位置</li>
+                                            <li><strong>302 Found</strong>: 请求的资源现在临时从不同的URI响应请求</li>
+                                            <li><strong>304 Not Modified</strong>: 资源未被修改，可使用缓存</li>
+                                            <li><strong>400 Bad Request</strong>: 由于语法无效，服务器无法理解该请求</li>
+                                            <li><strong>401 Unauthorized</strong>: 需要身份验证</li>
+                                            <li><strong>403 Forbidden</strong>: 服务器理解请求但拒绝执行</li>
+                                            <li><strong>404 Not Found</strong>: 请求的资源未在服务器上发现</li>
+                                            <li><strong>500 Internal Server Error</strong>: 服务器遇到了不知道如何处理的情况</li>
+                                            <li><strong>502 Bad Gateway</strong>: 网关或代理服务器从上游服务器收到无效响应</li>
+                                            <li><strong>503 Service Unavailable</strong>: 服务器暂时不可用</li>
+                                        </ul>
+                                    </div>
+                                </a-collapse-item>
+                            </a-collapse>
+                        </div>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
     </div>
 </template>
 
 <style>
 /* 自定义滚动条样式 */
 .custom-scrollbar {
-    width: 300px;
-    height: 200px;
-    overflow-y: scroll;
+    width: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* 隐藏默认的滚动条 */
@@ -5680,6 +7096,33 @@ code {
     color: #888;
     display: inline-block;
     width: 75px;
+}
+
+/* Android权限表格样式 */
+.permission-table-row {
+    height: 48px;
+}
+
+/* HTTP状态码表格样式 */
+.status-code-table-row {
+    height: 48px;
+}
+
+/* Content-Type表格样式 */
+.content-type-table-row {
+    height: 48px;
+}
+
+/* HTML特殊字符表格样式 */
+.html-char-table-row {
+    height: 48px;
+}
+
+.html-char-display {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    display: block;
 }
 .ws-log-type {
     display: inline-block;

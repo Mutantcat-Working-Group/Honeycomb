@@ -50,7 +50,7 @@ function closeWindow() {
                 </a-col>
               </a-row>
               <a-row><a-col :span="24">
-                  <h4>版本：1.1.20250616</h4>
+                  <h4>版本：1.1.20250617</h4>
                 </a-col>
               </a-row>
             </div>
@@ -221,6 +221,41 @@ function closeWindow() {
                   <a-card class="card-demo" title="Go交叉编译" :bordered="false">
                     <p :style="{ margin: 0 }">
                       跨平台编译参考
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t3-9')">
+                  <a-card class="card-demo" title="htaccess转nginx" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      转换htaccess规则
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t3-10')">
+                  <a-card class="card-demo" title="Manifest权限大全" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      Android权限对照表
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t3-11')">
+                  <a-card class="card-demo" title="HTTP状态码" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      HTTP状态码大全
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t3-12')">
+                  <a-card class="card-demo" title="Content-Type" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      MIME类型参考大全
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t3-13')">
+                  <a-card class="card-demo" title="HTML特殊字符" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      HTML字符编解码
                     </p>
                   </a-card>
                 </a-card-grid>

@@ -51,6 +51,11 @@
 - 回车转br标签
 - 常用浏览器UA
 - Go交叉编译
+- htaccess转nginx
+- Manifest权限大全
+- HTTP状态码
+- Content-Type
+- HTML特殊字符
 
 #### 加密工具
 - Windows加密
@@ -73,4 +78,5 @@
 - RESTful测试
 - MQTT监听
 - MQTT广播
+- 子网掩码计算器
 
