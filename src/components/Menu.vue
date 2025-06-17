@@ -50,7 +50,7 @@ function closeWindow() {
                 </a-col>
               </a-row>
               <a-row><a-col :span="24">
-                  <h4>版本：1.1.20250615</h4>
+                  <h4>版本：1.1.20250616</h4>
                 </a-col>
               </a-row>
             </div>
