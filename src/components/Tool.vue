@@ -148,6 +148,124 @@ const t1_3_datetime = ref('');
 const t1_3_current_timestamp = ref(0);
 const t1_3_current_datetime = ref('');
 
+// t7-5 子网掩码计算器
+const t7_5_ipAddress = ref('192.168.1.1');
+const t7_5_subnetMask = ref('255.255.255.0');
+const t7_5_cidrNotation = ref('24');
+const t7_5_networkAddress = ref('');
+const t7_5_broadcastAddress = ref('');
+const t7_5_firstUsableIp = ref('');
+const t7_5_lastUsableIp = ref('');
+const t7_5_totalHosts = ref(0);
+const t7_5_usableHosts = ref(0);
+
+// 计算CIDR表示法（如果提供了子网掩码）
+function calculateCIDR() {
+  if (!t7_5_subnetMask.value) return;
+  
+  const octets = t7_5_subnetMask.value.split('.').map(Number);
+  if (octets.length !== 4) {
+    Message.error({ content: '无效的子网掩码格式', position: 'bottom' });
+    return;
+  }
+  
+  let cidr = 0;
+  for (const octet of octets) {
+    // 转换为二进制并计算1的数量
+    const binaryOctet = octet.toString(2);
+    for (let i = 0; i < binaryOctet.length; i++) {
+      if (binaryOctet[i] === '1') cidr++;
+    }
+  }
+  
+  t7_5_cidrNotation.value = cidr.toString();
+}
+
+// 根据CIDR计算子网掩码
+function calculateSubnetMask() {
+  const cidr = parseInt(t7_5_cidrNotation.value);
+  if (isNaN(cidr) || cidr < 0 || cidr > 32) {
+    Message.error({ content: 'CIDR值必须在0到32之间', position: 'bottom' });
+    return;
+  }
+  
+  // 创建一个32位全为1的二进制数
+  let binary = '';
+  for (let i = 0; i < 32; i++) {
+    binary += i < cidr ? '1' : '0';
+  }
+  
+  // 将32位二进制数分成4个八位，并转换为十进制
+  const octets = [];
+  for (let i = 0; i < 4; i++) {
+    const octetBinary = binary.substring(i * 8, (i + 1) * 8);
+    octets.push(parseInt(octetBinary, 2));
+  }
+  
+  t7_5_subnetMask.value = octets.join('.');
+}
+
+// 计算所有子网信息
+function calculateSubnetInfo() {
+  // 验证IP地址格式
+  const ipOctets = t7_5_ipAddress.value.split('.').map(Number);
+  if (ipOctets.length !== 4 || ipOctets.some(o => isNaN(o) || o < 0 || o > 255)) {
+    Message.error({ content: '无效的IP地址格式', position: 'bottom' });
+    return;
+  }
+  
+  // 验证子网掩码格式
+  const maskOctets = t7_5_subnetMask.value.split('.').map(Number);
+  if (maskOctets.length !== 4 || maskOctets.some(o => isNaN(o) || o < 0 || o > 255)) {
+    Message.error({ content: '无效的子网掩码格式', position: 'bottom' });
+    return;
+  }
+  
+  // 计算网络地址
+  const networkOctets = [];
+  for (let i = 0; i < 4; i++) {
+    networkOctets.push(ipOctets[i] & maskOctets[i]);
+  }
+  t7_5_networkAddress.value = networkOctets.join('.');
+  
+  // 计算广播地址
+  const broadcastOctets = [];
+  for (let i = 0; i < 4; i++) {
+    broadcastOctets.push((ipOctets[i] & maskOctets[i]) | (~maskOctets[i] & 255));
+  }
+  t7_5_broadcastAddress.value = broadcastOctets.join('.');
+  
+  // 计算第一个可用IP（网络地址+1）
+  const firstUsableOctets = [...networkOctets];
+  firstUsableOctets[3]++;
+  t7_5_firstUsableIp.value = firstUsableOctets.join('.');
+  
+  // 计算最后一个可用IP（广播地址-1）
+  const lastUsableOctets = [...broadcastOctets];
+  lastUsableOctets[3]--;
+  t7_5_lastUsableIp.value = lastUsableOctets.join('.');
+  
+  // 计算IP地址总数和可用IP地址数
+  const cidr = parseInt(t7_5_cidrNotation.value);
+  t7_5_totalHosts.value = Math.pow(2, 32 - cidr);
+  t7_5_usableHosts.value = Math.max(0, t7_5_totalHosts.value - 2); // 减去网络地址和广播地址
+}
+
+// 监听输入变化，自动更新计算结果
+watch(t7_5_subnetMask, () => {
+  calculateCIDR();
+  calculateSubnetInfo();
+});
+
+watch(t7_5_cidrNotation, () => {
+  calculateSubnetMask();
+  calculateSubnetInfo();
+});
+
+watch(t7_5_ipAddress, () => {
+  calculateSubnetInfo();
+});
+
 // t2-9 正则测试
 const t2_9_regex = ref('');
 const t2_9_text = ref('');
@@ -2961,7 +3079,7 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                             <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
                                     #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
-                    </template>
+</template>
                 </a-page-header>
             </div>
             <div class="one-tool-content">
@@ -3756,7 +3874,7 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                     <a-option value="DELETE">DELETE</a-option>
                                     <a-option value="PATCH">PATCH</a-option>
                                  </a-select>
-                            </div>
+                                </div>
                         </a-card>
 
                         <!-- 请求头设置 -->
@@ -4141,9 +4259,9 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                             </a-tag>
                                         </div>
                                     </a-descriptions-item>
-                                </a-descriptions>
-                            </a-card>
-                            
+                            </a-descriptions>
+                        </a-card>
+
                             <a-result 
                                 status="success" 
                                 :subtitle="`共找到 ${t2_9_matches.length} 个匹配项`"
@@ -4165,10 +4283,10 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                 <a-card :bordered="false" style="background-color: #f8faff;">
                                     <a-tabs default-active-key="1">
                                         <a-tab-pane key="1" title="字符匹配">
-                                            <a-table :columns="[
+                            <a-table :columns="[
                                                 { title: '语法', dataIndex: 'syntax', width: 80 },
                                                 { title: '说明', dataIndex: 'description' }
-                                            ]" :data="[
+                            ]" :data="[
                                                 { syntax: '.', description: '匹配任意单个字符（除了换行符）' },
                                                 { syntax: '\\d', description: '匹配任意数字，等同于 [0-9]' },
                                                 { syntax: '\\D', description: '匹配任意非数字字符' },
@@ -4571,7 +4689,7 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                             <template #title>
                                 <div style="font-size: 16px; font-weight: 500;">
                                     <i class="icon-lock" style="margin-right: 8px;"></i>输入密码进行安全评估
-                                </div>
+                            </div>
                             </template>
                             <div style="display: flex; align-items: center;">
                                 <a-input 
@@ -4611,7 +4729,7 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                     <span style="font-weight: 500;">总评分: </span>
                                     <span style="font-size: 18px; color: #333; font-weight: bold;">{{ t5_5_score }}</span>
                                     <span> / 100</span>
-                                </div>
+                            </div>
                             </a-card>
                         </div>
 
@@ -4656,8 +4774,8 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                             {{ item.description }}
                                         </div>
                                     </div>
-                                </div>
-                            </a-card>
+                            </div>
+                        </a-card>
                         </div>
 
                         <!-- 密码安全提示 -->
@@ -4682,7 +4800,7 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                         <li style="color: #555;">定期更换密码</li>
                                     </ul>
                                 </div>
-                            </a-card>
+                        </a-card>
                         </div>
                     </a-col>
                 </a-row>
@@ -5220,8 +5338,8 @@ func openBrowser(url string) error {
                                      </div>
                                  </div>
                              </div>
-                         </a-card>
-                                         </a-col>
+                        </a-card>
+                    </a-col>
                 </a-row>
             </div>
         </div>
@@ -5337,6 +5455,83 @@ func openBrowser(url string) error {
                                     暂无日志记录
                                 </div>
                             </div>
+                        </a-card>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
+        <div v-show="tooltype == 't7-5'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="子网掩码计算器" @back="switchToMenu"
+                    subtitle="IP地址与子网划分工具">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar">
+                    <a-col :span="24">
+                        <!-- IP地址和子网掩码输入区 -->
+                        <a-card title="网络地址设置" style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <span style="width: 130px;">IP地址：</span>
+                                <a-input v-model="t7_5_ipAddress" placeholder="如：192.168.1.1" style="flex: 1; margin-right: 15px;" />
+                            </div>
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <span style="width: 130px;">子网掩码：</span>
+                                <a-input v-model="t7_5_subnetMask" placeholder="如：255.255.255.0" style="flex: 1; margin-right: 15px;" />
+                            </div>
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <span style="width: 130px;">CIDR表示法：</span>
+                                <div style="display: flex; align-items: center; flex: 1;">
+                                    <a-input-number v-model="t7_5_cidrNotation" :min="0" :max="32" placeholder="24" style="width: 120px;" />
+                                    <span style="margin-left: 5px;">/</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: center; margin-top: 15px;">
+                                <a-button type="primary" @click="calculateSubnetInfo">计算</a-button>
+                            </div>
+                        </a-card>
+
+                        <!-- 计算结果展示区 -->
+                        <a-card title="网络信息" style="margin-bottom: 15px;">
+                            <a-descriptions :column="1" bordered>
+                                <a-descriptions-item label="IP地址">{{ t7_5_ipAddress }}</a-descriptions-item>
+                                <a-descriptions-item label="子网掩码">{{ t7_5_subnetMask }}</a-descriptions-item>
+                                <a-descriptions-item label="CIDR表示">{{ t7_5_cidrNotation ? '/' + t7_5_cidrNotation : '' }}</a-descriptions-item>
+                                <a-descriptions-item label="网络地址">{{ t7_5_networkAddress }}</a-descriptions-item>
+                                <a-descriptions-item label="广播地址">{{ t7_5_broadcastAddress }}</a-descriptions-item>
+                                <a-descriptions-item label="可用IP范围">{{ t7_5_firstUsableIp }} - {{ t7_5_lastUsableIp }}</a-descriptions-item>
+                                <a-descriptions-item label="总主机数">{{ t7_5_totalHosts }}</a-descriptions-item>
+                                <a-descriptions-item label="可用主机数">{{ t7_5_usableHosts }}</a-descriptions-item>
+                            </a-descriptions>
+                        </a-card>
+
+                        <!-- 子网掩码表 -->
+                        <a-card title="常用子网掩码参考" style="margin-bottom: 15px;">
+                            <a-table :columns="[
+                                { title: 'CIDR', dataIndex: 'cidr' },
+                                { title: '子网掩码', dataIndex: 'mask' },
+                                { title: '可用IP数量', dataIndex: 'hosts' }
+                            ]" :data="[
+                                { cidr: '/24', mask: '255.255.255.0', hosts: '254' },
+                                { cidr: '/25', mask: '255.255.255.128', hosts: '126' },
+                                { cidr: '/26', mask: '255.255.255.192', hosts: '62' },
+                                { cidr: '/27', mask: '255.255.255.224', hosts: '30' },
+                                { cidr: '/28', mask: '255.255.255.240', hosts: '14' },
+                                { cidr: '/29', mask: '255.255.255.248', hosts: '6' },
+                                { cidr: '/30', mask: '255.255.255.252', hosts: '2' },
+                                { cidr: '/16', mask: '255.255.0.0', hosts: '65,534' },
+                                { cidr: '/8', mask: '255.0.0.0', hosts: '16,777,214' }
+                            ]" :pagination="false" :scroll="{ y: 240 }" />
                         </a-card>
                     </a-col>
                 </a-row>

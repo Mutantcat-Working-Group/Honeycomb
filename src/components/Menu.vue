@@ -355,6 +355,13 @@ function closeWindow() {
                     </p>
                   </a-card>
                 </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t7-5')">
+                  <a-card class="card-demo" title="子网掩码计算器" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      IP地址与子网划分
+                    </p>
+                  </a-card>
+                </a-card-grid>
               </a-card>
             </div>
           </a-tab-pane>
