@@ -2927,24 +2927,47 @@ const mqtt_logs = ref<Array<{
     rawData: any;
 }>>([]);
 const mqtt_auto_scroll = ref(true);
+const mqtt_max_logs = ref(1000); // 最大日志条数
+const mqtt_total_received = ref(0); // 总接收消息数
 
 // 记录MQTT日志
 function addMqttLog(type: string, message: string, rawData: any = null) {
     const timestamp = new Date().toLocaleTimeString();
     let formattedMessage = message;
     
+    // 统计消息数量
+    if (type === 'received') {
+        mqtt_total_received.value++;
+    }
+    
     // 如果有原始数据并且是JSON，尝试格式化它
     let jsonData = null;
+    let truncatedRawData = rawData;
+    
     if (rawData) {
         try {
             jsonData = JSON.parse(rawData);
             if (type === 'received') {
-                formattedMessage = JSON.stringify(jsonData, null, 2);
+                // 限制JSON消息的显示长度
+                const jsonStr = JSON.stringify(jsonData, null, 2);
+                if (jsonStr.length > 1000) {
+                    formattedMessage = jsonStr.substring(0, 1000) + '...(消息过长，已截断)';
+                    // 不保存完整的原始数据，避免内存占用过大
+                    truncatedRawData = jsonStr.substring(0, 500) + '...(已截断)';
+                } else {
+                    formattedMessage = jsonStr;
+                }
             }
         } catch (e) {
             // 不是JSON格式，使用原始消息
             if (type === 'received') {
-                formattedMessage = rawData;
+                // 限制非JSON消息的显示长度
+                if (rawData && rawData.length > 1000) {
+                    formattedMessage = rawData.substring(0, 1000) + '...(消息过长，已截断)';
+                    truncatedRawData = rawData.substring(0, 500) + '...(已截断)';
+                } else {
+                    formattedMessage = rawData;
+                }
             }
         }
     }
@@ -2954,8 +2977,15 @@ function addMqttLog(type: string, message: string, rawData: any = null) {
         type,
         message: formattedMessage,
         timestamp,
-        rawData: jsonData || rawData
+        rawData: jsonData || truncatedRawData
     });
+    
+    // 限制日志数量，避免内存过度消耗
+    if (mqtt_logs.value.length > mqtt_max_logs.value) {
+        // 删除最早的日志，保持数组大小在限制范围内
+        const removeCount = mqtt_logs.value.length - mqtt_max_logs.value;
+        mqtt_logs.value.splice(0, removeCount);
+    }
     
     // 自动滚动到底部
     if (mqtt_auto_scroll.value) {
@@ -3034,6 +3064,7 @@ function unsubscribeTopic() {
 // 清空MQTT日志
 function clearMqttLogs() {
     mqtt_logs.value = [];
+    mqtt_total_received.value = 0;
 }
 
 // 设置监听MQTT消息
@@ -6009,15 +6040,41 @@ func openBrowser(url string) error {
 
                          <!-- 日志区域 -->
                          <a-card title="通信日志" :style="{ marginBottom: '15px', borderRadius: '8px' }" :bordered="true" :hover="true">
-                             <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding: 0 2%;">
-                                 <div>
+                             <!-- 统计信息 -->
+                             <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding: 12px; background-color: #f0f7ff; border-radius: 8px;">
+                                 <div style="display: flex; align-items: center; gap: 20px;">
+                                     <div style="display: flex; align-items: center; gap: 5px;">
+                                         <a-tag color="purple">接收消息</a-tag>
+                                         <span style="font-weight: 600; color: #722ed1;">{{ mqtt_total_received }}</span>
+                                     </div>
+                                     <div style="display: flex; align-items: center; gap: 5px;">
+                                         <a-tag color="gray">当前日志</a-tag>
+                                         <span style="font-weight: 600; color: #595959;">{{ mqtt_logs.length }}/{{ mqtt_max_logs }}</span>
+                                     </div>
+                                 </div>
+                             </div>
+                             
+                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 2%;">
+                                 <div style="display: flex; align-items: center; gap: 15px;">
                                      <a-checkbox v-model="mqtt_auto_scroll">自动滚动</a-checkbox>
+                                     <div style="display: flex; align-items: center; gap: 8px;">
+                                         <span style="font-size: 14px;">日志上限：</span>
+                                         <a-input-number v-model="mqtt_max_logs" :min="100" :max="10000" :step="100" 
+                                                        style="width: 100px;" size="small" />
+                                     </div>
                                  </div>
                                  <div>
                                      <a-button size="small" @click="clearMqttLogs" type="outline">清空日志</a-button>
                                  </div>
                              </div>
 
+                             <!-- 日志数量警告 -->
+                             <div v-if="mqtt_logs.length >= mqtt_max_logs * 0.9" style="margin-bottom: 10px;">
+                                 <a-alert type="warning" :style="{ fontSize: '12px' }">
+                                     日志数量已接近上限 ({{ mqtt_logs.length }}/{{ mqtt_max_logs }})，旧日志将自动清理以释放内存
+                                 </a-alert>
+                             </div>
+                             
                              <div class="mqtt-log-container custom-scrollbar" style="height: 300px; overflow-y: auto; border: 1px solid #eee; padding: 15px; border-radius: 8px; width: 96%; margin: 0 auto; box-shadow: inset 0 0 5px rgba(0,0,0,0.05);">
                                  <div v-for="log in mqtt_logs" :key="log.id" class="mqtt-log-item" :class="`mqtt-log-${log.type}`">
                                      <span class="mqtt-log-time">[{{ log.timestamp }}]</span>
