@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { IconCopy } from '@arco-design/web-vue/es/icon';
-import { defineProps, defineEmits, ref, watch, onBeforeUnmount, onMounted } from 'vue';
+import { defineProps, defineEmits, ref, watch, onBeforeUnmount, onMounted, computed, h } from 'vue';
 import JsBarcode from 'jsbarcode';
 import { Message } from '@arco-design/web-vue';
 import { toPng } from 'html-to-image';
@@ -1202,6 +1202,63 @@ function t8_2_updateBandColor(index: number, colorIndex: number) {
 function t8_2_initResistorCalculator() {
     t8_2_calculateResistanceValue();
 }
+
+// t8-3 RISC-V指令集速查
+interface RiscVInstruction {
+    name: string;
+    description: string;
+    type: string;
+}
+
+const t8_3_baseInstructions: RiscVInstruction[] = [
+    { name: "RV32I", description: "32位整数指令集", type: "基本指令集" },
+    { name: "RV32E", description: "RV32I的子集，用于小型的嵌入式场景", type: "基本指令集" },
+    { name: "RV64I", description: "64位整数指令集，兼容RV32I", type: "基本指令集" },
+    { name: "RV128I", description: "128位整数指令集，兼容RV64I和RV32I", type: "基本指令集" }
+];
+
+const t8_3_extensionInstructions: RiscVInstruction[] = [
+    { name: "M", description: "整数乘法（Multiplication）与除法指令集", type: "扩展指令集" },
+    { name: "A", description: "存储器原子（Atomic）指令集", type: "扩展指令集" },
+    { name: "F", description: "单精度（32bit）浮点（Float）指令集", type: "扩展指令集" },
+    { name: "D", description: "双精度（64bit）浮点（Double）指令集，兼容F", type: "扩展指令集" },
+    { name: "C", description: "压缩（Compressed）指令集", type: "扩展指令集" },
+    { name: "V", description: "向量（Vector）指令集", type: "扩展指令集" },
+    { name: "N", description: "用户级中断（User-level Interrupts）", type: "扩展指令集" },
+    { name: "S", description: "监管者模式（Supervisor Mode）", type: "扩展指令集" },
+    { name: "H", description: "管理程序（Hypervisor）扩展", type: "扩展指令集" },
+    { name: "G", description: "通用组合（General）= IMAFD", type: "扩展指令集" },
+    { name: "Q", description: "四精度（128bit）浮点（Quad）指令集", type: "扩展指令集" },
+    { name: "L", description: "十进制浮点（Decimal Floating-Point）", type: "扩展指令集" },
+    { name: "B", description: "位操作（Bit Manipulation）指令集", type: "扩展指令集" },
+    { name: "J", description: "动态语言（Dynamic Languages）支持", type: "扩展指令集" },
+    { name: "T", description: "事务内存（Transactional Memory）", type: "扩展指令集" },
+    { name: "P", description: "打包SIMD（Packed-SIMD）指令集", type: "扩展指令集" }
+];
+
+const t8_3_searchTerm = ref("");
+const t8_3_selectedType = ref("all");
+
+// 过滤指令集
+const t8_3_filteredInstructions = computed(() => {
+    let allInstructions = [...t8_3_baseInstructions, ...t8_3_extensionInstructions];
+    
+    // 按类型过滤
+    if (t8_3_selectedType.value !== "all") {
+        allInstructions = allInstructions.filter(inst => inst.type === t8_3_selectedType.value);
+    }
+    
+    // 按搜索词过滤
+    if (t8_3_searchTerm.value) {
+        const term = t8_3_searchTerm.value.toLowerCase();
+        allInstructions = allInstructions.filter(inst => 
+            inst.name.toLowerCase().includes(term) || 
+            inst.description.toLowerCase().includes(term)
+        );
+    }
+    
+    return allInstructions;
+});
 
 // 监听工具类型变化，如果切换到电阻计算器就初始化
 watch(() => props.tooltype, (newType) => {
@@ -7458,6 +7515,191 @@ xhr.send(JSON.stringify({ name: 'example' }));</code></pre>
                                 </div>
                             </a-collapse-item>
                         </a-collapse>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
+        <!-- t8-3 RISC-V指令集速查 -->
+        <div v-show="tooltype == 't8-3'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="RISC-V指令集速查" @back="switchToMenu"
+                    subtitle="RISC-V指令集模块参考手册">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar">
+                    <a-col :span="24">
+                        <div style="margin-bottom: 20px;">
+                            <a-alert type="info" show-icon>
+                                <div>
+                                    <p style="margin: 0 0 10px 0;"><strong>RISC-V指令集架构说明</strong></p>
+                                    <p style="margin: 0;">RISC-V是一个开源的指令集架构（ISA），基于精简指令集计算（RISC）原则。它具有模块化设计，包含基本指令集和各种扩展指令集，可根据具体应用需求进行组合。</p>
+                                </div>
+                            </a-alert>
+                        </div>
+
+                        <a-card title="指令集搜索与过滤" style="margin-bottom: 20px;">
+                            <a-space direction="vertical" size="large" fill>
+                                <a-row :gutter="16">
+                                    <a-col :span="12">
+                                        <a-input v-model="t8_3_searchTerm" placeholder="搜索指令集名称或描述..." allow-clear>
+                                            <template #prefix>
+                                                <icon-search />
+                                            </template>
+                                        </a-input>
+                                    </a-col>
+                                    <a-col :span="12">
+                                        <a-select v-model="t8_3_selectedType" placeholder="选择指令集类型" allow-clear>
+                                            <a-option value="all">全部类型</a-option>
+                                            <a-option value="基本指令集">基本指令集</a-option>
+                                            <a-option value="扩展指令集">扩展指令集</a-option>
+                                        </a-select>
+                                    </a-col>
+                                </a-row>
+                            </a-space>
+                        </a-card>
+
+                        <a-card title="RISC-V指令集列表" style="margin-bottom: 20px;">
+                            <a-table 
+                                :columns="[
+                                    { 
+                                        title: '指令集名称', 
+                                        dataIndex: 'name', 
+                                        width: 120,
+                                        render: ({ record }: any) => {
+                                            const isBase = record.type === '基本指令集';
+                                            return h('a-tag', { 
+                                                color: isBase ? 'blue' : 'green' 
+                                            }, record.name);
+                                        }
+                                    },
+                                    { title: '类型', dataIndex: 'type', width: 120 },
+                                    { title: '描述', dataIndex: 'description' }
+                                ]"
+                                :data="t8_3_filteredInstructions"
+                                :pagination="{
+                                    pageSize: 10,
+                                    showSizeChanger: true,
+                                    showQuickJumper: true,
+                                    showTotal: (total) => `共 ${total} 条指令集`
+                                }"
+                                :bordered="true"
+                                size="middle"
+                            />
+                        </a-card>
+
+                        <a-collapse :default-active-key="['1', '2', '3']">
+                            <a-collapse-item header="基本指令集详解" key="1">
+                                <div class="risc-v-details">
+                                    <div class="instruction-group">
+                                        <h4>🔧 基本整数指令集</h4>
+                                        <a-descriptions bordered size="small" :column="1">
+                                            <a-descriptions-item label="RV32I">
+                                                32位基本整数指令集，包含整数计算、逻辑运算、移位、比较、分支、跳转和访存指令。这是RISC-V的核心指令集。
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="RV32E">
+                                                RV32I的精简版本，寄存器数量从32个减少到16个，专为极小型嵌入式应用设计，可显著降低硬件成本。
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="RV64I">
+                                                64位整数指令集，在RV32I基础上扩展支持64位操作。提供更大的地址空间和数据宽度，向下兼容RV32I。
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="RV128I">
+                                                128位整数指令集，为未来高性能计算需求设计。目前主要用于研究和长远规划。
+                                            </a-descriptions-item>
+                                        </a-descriptions>
+                                    </div>
+                                </div>
+                            </a-collapse-item>
+                            
+                            <a-collapse-item header="常用扩展指令集" key="2">
+                                <div class="risc-v-details">
+                                    <div class="instruction-group">
+                                        <h4>⚡ 性能扩展</h4>
+                                        <a-descriptions bordered size="small" :column="1">
+                                            <a-descriptions-item label="M - 乘除法">
+                                                提供整数乘法和除法指令，大幅提升数学运算性能。几乎所有实际应用都会包含此扩展。
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="A - 原子操作">
+                                                支持原子内存操作，是多核系统和并发编程的基础。包括原子交换、比较交换等指令。
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="C - 压缩指令">
+                                                将常用的32位指令压缩为16位，可减少程序大小20-30%，提高指令缓存效率。
+                                            </a-descriptions-item>
+                                        </a-descriptions>
+                                        
+                                        <h4>🔢 浮点扩展</h4>
+                                        <a-descriptions bordered size="small" :column="1">
+                                            <a-descriptions-item label="F - 单精度浮点">
+                                                IEEE 754单精度（32位）浮点运算，包括加减乘除、比较、转换等操作。
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="D - 双精度浮点">
+                                                IEEE 754双精度（64位）浮点运算，在F的基础上增加更高精度的浮点支持。
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="Q - 四精度浮点">
+                                                IEEE 754四精度（128位）浮点运算，用于需要极高精度的科学计算应用。
+                                            </a-descriptions-item>
+                                        </a-descriptions>
+                                    </div>
+                                </div>
+                            </a-collapse-item>
+                            
+                            <a-collapse-item header="系统级扩展" key="3">
+                                <div class="risc-v-details">
+                                    <div class="instruction-group">
+                                        <h4>🏛️ 特权级扩展</h4>
+                                        <a-descriptions bordered size="small" :column="1">
+                                            <a-descriptions-item label="S - 监管者模式">
+                                                支持操作系统内核运行的监管者特权级，包括虚拟内存管理、异常处理等系统功能。
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="H - 虚拟化支持">
+                                                提供硬件虚拟化支持，允许虚拟机监控器（Hypervisor）高效管理多个虚拟机。
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="N - 用户级中断">
+                                                允许用户态程序直接处理某些中断，可提高I/O密集型应用的性能。
+                                            </a-descriptions-item>
+                                        </a-descriptions>
+                                        
+                                        <h4>🚀 高性能扩展</h4>
+                                        <a-descriptions bordered size="small" :column="1">
+                                            <a-descriptions-item label="V - 向量处理">
+                                                向量指令集，支持SIMD（单指令多数据）操作，大幅提升并行计算性能。
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="B - 位操作">
+                                                提供高效的位操作指令，包括位计数、位反转、位域提取等，常用于密码学和数据处理。
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="G - 通用组合">
+                                                G = IMAFD的组合，代表一个包含基本整数、乘除法、原子操作、单双精度浮点的通用配置。
+                                            </a-descriptions-item>
+                                        </a-descriptions>
+                                    </div>
+                                </div>
+                            </a-collapse-item>
+                        </a-collapse>
+
+                        <div style="margin-top: 20px;">
+                            <a-alert type="success" show-icon>
+                                <template #icon><icon-info-circle /></template>
+                                <div>
+                                    <p style="margin: 0 0 10px 0;"><strong>💡 选择建议</strong></p>
+                                    <p style="margin: 0;">
+                                        • <strong>嵌入式应用</strong>：RV32I + M + C（基础 + 乘除法 + 压缩）<br/>
+                                        • <strong>通用应用</strong>：RV64G（64位通用组合，包含IMAFD）<br/>
+                                        • <strong>高性能计算</strong>：RV64G + V（增加向量处理能力）<br/>
+                                        • <strong>系统软件</strong>：RV64G + S + H（增加系统级支持）
+                                    </p>
+                                </div>
+                            </a-alert>
+                        </div>
                     </a-col>
                 </a-row>
             </div>

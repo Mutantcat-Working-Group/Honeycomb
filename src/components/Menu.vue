@@ -417,6 +417,13 @@ function closeWindow() {
                     </p>
                   </a-card>
                 </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t8-3')">
+                  <a-card class="card-demo" title="RISC-V指令集模块" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      RISC-V指令集速查
+                    </p>
+                  </a-card>
+                </a-card-grid>
               </a-card>
             </div>
           </a-tab-pane>
