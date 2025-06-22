@@ -1396,6 +1396,66 @@ const t8_4_registerData: ChipRegister[] = [
         applications: "高性能计算, 服务器, 桌面系统",
         category: "RISC-V"
     },
+    {
+        chipSeries: "RISC-V RV32E",
+        architecture: "RISC-V Embedded",
+        registerCount: 16,
+        bitWidth: 32,
+        registerNames: "x0(zero), x1(ra), x2(sp), x3(gp), x4(tp), x5-x15",
+        specialRegisters: "x0(零寄存器), x1(返回地址), x2(栈指针), PC",
+        applications: "超低功耗嵌入式, 微控制器, IoT终端",
+        category: "RISC-V"
+    },
+    {
+        chipSeries: "RISC-V RV64E",
+        architecture: "RISC-V Embedded",
+        registerCount: 16,
+        bitWidth: 64,
+        registerNames: "x0(zero), x1(ra), x2(sp), x3(gp), x4(tp), x5-x15",
+        specialRegisters: "x0(零寄存器), x1(返回地址), x2(栈指针), PC",
+        applications: "高性能嵌入式, 64位微控制器",
+        category: "RISC-V"
+    },
+    {
+        chipSeries: "RISC-V RV32IF",
+        architecture: "RISC-V + Float",
+        registerCount: 64,
+        bitWidth: 32,
+        registerNames: "x0-x31(整数), f0-f31(单精度浮点)",
+        specialRegisters: "x0(零寄存器), x1(ra), x2(sp), PC, fcsr(浮点控制状态)",
+        applications: "数字信号处理, 音频处理, 科学计算",
+        category: "RISC-V"
+    },
+    {
+        chipSeries: "RISC-V RV64IF",
+        architecture: "RISC-V + Float",
+        registerCount: 64,
+        bitWidth: 64,
+        registerNames: "x0-x31(整数), f0-f31(单精度浮点)",
+        specialRegisters: "x0(零寄存器), x1(ra), x2(sp), PC, fcsr(浮点控制状态)",
+        applications: "高性能DSP, 实时音频, 浮点密集计算",
+        category: "RISC-V"
+    },
+    {
+        chipSeries: "RISC-V RV32IFD",
+        architecture: "RISC-V + Double Float",
+        registerCount: 64,
+        bitWidth: 32,
+        registerNames: "x0-x31(整数), f0-f31(双精度浮点)",
+        specialRegisters: "x0(零寄存器), x1(ra), x2(sp), PC, fcsr(浮点控制状态)",
+        applications: "科学计算, 工程仿真, 高精度数值计算",
+        category: "RISC-V"
+    },
+    {
+        chipSeries: "RISC-V RV64IFD",
+        architecture: "RISC-V + Double Float",
+        registerCount: 64,
+        bitWidth: 64,
+        registerNames: "x0-x31(整数), f0-f31(双精度浮点)",
+        specialRegisters: "x0(零寄存器), x1(ra), x2(sp), PC, fcsr(浮点控制状态)",
+        applications: "高性能计算, 科学研究, 深度学习推理",
+        category: "RISC-V"
+    },
     
     // MIPS系列
     {
