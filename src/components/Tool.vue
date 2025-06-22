@@ -7740,12 +7740,22 @@ xhr.send(JSON.stringify({ name: 'example' }));</code></pre>
                                 
                                 <!-- 色环选择器 -->
                                 <a-form layout="vertical">
-                                    <a-row :gutter="16">
-                                        <a-col v-for="(colorIndex, index) in t8_2_bandIndices" :key="index" :span="24 / t8_2_bandIndices.length">
+                                    <a-row :gutter="16" justify="space-between">
+                                        <a-col 
+                                            v-for="(colorIndex, index) in t8_2_bandIndices" 
+                                            :key="index" 
+                                            :span="t8_2_bandCount === 3 ? 8 : t8_2_bandCount === 4 ? 6 : t8_2_bandCount === 5 ? 4 : 4"
+                                            :style="{ 
+                                                minWidth: t8_2_bandCount === 6 ? '180px' : '150px',
+                                                flex: t8_2_bandCount === 6 ? '1 1 180px' : '1 1 150px'
+                                            }"
+                                        >
                                             <a-form-item :label="`第${index + 1}环`">
                                                 <a-select 
                                                     :model-value="colorIndex"
-                                                    @change="(value: number) => t8_2_updateBandColor(index, value)">
+                                                    @change="(value: number) => t8_2_updateBandColor(index, value)"
+                                                    style="width: 100%;"
+                                                >
                                                     <a-option v-for="(color, cIndex) in t8_2_colors" :key="cIndex" :value="cIndex">
                                                         <div style="display: flex; align-items: center;">
                                                             <div style="width: 16px; height: 16px; margin-right: 8px; border-radius: 50%; border: 1px solid #ccc;" 
