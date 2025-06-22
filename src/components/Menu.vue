@@ -400,6 +400,26 @@ function closeWindow() {
               </a-card>
             </div>
           </a-tab-pane>
+          <a-tab-pane key="8" title="硬件工具">
+            <div class="tool-container">
+              <a-card :bordered="false" :style="{ width: '99%' }">
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t8-1')">
+                  <a-card class="card-demo" title="寄存器寻址范围" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      不同位数寄存器范围
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t8-2')">
+                  <a-card class="card-demo" title="电阻阻值计算" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      彩色环带电阻速查
+                    </p>
+                  </a-card>
+                </a-card-grid>
+              </a-card>
+            </div>
+          </a-tab-pane>
         </a-tabs>
       </a-col>
     </a-row>

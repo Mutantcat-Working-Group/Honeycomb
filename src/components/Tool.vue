@@ -1042,6 +1042,201 @@ const t5_6_uppercase = ref(false);
 const t5_6_hyphens = ref(true);
 const t5_6_generatedUUIDs = ref<string[]>([]);
 
+// t8-1 寄存器寻址范围
+interface RegisterInfo {
+    width: string;
+    range: string;
+    maxValue: string;
+    applications: string;
+}
+
+// t8-2 电阻阻值计算器
+interface ColorBand {
+    name: string;
+    value: number | null;
+    multiplier: number | null;
+    tolerance: number | null;
+    color: string;
+    textColor: string;
+}
+
+const t8_2_colors: ColorBand[] = [
+    { name: "黑色", value: 0, multiplier: 1, tolerance: null, color: "#000000", textColor: "#FFFFFF" },
+    { name: "棕色", value: 1, multiplier: 10, tolerance: 1, color: "#8B4513", textColor: "#FFFFFF" },
+    { name: "红色", value: 2, multiplier: 100, tolerance: 2, color: "#FF0000", textColor: "#FFFFFF" },
+    { name: "橙色", value: 3, multiplier: 1000, tolerance: null, color: "#FFA500", textColor: "#000000" },
+    { name: "黄色", value: 4, multiplier: 10000, tolerance: null, color: "#FFFF00", textColor: "#000000" },
+    { name: "绿色", value: 5, multiplier: 100000, tolerance: 0.5, color: "#008000", textColor: "#FFFFFF" },
+    { name: "蓝色", value: 6, multiplier: 1000000, tolerance: 0.25, color: "#0000FF", textColor: "#FFFFFF" },
+    { name: "紫色", value: 7, multiplier: 10000000, tolerance: 0.1, color: "#800080", textColor: "#FFFFFF" },
+    { name: "灰色", value: 8, multiplier: 100000000, tolerance: 0.05, color: "#808080", textColor: "#FFFFFF" },
+    { name: "白色", value: 9, multiplier: 1000000000, tolerance: null, color: "#FFFFFF", textColor: "#000000" },
+    { name: "金色", value: null, multiplier: 0.1, tolerance: 5, color: "#FFD700", textColor: "#000000" },
+    { name: "银色", value: null, multiplier: 0.01, tolerance: 10, color: "#C0C0C0", textColor: "#000000" },
+    { name: "无色", value: null, multiplier: null, tolerance: 20, color: "transparent", textColor: "#000000" }
+];
+
+const t8_2_bandCount = ref(4); // 默认4色环
+const t8_2_bandIndices = ref([1, 0, 2, 10]); // 直接存储颜色索引：棕色, 黑色, 红色, 金色
+const t8_2_resistanceValue = ref("1000Ω ±5%");
+const t8_2_detailedCalculation = ref("计算: 1*10 + 0*1 = 10 × 100 = 1000Ω, 容差: ±5%");
+
+// 验证颜色选择是否合适的函数
+function isValidColorForBand(bandIndex: number, colorIndex: number): boolean {
+    const bandCount = t8_2_bandCount.value;
+    const color = t8_2_colors[colorIndex];
+    
+    // 对于数值环（前几环），不能是null值
+    if (bandIndex < bandCount - 2 && bandCount >= 4) {
+        return color.value !== null;
+    }
+    // 对于数值环（前两环），在3环电阻中
+    if (bandIndex < 2 && bandCount === 3) {
+        return color.value !== null;
+    }
+    // 对于倍数环
+    if ((bandIndex === 2 && bandCount === 3) || 
+        (bandIndex === 2 && bandCount === 4) ||
+        (bandIndex === 3 && bandCount >= 5)) {
+        return color.multiplier !== null;
+    }
+    // 对于容差环
+    if ((bandIndex === 3 && bandCount === 4) ||
+        (bandIndex === 4 && bandCount >= 5)) {
+        return color.tolerance !== null;
+    }
+    
+    return true;
+}
+
+function t8_2_calculateResistanceValue() {
+    let value = 0;
+    let multiplier = 1;
+    let tolerance: number | null = null;
+    let calculation = "计算: ";
+
+    if (t8_2_bandCount.value === 3) {
+        // 3色环: 第一位 + 第二位 × 乘数
+        const firstDigit = t8_2_colors[t8_2_bandIndices.value[0]].value || 0;
+        const secondDigit = t8_2_colors[t8_2_bandIndices.value[1]].value || 0;
+        value = firstDigit * 10 + secondDigit;
+        multiplier = t8_2_colors[t8_2_bandIndices.value[2]].multiplier || 1;
+        tolerance = 20; // 3色环默认为±20%
+        calculation += `${firstDigit}*10 + ${secondDigit}*1 = ${value}`;
+    } else if (t8_2_bandCount.value === 4) {
+        // 4色环: 第一位 + 第二位 × 乘数, 最后一位为容差
+        const firstDigit = t8_2_colors[t8_2_bandIndices.value[0]].value || 0;
+        const secondDigit = t8_2_colors[t8_2_bandIndices.value[1]].value || 0;
+        value = firstDigit * 10 + secondDigit;
+        multiplier = t8_2_colors[t8_2_bandIndices.value[2]].multiplier || 1;
+        tolerance = t8_2_colors[t8_2_bandIndices.value[3]].tolerance;
+        calculation += `${firstDigit}*10 + ${secondDigit}*1 = ${value}`;
+    } else if (t8_2_bandCount.value === 5) {
+        // 5色环: 第一位 + 第二位 + 第三位 × 乘数, 最后一位为容差
+        const firstDigit = t8_2_colors[t8_2_bandIndices.value[0]].value || 0;
+        const secondDigit = t8_2_colors[t8_2_bandIndices.value[1]].value || 0;
+        const thirdDigit = t8_2_colors[t8_2_bandIndices.value[2]].value || 0;
+        value = firstDigit * 100 + secondDigit * 10 + thirdDigit;
+        multiplier = t8_2_colors[t8_2_bandIndices.value[3]].multiplier || 1;
+        tolerance = t8_2_colors[t8_2_bandIndices.value[4]].tolerance;
+        calculation += `${firstDigit}*100 + ${secondDigit}*10 + ${thirdDigit}*1 = ${value}`;
+    } else if (t8_2_bandCount.value === 6) {
+        // 6色环: 第一位 + 第二位 + 第三位 × 乘数, 第5位为容差, 第6位为温度系数
+        const firstDigit = t8_2_colors[t8_2_bandIndices.value[0]].value || 0;
+        const secondDigit = t8_2_colors[t8_2_bandIndices.value[1]].value || 0;
+        const thirdDigit = t8_2_colors[t8_2_bandIndices.value[2]].value || 0;
+        value = firstDigit * 100 + secondDigit * 10 + thirdDigit;
+        multiplier = t8_2_colors[t8_2_bandIndices.value[3]].multiplier || 1;
+        tolerance = t8_2_colors[t8_2_bandIndices.value[4]].tolerance;
+        calculation += `${firstDigit}*100 + ${secondDigit}*10 + ${thirdDigit}*1 = ${value}`;
+    }
+
+    const finalValue = value * multiplier;
+    let displayValue = "";
+
+    if (finalValue >= 1000000) {
+        displayValue = (finalValue / 1000000) + "MΩ";
+    } else if (finalValue >= 1000) {
+        displayValue = (finalValue / 1000) + "kΩ";
+    } else {
+        displayValue = finalValue + "Ω";
+    }
+
+    if (tolerance !== null) {
+        displayValue += ` ±${tolerance}%`;
+    }
+
+    t8_2_resistanceValue.value = displayValue;
+    t8_2_detailedCalculation.value = calculation + ` × ${multiplier} = ${finalValue}Ω, 容差: ±${tolerance}%`;
+    
+    if (t8_2_bandCount.value === 6) {
+        const tempCoeff = t8_2_colors[t8_2_bandIndices.value[5]].value || 0;
+        t8_2_detailedCalculation.value += `, 温度系数: ${tempCoeff}ppm/°C`;
+    }
+}
+
+// 根据选择的色环数量更新示例数组
+function t8_2_updateBandCount() {
+    // 根据选择的色环数量调整数组
+    if (t8_2_bandCount.value === 3) {
+        t8_2_bandIndices.value = [1, 0, 2]; // 棕色, 黑色, 红色
+    } else if (t8_2_bandCount.value === 4) {
+        t8_2_bandIndices.value = [1, 0, 2, 10]; // 棕色, 黑色, 红色, 金色
+    } else if (t8_2_bandCount.value === 5) {
+        t8_2_bandIndices.value = [1, 0, 0, 2, 10]; // 棕色, 黑色, 黑色, 红色, 金色
+    } else if (t8_2_bandCount.value === 6) {
+        t8_2_bandIndices.value = [1, 0, 0, 2, 10, 1]; // 棕色, 黑色, 黑色, 红色, 金色, 棕色
+    }
+    
+    // 重新计算电阻值
+    t8_2_calculateResistanceValue();
+}
+
+// 更新电阻条颜色
+function t8_2_updateBandColor(index: number, colorIndex: number) {
+    t8_2_bandIndices.value[index] = colorIndex;
+    t8_2_calculateResistanceValue();
+}
+
+// 初始化电阻计算器
+function t8_2_initResistorCalculator() {
+    t8_2_calculateResistanceValue();
+}
+
+// 监听工具类型变化，如果切换到电阻计算器就初始化
+watch(() => props.tooltype, (newType) => {
+    if (newType === 't8-2') {
+        t8_2_initResistorCalculator();
+    }
+});
+
+const t8_1_registerData: RegisterInfo[] = [
+    {
+        width: "8 位",
+        range: "2^8 = 256",
+        maxValue: "0xFF (255)",
+        applications: "早期的单片机 8051"
+    },
+    {
+        width: "16 位",
+        range: "2^16 = 65536",
+        maxValue: "0xFFFF (65535)",
+        applications: "X86系列的算组 8086、MSP430系列单片机"
+    },
+    {
+        width: "32 位",
+        range: "2^32 = 4294967296",
+        maxValue: "0xFFFFFFFF (4294967295)",
+        applications: "早期的终端、个人计算机和服务器"
+    },
+    {
+        width: "64 位",
+        range: "2^64 = 18446744073709551616",
+        maxValue: "0xFFFFFFFFFFFFFFFF",
+        applications: "目前主流的移动智能终端、个人计算机和服务器"
+    }
+];
+
 // 生成UUID函数
 function generateUUID() {
     t5_6_generatedUUIDs.value = [];
@@ -5924,23 +6119,23 @@ func openBrowser(url string) error {
         </div>
 
         <div v-show="tooltype == 't3-7'" class="one-tool">
-            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+             <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
                 <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="常用浏览器UA" @back="switchToMenu"
                     subtitle="浏览器User-Agent字符串">
-                    <template #extra>
-                        <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
-                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
-                            </a-button>
-                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
-                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
-                        </div>
-                    </template>
-                </a-page-header>
-            </div>
-            <div class="one-tool-content">
+                     <template #extra>
+                         <div class="can_touch">
+                             <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                     #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                             </a-button>
+                             <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                     #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                         </div>
+                     </template>
+                 </a-page-header>
+             </div>
+             <div class="one-tool-content">
                 <a-row class="page-content custom-scrollbar">
-                    <a-col :span="24">
+                     <a-col :span="24">
                         <div v-for="category in browserUAList" :key="category.category" style="margin-bottom: 20px;">
                             <h3 style="margin-bottom: 10px; padding-left: 10px; border-left: 4px solid #165dff;">{{ category.category }}</h3>
                             <a-table 
@@ -5957,13 +6152,13 @@ func openBrowser(url string) error {
                                 <template #value="{ record }">
                                     <div style="word-break: break-all; font-family: monospace; font-size: 12px;">
                                         {{ record.value }}
-                                    </div>
+                                 </div>
                                 </template>
                                 <template #operation="{ record }">
                                     <a-button size="small" type="primary" @click="copyUA(record.value)">复制</a-button>
                                 </template>
                             </a-table>
-                        </div>
+                             </div>
                         
                         <div style="margin-top: 20px; background-color: #f9f9f9; padding: 15px; border-radius: 6px;">
                             <h4 style="margin-top: 0;">关于User-Agent</h4>
@@ -5976,30 +6171,30 @@ func openBrowser(url string) error {
                                 <li>网络爬虫开发</li>
                                         </ul>
                             <p style="margin-bottom: 0;">注意：过度依赖User-Agent进行功能判断可能导致兼容性问题，现代Web开发更推荐使用特性检测。</p>
-                        </div>
-                    </a-col>
-                </a-row>
-            </div>
-        </div>
+                         </div>
+                     </a-col>
+                 </a-row>
+             </div>
+         </div>
 
         <div v-show="tooltype == 't7-3'" class="one-tool">
-            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+             <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
                 <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="MQTT监听工具" @back="switchToMenu"
                     subtitle="MQTT连接测试工具">
-                    <template #extra>
-                        <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
-                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
-                            </a-button>
-                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
-                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
-                        </div>
-                    </template>
-                </a-page-header>
-            </div>
-            <div class="one-tool-content">
-                <a-row class="page-content custom-scrollbar">
-                    <a-col :span="24">
+                     <template #extra>
+                         <div class="can_touch">
+                             <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                     #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                             </a-button>
+                             <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                     #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                         </div>
+                     </template>
+                 </a-page-header>
+             </div>
+             <div class="one-tool-content">
+                 <a-row class="page-content custom-scrollbar">
+                     <a-col :span="24">
                                                                           <!-- 连接设置区 -->
                          <a-card title="连接设置" :style="{ marginBottom: '15px', borderRadius: '8px' }" :bordered="true" :hover="true">
                              <div style="display: flex; align-items: center; flex-wrap: wrap;">
@@ -6062,18 +6257,18 @@ func openBrowser(url string) error {
                                          <a-input-number v-model="mqtt_max_logs" :min="100" :max="10000" :step="100" 
                                                         style="width: 100px;" size="small" />
                                      </div>
-                                 </div>
-                                 <div>
-                                     <a-button size="small" @click="clearMqttLogs" type="outline">清空日志</a-button>
-                                 </div>
                              </div>
+                             <div>
+                                     <a-button size="small" @click="clearMqttLogs" type="outline">清空日志</a-button>
+                             </div>
+                         </div>
 
                              <!-- 日志数量警告 -->
                              <div v-if="mqtt_logs.length >= mqtt_max_logs * 0.9" style="margin-bottom: 10px;">
                                  <a-alert type="warning" :style="{ fontSize: '12px' }">
                                      日志数量已接近上限 ({{ mqtt_logs.length }}/{{ mqtt_max_logs }})，旧日志将自动清理以释放内存
                                  </a-alert>
-                             </div>
+                                 </div>
                              
                              <div class="mqtt-log-container custom-scrollbar" style="height: 300px; overflow-y: auto; border: 1px solid #eee; padding: 15px; border-radius: 8px; width: 96%; margin: 0 auto; box-shadow: inset 0 0 5px rgba(0,0,0,0.05);">
                                  <div v-for="log in mqtt_logs" :key="log.id" class="mqtt-log-item" :class="`mqtt-log-${log.type}`">
@@ -6090,8 +6285,8 @@ func openBrowser(url string) error {
                                  </div>
                                  <div v-if="mqtt_logs.length === 0" class="mqtt-log-empty">
                                      暂无日志记录
-                                 </div>
                              </div>
+                         </div>
                          </a-card>
                          
                          <!-- 使用说明 -->
@@ -6142,29 +6337,29 @@ func openBrowser(url string) error {
                                  </div>
                              </div>
                         </a-card>
-                    </a-col>
-                </a-row>
-            </div>
-        </div>
+                     </a-col>
+                 </a-row>
+             </div>
+         </div>
 
         <div v-show="tooltype == 't7-4'" class="one-tool">
-            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+             <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
                 <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="MQTT广播工具" @back="switchToMenu"
                     subtitle="MQTT消息发布工具">
-                    <template #extra>
-                        <div class="can_touch">
-                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
-                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
-                            </a-button>
-                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
-                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
-    </div>
-</template>
-                </a-page-header>
-            </div>
-            <div class="one-tool-content">
-                <a-row class="page-content custom-scrollbar">
-                    <a-col :span="24">
+                     <template #extra>
+                         <div class="can_touch">
+                             <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                     #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                             </a-button>
+                             <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                     #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                         </div>
+                     </template>
+                 </a-page-header>
+             </div>
+             <div class="one-tool-content">
+                 <a-row class="page-content custom-scrollbar">
+                     <a-col :span="24">
                         <!-- 连接设置区 -->
                         <a-card title="广播设置" :style="{ marginBottom: '15px', borderRadius: '8px' }" :bordered="true" :hover="true">
                             <div style="display: flex; align-items: center; flex-wrap: wrap;">
@@ -6227,7 +6422,7 @@ func openBrowser(url string) error {
                             <div style="margin-top: 15px;">
                                 <a-alert v-if="mqtt_pub_connected" type="success" :style="{ fontWeight: '500' }">
                                     正在持续广播中，每 {{ mqtt_pub_interval_time }} 秒发送一次消息到主题: {{ mqtt_pub_topic }}
-                                </a-alert>
+                         </a-alert>
                             </div>
                         </a-card>
 
@@ -6276,7 +6471,7 @@ func openBrowser(url string) error {
                             <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
                                     #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
-                    </template>
+                                     </template>
                 </a-page-header>
             </div>
             <div class="one-tool-content">
@@ -6353,7 +6548,7 @@ func openBrowser(url string) error {
                             <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
                                     #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
-                    </template>
+                             </template>
                 </a-page-header>
             </div>
             <div class="one-tool-content">
@@ -6407,7 +6602,7 @@ func openBrowser(url string) error {
                                         <template #icon><icon-copy /></template>
                                     </a-button>
                                 </div>
-                            </template>
+                                     </template>
                             <template #protection="{ record }">
                                 <a-tag 
                                     :color="record.protection === 'dangerous' ? 'red' : 'green'"
@@ -6415,8 +6610,8 @@ func openBrowser(url string) error {
                                 >
                                     {{ record.protection === 'dangerous' ? '危险权限' : '普通权限' }}
                                 </a-tag>
-                            </template>
-                        </a-table>
+                             </template>
+                         </a-table>
 
                         <div style="margin-top: 20px;">
                             <a-collapse style="max-width: 100%;">
@@ -6470,7 +6665,7 @@ if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                             <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
                                     #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
     </div>
-</template>
+                                     </template>
                 </a-page-header>
             </div>
             <div class="one-tool-content">
@@ -6637,7 +6832,7 @@ if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                             <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
                                     #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
                         </div>
-                    </template>
+                             </template>
                 </a-page-header>
             </div>
             <div class="one-tool-content">
@@ -6714,7 +6909,7 @@ if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                                     >
                                         <template #char="{ record }">
                                             <span class="html-char-display">{{ record.char }}</span>
-                                        </template>
+                                     </template>
                                         <template #entity="{ record }">
                                             <div style="display: flex; align-items: center;">
                                                 <span style="flex: 1; font-family: monospace;">{{ record.entity }}</span>
@@ -6730,8 +6925,8 @@ if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                                         </template>
                                         <template #numeric="{ record }">
                                             <span style="font-family: monospace;">{{ record.numeric }}</span>
-                                        </template>
-                                    </a-table>
+                             </template>
+                         </a-table>
                                 </a-collapse-item>
                                 <a-collapse-item header="HTML特殊字符转义的使用场景" key="2">
                                     <div style="padding: 10px;">
@@ -6891,7 +7086,7 @@ xhr.send(JSON.stringify({ name: 'example' }));</code></pre>
                     </a-col>
                 </a-row>
             </div>
-        </div>
+                                     </div>
 
         <div v-show="tooltype == 't3-11'" class="one-tool">
             <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
@@ -7010,6 +7205,264 @@ xhr.send(JSON.stringify({ name: 'example' }));</code></pre>
             </div>
         </div>
 
+                <!-- t8-1 寄存器寻址范围 -->
+        <div v-show="tooltype == 't8-1'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="寄存器寻址范围" @back="switchToMenu"
+                    subtitle="显示不同位数寄存器的寻址范围">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar">
+                    <a-col :span="24">
+                        <div style="margin-bottom: 20px;">
+                            <a-alert type="info" show-icon>
+                                <div>
+                                    <p style="margin: 0 0 10px 0;"><strong>寄存器寻址范围说明</strong></p>
+                                    <p style="margin: 0;">寄存器的位数决定了可以直接访问的内存地址范围，也影响了系统的整体性能和兼容性。随着技术发展，从早期的8位单片机到现代的64位处理器，寻址能力不断提升。</p>
+                                </div>
+                            </a-alert>
+                        </div>
+
+                        <a-table 
+                            :columns="[
+                                { title: '通用寄存器的宽度', dataIndex: 'width', width: 180 },
+                                { title: '寻址范围', dataIndex: 'range', width: 220 },
+                                { title: '最大值', dataIndex: 'maxValue', width: 200 },
+                                { title: '应用场景', dataIndex: 'applications' }
+                            ]"
+                            :data="t8_1_registerData"
+                            :pagination="false"
+                            :bordered="true"
+                            style="margin-bottom: 20px;"
+                        />
+
+                        <div style="margin-top: 20px;">
+                            <a-collapse :default-active-key="['1']">
+                                <a-collapse-item header="技术细节说明" key="1">
+                                    <div class="register-details">
+                                        <div class="detail-section">
+                                            <h4 class="section-title">💾 寻址能力对比</h4>
+                                            <div class="info-grid">
+                                                <div class="info-item">
+                                                    <span class="bit-label">8位</span>
+                                                    <span class="description">256个位置 • 简单控制</span>
+                                                </div>
+                                                <div class="info-item">
+                                                    <span class="bit-label">16位</span>
+                                                    <span class="description">64KB空间 • 嵌入式系统</span>
+                                                </div>
+                                                <div class="info-item">
+                                                    <span class="bit-label">32位</span>
+                                                    <span class="description">4GB空间 • 桌面应用</span>
+                                                </div>
+                                                <div class="info-item">
+                                                    <span class="bit-label">64位</span>
+                                                    <span class="description">16EB空间 • 高性能计算</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="detail-section">
+                                            <h4 class="section-title">⏳ 发展历程</h4>
+                                            <div class="timeline">
+                                                <div class="timeline-item">
+                                                    <span class="year">1970s</span>
+                                                    <span class="event">8位处理器兴起 (Intel 8008/8080)</span>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="year">1980s</span>
+                                                    <span class="event">16位处理器普及 (Intel 8086/8088)</span>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="year">1990s</span>
+                                                    <span class="event">32位成为主流 (Intel 80386)</span>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="year">2000s+</span>
+                                                    <span class="event">64位占据主导地位</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="detail-section">
+                                            <h4 class="section-title">💡 实际应用要点</h4>
+                                            <div class="tips-container">
+                                                <div class="tip-item">实际可用内存小于理论最大值</div>
+                                                <div class="tip-item">64位系统通常使用48位地址空间</div>
+                                                <div class="tip-item">需平衡性能、功耗和成本考虑</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a-collapse-item>
+                            </a-collapse>
+                        </div>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
+        <!-- t8-2 电阻阻值计算 -->
+        <div v-show="tooltype == 't8-2'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="电阻阻值计算" @back="switchToMenu"
+                    subtitle="根据电阻上的彩色条纹计算电阻值">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar">
+                    <a-col :span="24">
+                        <div style="margin-bottom: 20px;">
+                            <a-alert type="info" show-icon>
+                                <div>
+                                    <p style="margin: 0 0 10px 0;"><strong>电阻色环计算器使用说明</strong></p>
+                                    <p style="margin: 0;">通过识别电阻上的彩色环带，可以精确确定电阻的阻值和允许误差范围。不同的色环数量对应不同的电阻精确度，常见的有3环、4环、5环和6环电阻。</p>
+                                </div>
+                            </a-alert>
+                        </div>
+
+                        <a-card title="电阻阻值计算器" style="margin-bottom: 20px;">
+                            <a-space direction="vertical" fill size="large">
+                                <a-radio-group v-model="t8_2_bandCount" type="button" @change="t8_2_updateBandCount">
+                                    <a-radio :value="3">3色环</a-radio>
+                                    <a-radio :value="4">4色环</a-radio>
+                                    <a-radio :value="5">5色环</a-radio>
+                                    <a-radio :value="6">6色环</a-radio>
+                                </a-radio-group>
+
+                                <!-- 电阻可视化 -->
+                                <div class="resistor-display">
+                                    <div class="resistor-body">
+                                        <div class="resistor-lead left-lead"></div>
+                                        <!-- 动态渲染电阻色环 -->
+                                        <div v-for="(colorIndex, index) in t8_2_bandIndices" :key="index" 
+                                            class="resistor-band" 
+                                            :style="{
+                                                backgroundColor: t8_2_colors[colorIndex].color,
+                                                color: t8_2_colors[colorIndex].textColor,
+                                                left: `${20 + index * (60 / t8_2_bandCount)}%`
+                                            }">
+                                        </div>
+                                        <div class="resistor-lead right-lead"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 色环选择器 -->
+                                <a-form layout="vertical">
+                                    <a-row :gutter="16">
+                                        <a-col v-for="(colorIndex, index) in t8_2_bandIndices" :key="index" :span="24 / t8_2_bandIndices.length">
+                                            <a-form-item :label="`第${index + 1}环`">
+                                                <a-select 
+                                                    :model-value="colorIndex"
+                                                    @change="(value: number) => t8_2_updateBandColor(index, value)">
+                                                    <a-option v-for="(color, cIndex) in t8_2_colors" :key="cIndex" :value="cIndex">
+                                                        <div style="display: flex; align-items: center;">
+                                                            <div style="width: 16px; height: 16px; margin-right: 8px; border-radius: 50%; border: 1px solid #ccc;" 
+                                                                :style="{ backgroundColor: color.color }">
+                                                            </div>
+                                                            {{ color.name }}
+                                                        </div>
+                                                    </a-option>
+                                                </a-select>
+                                            </a-form-item>
+                                        </a-col>
+                                    </a-row>
+                                </a-form>
+
+                                <!-- 计算结果显示 -->
+                                <a-result status="success" :title="t8_2_resistanceValue">
+                                    <template #subtitle>
+                                        <div>{{ t8_2_detailedCalculation }}</div>
+                                    </template>
+                                </a-result>
+                            </a-space>
+                        </a-card>
+
+                        <a-collapse :default-active-key="['1']">
+                            <a-collapse-item header="电阻色环说明" key="1">
+                                <div>
+                                    <h4>颜色对应数值</h4>
+                                    <a-table 
+                                        :columns="[
+                                            { title: '颜色', dataIndex: 'name' },
+                                            { 
+                                                title: '值', 
+                                                dataIndex: 'value',
+                                                render: ({ record }: any) => record.value !== null ? record.value : '-'
+                                            },
+                                            { 
+                                                title: '倍数', 
+                                                dataIndex: 'multiplier',
+                                                render: ({ record }: any) => record.multiplier !== null ? record.multiplier : '-'
+                                            },
+                                            { 
+                                                title: '误差(%)', 
+                                                dataIndex: 'tolerance',
+                                                render: ({ record }: any) => record.tolerance !== null ? `±${record.tolerance}%` : '-'
+                                            }
+                                        ]"
+                                        :data="t8_2_colors"
+                                        :pagination="false"
+                                        :bordered="true"
+                                        size="small"
+                                    />
+                                    
+                                    <h4 style="margin-top: 20px;">不同环数电阻说明</h4>
+                                    <a-descriptions bordered size="small" :column="1">
+                                        <a-descriptions-item label="3色环">
+                                            第1环: 第一位数值<br/>
+                                            第2环: 第二位数值<br/>
+                                            第3环: 倍率因子<br/>
+                                            (误差固定为±20%)
+                                        </a-descriptions-item>
+                                        <a-descriptions-item label="4色环">
+                                            第1环: 第一位数值<br/>
+                                            第2环: 第二位数值<br/>
+                                            第3环: 倍率因子<br/>
+                                            第4环: 误差值
+                                        </a-descriptions-item>
+                                        <a-descriptions-item label="5色环">
+                                            第1环: 第一位数值<br/>
+                                            第2环: 第二位数值<br/>
+                                            第3环: 第三位数值<br/>
+                                            第4环: 倍率因子<br/>
+                                            第5环: 误差值
+                                        </a-descriptions-item>
+                                        <a-descriptions-item label="6色环">
+                                            第1环: 第一位数值<br/>
+                                            第2环: 第二位数值<br/>
+                                            第3环: 第三位数值<br/>
+                                            第4环: 倍率因子<br/>
+                                            第5环: 误差值<br/>
+                                            第6环: 温度系数
+                                        </a-descriptions-item>
+                                    </a-descriptions>
+                                </div>
+                            </a-collapse-item>
+                        </a-collapse>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -7098,6 +7551,48 @@ xhr.send(JSON.stringify({ name: 'example' }));</code></pre>
     font-size: 20px;
     text-align: center;
     line-height: 42px;
+}
+
+/* 电阻阻值计算器样式 */
+.resistor-display {
+    margin: 20px auto;
+    width: 100%;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.resistor-body {
+    position: relative;
+    width: 80%;
+    height: 40px;
+    background-color: #d9d9d9;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.resistor-band {
+    position: absolute;
+    width: 10px;
+    height: 40px;
+    border-radius: 0;
+}
+
+.resistor-lead {
+    width: 50px;
+    height: 4px;
+    background-color: #a0a0a0;
+    position: absolute;
+}
+
+.left-lead {
+    left: -50px;
+}
+
+.right-lead {
+    right: -50px;
 }
 
 .t1-1-inputer {
@@ -7197,6 +7692,97 @@ code {
 }
 
 /* RESTful API工具样式 */
+
+/* 寄存器详情样式 */
+.register-details {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.detail-section {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d2129;
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background: #f7f8fa;
+    border-radius: 6px;
+    border-left: 3px solid #165dff;
+}
+
+.bit-label {
+    font-weight: 600;
+    color: #165dff;
+    min-width: 35px;
+    margin-right: 8px;
+}
+
+.description {
+    color: #4e5969;
+    font-size: 13px;
+}
+
+.timeline {
+    space-y: 6px;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #f2f3f5;
+}
+
+.timeline-item:last-child {
+    border-bottom: none;
+}
+
+.year {
+    font-weight: 600;
+    color: #ff7d00;
+    min-width: 60px;
+    margin-right: 12px;
+    font-size: 13px;
+}
+
+.event {
+    color: #4e5969;
+    font-size: 13px;
+}
+
+.tips-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tip-item {
+    padding: 8px 12px;
+    background: #fff7e6;
+    border-radius: 6px;
+    color: #86909c;
+    font-size: 13px;
+    border-left: 3px solid #ff7d00;
+}
 .rest-history-table {
     width: 100%;
     border-collapse: collapse;
