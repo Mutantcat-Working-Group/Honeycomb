@@ -1260,6 +1260,262 @@ const t8_3_filteredInstructions = computed(() => {
     return allInstructions;
 });
 
+// t8-4 通用寄存器速查
+interface RegisterDetail {
+    name: string;
+    fullName: string;
+    description: string;
+}
+
+interface DetailedInfo {
+    generalPurpose?: RegisterDetail[];
+    indexPointer?: RegisterDetail[];
+    segment?: RegisterDetail[];
+    control?: RegisterDetail[];
+}
+
+interface ChipRegister {
+    chipSeries: string;
+    architecture: string;
+    registerCount: number;
+    bitWidth: number;
+    registerNames: string;
+    specialRegisters: string;
+    applications: string;
+    category: string;
+    detailedInfo?: DetailedInfo;
+}
+
+const t8_4_registerData: ChipRegister[] = [
+    // ARM系列
+    {
+        chipSeries: "ARM Cortex-M0/M0+",
+        architecture: "ARMv6-M",
+        registerCount: 13,
+        bitWidth: 32,
+        registerNames: "R0-R12, SP(R13), LR(R14), PC(R15)",
+        specialRegisters: "SP(栈指针), LR(链接寄存器), PC(程序计数器)",
+        applications: "超低功耗嵌入式系统, IoT设备",
+        category: "ARM"
+    },
+    {
+        chipSeries: "ARM Cortex-M3/M4",
+        architecture: "ARMv7-M",
+        registerCount: 13,
+        bitWidth: 32,
+        registerNames: "R0-R12, SP(R13), LR(R14), PC(R15)",
+        specialRegisters: "SP(栈指针), LR(链接寄存器), PC(程序计数器), PSR(状态寄存器)",
+        applications: "中高性能嵌入式系统, 实时控制",
+        category: "ARM"
+    },
+    {
+        chipSeries: "ARM Cortex-A系列",
+        architecture: "ARMv7-A/ARMv8-A",
+        registerCount: 31,
+        bitWidth: 64,
+        registerNames: "X0-X30(64位), W0-W30(32位), SP, PC",
+        specialRegisters: "SP(栈指针), PC(程序计数器), CPSR(状态寄存器)",
+        applications: "智能手机, 平板电脑, 服务器",
+        category: "ARM"
+    },
+    
+    // x86系列
+    {
+        chipSeries: "8086/8088 汇编",
+        architecture: "x86-16",
+        registerCount: 14,
+        bitWidth: 16,
+        registerNames: "AX, BX, CX, DX, SI, DI, BP, SP, CS, DS, ES, SS, IP, FLAGS",
+        specialRegisters: "SP(栈指针), IP(指令指针), FLAGS(标志寄存器), 段寄存器(CS,DS,ES,SS)",
+        applications: "16位汇编编程, 系统底层开发, 教学",
+        category: "x86",
+        detailedInfo: {
+            generalPurpose: [
+                { name: "AX", fullName: "累加器", description: "主要用于算术运算，可分为AH(高8位)和AL(低8位)" },
+                { name: "BX", fullName: "基址寄存器", description: "用作基址寻址，可分为BH和BL" },
+                { name: "CX", fullName: "计数寄存器", description: "用于循环计数和字符串操作，可分为CH和CL" },
+                { name: "DX", fullName: "数据寄存器", description: "用于I/O操作和乘除法扩展，可分为DH和DL" }
+            ],
+            indexPointer: [
+                { name: "SI", fullName: "源变址寄存器", description: "字符串操作的源地址指针" },
+                { name: "DI", fullName: "目的变址寄存器", description: "字符串操作的目的地址指针" },
+                { name: "BP", fullName: "基址指针", description: "栈帧基址指针，用于访问栈中数据" },
+                { name: "SP", fullName: "栈指针", description: "指向栈顶的指针" }
+            ],
+            segment: [
+                { name: "CS", fullName: "代码段寄存器", description: "指向当前执行的代码段" },
+                { name: "DS", fullName: "数据段寄存器", description: "指向默认的数据段" },
+                { name: "ES", fullName: "附加段寄存器", description: "用于字符串操作的目标段" },
+                { name: "SS", fullName: "栈段寄存器", description: "指向当前栈段" }
+            ],
+            control: [
+                { name: "IP", fullName: "指令指针", description: "指向下一条要执行的指令" },
+                { name: "FLAGS", fullName: "标志寄存器", description: "包含状态标志和控制标志" }
+            ]
+        }
+    },
+    {
+        chipSeries: "x86-32 (IA-32)",
+        architecture: "x86-32",
+        registerCount: 8,
+        bitWidth: 32,
+        registerNames: "EAX, EBX, ECX, EDX, ESI, EDI, ESP, EBP",
+        specialRegisters: "ESP(栈指针), EBP(基址指针), EIP(指令指针)",
+        applications: "传统PC, 嵌入式x86系统",
+        category: "x86"
+    },
+    {
+        chipSeries: "x86-64 (AMD64)",
+        architecture: "x86-64",
+        registerCount: 16,
+        bitWidth: 64,
+        registerNames: "RAX, RBX, RCX, RDX, RSI, RDI, RSP, RBP, R8-R15",
+        specialRegisters: "RSP(栈指针), RBP(基址指针), RIP(指令指针)",
+        applications: "现代PC, 服务器, 工作站",
+        category: "x86"
+    },
+    
+    // RISC-V系列
+    {
+        chipSeries: "RISC-V RV32I",
+        architecture: "RISC-V",
+        registerCount: 32,
+        bitWidth: 32,
+        registerNames: "x0(zero), x1(ra), x2(sp), x3(gp), x4(tp), x5-x31",
+        specialRegisters: "x0(零寄存器), x1(返回地址), x2(栈指针), PC",
+        applications: "嵌入式系统, IoT, 开源处理器",
+        category: "RISC-V"
+    },
+    {
+        chipSeries: "RISC-V RV64I",
+        architecture: "RISC-V",
+        registerCount: 32,
+        bitWidth: 64,
+        registerNames: "x0(zero), x1(ra), x2(sp), x3(gp), x4(tp), x5-x31",
+        specialRegisters: "x0(零寄存器), x1(返回地址), x2(栈指针), PC",
+        applications: "高性能计算, 服务器, 桌面系统",
+        category: "RISC-V"
+    },
+    
+    // MIPS系列
+    {
+        chipSeries: "MIPS32",
+        architecture: "MIPS32",
+        registerCount: 32,
+        bitWidth: 32,
+        registerNames: "$0(zero), $1(at), $2-$3(v0-v1), $4-$7(a0-a3), $8-$15(t0-t7), $16-$23(s0-s7), $24-$25(t8-t9), $26-$27(k0-k1), $28(gp), $29(sp), $30(fp), $31(ra)",
+        specialRegisters: "$0(零寄存器), $29(栈指针), $31(返回地址), PC, HI, LO",
+        applications: "路由器, 嵌入式系统, 学术教学",
+        category: "MIPS"
+    },
+    {
+        chipSeries: "MIPS64",
+        architecture: "MIPS64",
+        registerCount: 32,
+        bitWidth: 64,
+        registerNames: "$0(zero), $1(at), $2-$3(v0-v1), $4-$7(a0-a3), $8-$15(t0-t7), $16-$23(s0-s7), $24-$25(t8-t9), $26-$27(k0-k1), $28(gp), $29(sp), $30(fp), $31(ra)",
+        specialRegisters: "$0(零寄存器), $29(栈指针), $31(返回地址), PC, HI, LO",
+        applications: "高性能嵌入式, 网络设备",
+        category: "MIPS"
+    },
+    
+    // AVR系列
+    {
+        chipSeries: "AVR (Arduino)",
+        architecture: "AVR",
+        registerCount: 32,
+        bitWidth: 8,
+        registerNames: "R0-R31",
+        specialRegisters: "R26:R27(X), R28:R29(Y), R30:R31(Z), SP, PC",
+        applications: "Arduino, 8位嵌入式系统",
+        category: "8-bit"
+    },
+    
+    // 8051系列
+    {
+        chipSeries: "8051/8052",
+        architecture: "MCS-51",
+        registerCount: 4,
+        bitWidth: 8,
+        registerNames: "A(累加器), B, R0-R7(寄存器组), DPTR",
+        specialRegisters: "A(累加器), B(乘除寄存器), SP(栈指针), PC, PSW",
+        applications: "传统8位嵌入式, 单片机教学",
+        category: "8-bit"
+    },
+    
+    // PIC系列
+    {
+        chipSeries: "PIC16系列",
+        architecture: "PIC",
+        registerCount: 1,
+        bitWidth: 8,
+        registerNames: "W(工作寄存器)",
+        specialRegisters: "W(工作寄存器), PC, STATUS, FSR",
+        applications: "简单嵌入式控制, 传感器节点",
+        category: "8-bit"
+    },
+    {
+        chipSeries: "PIC32系列",
+        architecture: "PIC32",
+        registerCount: 32,
+        bitWidth: 32,
+        registerNames: "$0(zero), $1(at), $2-$31",
+        specialRegisters: "基于MIPS架构的寄存器组织",
+        applications: "32位嵌入式应用, 图形处理",
+        category: "PIC"
+    },
+    
+    // PowerPC系列
+    {
+        chipSeries: "PowerPC",
+        architecture: "PowerPC",
+        registerCount: 32,
+        bitWidth: 32,
+        registerNames: "GPR0-GPR31",
+        specialRegisters: "LR(链接寄存器), CTR(计数寄存器), CR(条件寄存器)",
+        applications: "嵌入式, 汽车电子, 工业控制",
+        category: "PowerPC"
+    },
+    
+    // DSP系列
+    {
+        chipSeries: "TI C6000 DSP",
+        architecture: "C6000",
+        registerCount: 32,
+        bitWidth: 32,
+        registerNames: "A0-A15, B0-B15",
+        specialRegisters: "A端寄存器(A0-A15), B端寄存器(B0-B15)",
+        applications: "数字信号处理, 音频视频处理",
+        category: "DSP"
+    }
+];
+
+const t8_4_searchTerm = ref("");
+const t8_4_categoryFilter = ref("all");
+const t8_4_selectedChip = ref<ChipRegister | null>(null);
+
+// 过滤寄存器数据
+const t8_4_filteredRegisters = computed(() => {
+    let filtered = t8_4_registerData;
+    
+    // 按分类过滤
+    if (t8_4_categoryFilter.value !== "all") {
+        filtered = filtered.filter(chip => chip.category === t8_4_categoryFilter.value);
+    }
+    
+    // 按搜索词过滤
+    if (t8_4_searchTerm.value) {
+        const term = t8_4_searchTerm.value.toLowerCase();
+        filtered = filtered.filter(chip => 
+            chip.chipSeries.toLowerCase().includes(term) ||
+            chip.architecture.toLowerCase().includes(term) ||
+            chip.applications.toLowerCase().includes(term)
+        );
+    }
+    
+    return filtered;
+});
+
 // 监听工具类型变化，如果切换到电阻计算器就初始化
 watch(() => props.tooltype, (newType) => {
     if (newType === 't8-2') {
@@ -7591,7 +7847,7 @@ xhr.send(JSON.stringify({ name: 'example' }));</code></pre>
                                     pageSize: 10,
                                     showSizeChanger: true,
                                     showQuickJumper: true,
-                                    showTotal: (total) => `共 ${total} 条指令集`
+                                    showTotal: (total: number) => `共 ${total} 条指令集`
                                 }"
                                 :bordered="true"
                                 size="middle"
@@ -7696,6 +7952,353 @@ xhr.send(JSON.stringify({ name: 'example' }));</code></pre>
                                         • <strong>通用应用</strong>：RV64G（64位通用组合，包含IMAFD）<br/>
                                         • <strong>高性能计算</strong>：RV64G + V（增加向量处理能力）<br/>
                                         • <strong>系统软件</strong>：RV64G + S + H（增加系统级支持）
+                                    </p>
+                                </div>
+                            </a-alert>
+                        </div>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
+        <!-- t8-4 通用寄存器速查 -->
+        <div v-show="tooltype == 't8-4'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="通用寄存器速查" @back="switchToMenu"
+                    subtitle="各种芯片架构的通用寄存器信息">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar">
+                    <a-col :span="24">
+                        <div style="margin-bottom: 20px;">
+                            <a-alert type="info" show-icon>
+                                <div>
+                                    <p style="margin: 0 0 10px 0;"><strong>通用寄存器架构对比</strong></p>
+                                    <p style="margin: 0;">不同处理器架构具有不同的寄存器组织方式，了解各种架构的寄存器特点有助于选择合适的处理器和优化程序性能。本工具汇总了常见芯片架构的寄存器信息。</p>
+                                </div>
+                            </a-alert>
+                        </div>
+
+                        <a-card title="芯片选择与搜索" style="margin-bottom: 20px;">
+                            <a-space direction="vertical" size="large" fill>
+                                <a-row :gutter="16">
+                                    <a-col :span="8">
+                                        <a-input v-model="t8_4_searchTerm" placeholder="搜索芯片系列、架构或应用..." allow-clear>
+                                            <template #prefix>
+                                                <icon-search />
+                                            </template>
+                                        </a-input>
+                                    </a-col>
+                                    <a-col :span="8">
+                                        <a-select v-model="t8_4_categoryFilter" placeholder="选择架构分类" allow-clear>
+                                            <a-option value="all">全部架构</a-option>
+                                            <a-option value="ARM">ARM架构</a-option>
+                                            <a-option value="x86">x86架构</a-option>
+                                            <a-option value="RISC-V">RISC-V架构</a-option>
+                                            <a-option value="MIPS">MIPS架构</a-option>
+                                            <a-option value="8-bit">8位处理器</a-option>
+                                            <a-option value="PIC">PIC架构</a-option>
+                                            <a-option value="PowerPC">PowerPC架构</a-option>
+                                            <a-option value="DSP">DSP处理器</a-option>
+                                        </a-select>
+                                    </a-col>
+                                    <a-col :span="8">
+                                        <a-select 
+                                            v-model="t8_4_selectedChip" 
+                                            placeholder="选择要查看的芯片" 
+                                            allow-clear
+                                            value-key="chipSeries"
+                                        >
+                                            <a-option v-for="chip in t8_4_filteredRegisters" :key="chip.chipSeries" :value="chip" :label="chip.chipSeries">
+                                                <div style="display: flex; align-items: center; gap: 8px;">
+                                                    <a-tag :color="(() => {
+                                                        const colors: Record<string, string> = {
+                                                            'ARM': 'blue',
+                                                            'x86': 'green', 
+                                                            'RISC-V': 'orange',
+                                                            'MIPS': 'purple',
+                                                            '8-bit': 'red',
+                                                            'PIC': 'cyan',
+                                                            'PowerPC': 'magenta',
+                                                            'DSP': 'gold'
+                                                        };
+                                                        return colors[chip.category] || 'default';
+                                                    })()" size="small">
+                                                        {{ chip.category }}
+                                                    </a-tag>
+                                                    <span>{{ chip.chipSeries }}</span>
+                                                </div>
+                                            </a-option>
+                                        </a-select>
+                                    </a-col>
+                                </a-row>
+                            </a-space>
+                        </a-card>
+
+                        <!-- 芯片概览信息 -->
+                        <a-card v-if="!t8_4_selectedChip" title="芯片架构概览" style="margin-bottom: 20px;">
+                            <a-row :gutter="[16, 16]">
+                                <a-col v-for="chip in t8_4_filteredRegisters" :key="chip.chipSeries" :span="8">
+                                    <a-card 
+                                        class="chip-overview-card" 
+                                        size="small" 
+                                        hoverable
+                                        @click="t8_4_selectedChip = chip"
+                                        style="cursor: pointer;"
+                                    >
+                                        <template #title>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <a-tag :color="(() => {
+                                                    const colors: Record<string, string> = {
+                                                        'ARM': 'blue',
+                                                        'x86': 'green', 
+                                                        'RISC-V': 'orange',
+                                                        'MIPS': 'purple',
+                                                        '8-bit': 'red',
+                                                        'PIC': 'cyan',
+                                                        'PowerPC': 'magenta',
+                                                        'DSP': 'gold'
+                                                    };
+                                                    return colors[chip.category] || 'default';
+                                                })()" size="small">
+                                                    {{ chip.category }}
+                                                </a-tag>
+                                                <span style="font-size: 13px;">{{ chip.chipSeries }}</span>
+                                            </div>
+                                        </template>
+                                        <div style="font-size: 12px; line-height: 1.5;">
+                                            <p style="margin: 0 0 4px 0;"><strong>架构：</strong>{{ chip.architecture }}</p>
+                                            <p style="margin: 0 0 4px 0;"><strong>寄存器：</strong>{{ chip.registerCount }}个 × {{ chip.bitWidth }}位</p>
+                                            <p style="margin: 0;"><strong>应用：</strong>{{ chip.applications }}</p>
+                                        </div>
+                                    </a-card>
+                                </a-col>
+                            </a-row>
+                            <div v-if="t8_4_filteredRegisters.length === 0" style="text-align: center; color: #999; padding: 40px 0;">
+                                <icon-search style="font-size: 48px; margin-bottom: 16px;" />
+                                <p>未找到匹配的芯片架构</p>
+                            </div>
+                        </a-card>
+
+                        <!-- 选中芯片的详细信息 -->
+                        <a-card v-if="t8_4_selectedChip" style="margin-bottom: 20px;">
+                            <template #title>
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <a-tag :color="(() => {
+                                            const colors: Record<string, string> = {
+                                                'ARM': 'blue',
+                                                'x86': 'green', 
+                                                'RISC-V': 'orange',
+                                                'MIPS': 'purple',
+                                                '8-bit': 'red',
+                                                'PIC': 'cyan',
+                                                'PowerPC': 'magenta',
+                                                'DSP': 'gold'
+                                            };
+                                            return colors[t8_4_selectedChip.category] || 'default';
+                                        })()">
+                                            {{ t8_4_selectedChip.category }}
+                                        </a-tag>
+                                        <span>{{ t8_4_selectedChip.chipSeries }} 寄存器详情</span>
+                                    </div>
+                                    <a-button type="text" @click="t8_4_selectedChip = null">
+                                        <template #icon><icon-close /></template>
+                                        返回概览
+                                    </a-button>
+                                </div>
+                            </template>
+                            
+                            <a-descriptions bordered :column="2" style="margin-bottom: 20px;">
+                                <a-descriptions-item label="芯片系列">{{ t8_4_selectedChip.chipSeries }}</a-descriptions-item>
+                                <a-descriptions-item label="架构">{{ t8_4_selectedChip.architecture }}</a-descriptions-item>
+                                <a-descriptions-item label="寄存器数量">{{ t8_4_selectedChip.registerCount }}个</a-descriptions-item>
+                                <a-descriptions-item label="位宽">{{ t8_4_selectedChip.bitWidth }}位</a-descriptions-item>
+                                <a-descriptions-item label="主要应用" :span="2">{{ t8_4_selectedChip.applications }}</a-descriptions-item>
+                            </a-descriptions>
+
+                            <!-- 基本寄存器信息 -->
+                            <a-row :gutter="16" style="margin-bottom: 16px;">
+                                <a-col :span="12">
+                                    <a-card title="寄存器名称" size="small">
+                                        <div style="font-family: monospace; line-height: 1.8; font-size: 13px;">
+                                            {{ t8_4_selectedChip.registerNames }}
+                                        </div>
+                                    </a-card>
+                                </a-col>
+                                <a-col :span="12">
+                                    <a-card title="特殊寄存器" size="small">
+                                        <div style="line-height: 1.8; font-size: 13px;">
+                                            {{ t8_4_selectedChip.specialRegisters }}
+                                        </div>
+                                    </a-card>
+                                </a-col>
+                            </a-row>
+
+                            <!-- 详细寄存器信息（仅8086显示） -->
+                            <div v-if="t8_4_selectedChip.detailedInfo">
+                                <a-divider>详细寄存器说明</a-divider>
+                                <a-row :gutter="16">
+                                    <a-col v-if="t8_4_selectedChip.detailedInfo.generalPurpose" :span="12">
+                                        <a-card title="🔧 通用寄存器" size="small" style="margin-bottom: 16px;">
+                                            <div v-for="reg in t8_4_selectedChip.detailedInfo.generalPurpose" :key="reg.name" class="register-item">
+                                                <div class="register-header">
+                                                    <a-tag color="blue" size="small">{{ reg.name }}</a-tag>
+                                                    <span class="register-fullname">{{ reg.fullName }}</span>
+                                                </div>
+                                                <div class="register-description">{{ reg.description }}</div>
+                                            </div>
+                                        </a-card>
+                                    </a-col>
+                                    <a-col v-if="t8_4_selectedChip.detailedInfo.indexPointer" :span="12">
+                                        <a-card title="📍 变址和指针寄存器" size="small" style="margin-bottom: 16px;">
+                                            <div v-for="reg in t8_4_selectedChip.detailedInfo.indexPointer" :key="reg.name" class="register-item">
+                                                <div class="register-header">
+                                                    <a-tag color="green" size="small">{{ reg.name }}</a-tag>
+                                                    <span class="register-fullname">{{ reg.fullName }}</span>
+                                                </div>
+                                                <div class="register-description">{{ reg.description }}</div>
+                                            </div>
+                                        </a-card>
+                                    </a-col>
+                                    <a-col v-if="t8_4_selectedChip.detailedInfo.segment" :span="12">
+                                        <a-card title="🗂️ 段寄存器" size="small" style="margin-bottom: 16px;">
+                                            <div v-for="reg in t8_4_selectedChip.detailedInfo.segment" :key="reg.name" class="register-item">
+                                                <div class="register-header">
+                                                    <a-tag color="orange" size="small">{{ reg.name }}</a-tag>
+                                                    <span class="register-fullname">{{ reg.fullName }}</span>
+                                                </div>
+                                                <div class="register-description">{{ reg.description }}</div>
+                                            </div>
+                                        </a-card>
+                                    </a-col>
+                                    <a-col v-if="t8_4_selectedChip.detailedInfo.control" :span="12">
+                                        <a-card title="⚙️ 控制寄存器" size="small" style="margin-bottom: 16px;">
+                                            <div v-for="reg in t8_4_selectedChip.detailedInfo.control" :key="reg.name" class="register-item">
+                                                <div class="register-header">
+                                                    <a-tag color="red" size="small">{{ reg.name }}</a-tag>
+                                                    <span class="register-fullname">{{ reg.fullName }}</span>
+                                                </div>
+                                                <div class="register-description">{{ reg.description }}</div>
+                                            </div>
+                                        </a-card>
+                                    </a-col>
+                                </a-row>
+                            </div>
+                        </a-card>
+
+                        <a-collapse :default-active-key="['1', '2', '3']">
+                            <a-collapse-item header="ARM架构寄存器详解" key="1">
+                                <div class="register-details">
+                                    <h4>🔧 ARM Cortex系列对比</h4>
+                                    <a-descriptions bordered size="small" :column="1">
+                                        <a-descriptions-item label="Cortex-M0/M0+">
+                                            <strong>ARMv6-M架构</strong><br/>
+                                            • 13个32位通用寄存器(R0-R12)<br/>
+                                            • 特殊寄存器：SP(R13)、LR(R14)、PC(R15)<br/>
+                                            • 超低功耗设计，适合电池供电设备<br/>
+                                            • 简化的指令集，降低硬件复杂度
+                                        </a-descriptions-item>
+                                        <a-descriptions-item label="Cortex-M3/M4">
+                                            <strong>ARMv7-M架构</strong><br/>
+                                            • 相同的寄存器组织(R0-R15)<br/>
+                                            • M4增加了DSP指令和浮点单元<br/>
+                                            • 更强的中断处理能力<br/>
+                                            • 支持位带操作(Bit-banding)
+                                        </a-descriptions-item>
+                                        <a-descriptions-item label="Cortex-A系列">
+                                            <strong>ARMv7-A/ARMv8-A架构</strong><br/>
+                                            • ARMv8-A：31个64位通用寄存器(X0-X30)<br/>
+                                            • 可作为32位寄存器使用(W0-W30)<br/>
+                                            • 支持多种执行状态和异常级别<br/>
+                                            • 高性能应用处理器，支持复杂操作系统
+                                        </a-descriptions-item>
+                                    </a-descriptions>
+                                </div>
+                            </a-collapse-item>
+                            
+                            <a-collapse-item header="x86架构演进" key="2">
+                                <div class="register-details">
+                                    <h4>💻 x86寄存器发展历程</h4>
+                                    <a-descriptions bordered size="small" :column="1">
+                                        <a-descriptions-item label="8086/8088 (16位)">
+                                            • AX, BX, CX, DX (可分为AH/AL等)<br/>
+                                            • SI, DI, BP, SP<br/>
+                                            • 段寄存器：CS, DS, ES, SS
+                                        </a-descriptions-item>
+                                        <a-descriptions-item label="80386+ (32位)">
+                                            • 扩展为32位：EAX, EBX, ECX, EDX等<br/>
+                                            • 新增：FS, GS段寄存器<br/>
+                                            • 支持保护模式和虚拟内存
+                                        </a-descriptions-item>
+                                        <a-descriptions-item label="x86-64 (64位)">
+                                            • 再次扩展：RAX, RBX, RCX, RDX等<br/>
+                                            • 新增：R8-R15通用寄存器<br/>
+                                            • 更大的地址空间和数据处理能力
+                                        </a-descriptions-item>
+                                    </a-descriptions>
+                                </div>
+                            </a-collapse-item>
+                            
+                            <a-collapse-item header="其他架构特色" key="3">
+                                <div class="register-details">
+                                    <h4>🌟 特色架构介绍</h4>
+                                    <a-descriptions bordered size="small" :column="1">
+                                        <a-descriptions-item label="RISC-V">
+                                            <strong>开源指令集架构</strong><br/>
+                                            • x0寄存器恒为0，简化硬件设计<br/>
+                                            • 模块化设计，可扩展性强<br/>
+                                            • 统一的寄存器命名规范<br/>
+                                            • 支持32位、64位、128位变种
+                                        </a-descriptions-item>
+                                        <a-descriptions-item label="MIPS">
+                                            <strong>学术界经典架构</strong><br/>
+                                            • 32个通用寄存器，规整的设计<br/>
+                                            • $0恒为0，简化编程<br/>
+                                            • HI/LO寄存器专门处理乘除法结果<br/>
+                                            • RISC设计典型代表
+                                        </a-descriptions-item>
+                                        <a-descriptions-item label="8位处理器">
+                                            <strong>嵌入式经典</strong><br/>
+                                            • 8051：4个通用寄存器 + 累加器<br/>
+                                            • AVR：32个8位寄存器<br/>
+                                            • PIC16：单一工作寄存器架构<br/>
+                                            • 适合资源受限的简单应用
+                                        </a-descriptions-item>
+                                        <a-descriptions-item label="DSP处理器">
+                                            <strong>数字信号处理优化</strong><br/>
+                                            • 专用的累加器和地址寄存器<br/>
+                                            • 并行处理单元(A端/B端)<br/>
+                                            • 硬件乘法器和桶形移位器<br/>
+                                            • 优化的音频/视频处理能力
+                                        </a-descriptions-item>
+                                    </a-descriptions>
+                                </div>
+                            </a-collapse-item>
+                        </a-collapse>
+
+                        <div style="margin-top: 20px;">
+                            <a-alert type="success" show-icon>
+                                <template #icon><icon-info-circle /></template>
+                                <div>
+                                    <p style="margin: 0 0 10px 0;"><strong>💡 选择建议</strong></p>
+                                    <p style="margin: 0;">
+                                        • <strong>超低功耗项目</strong>：ARM Cortex-M0/M0+ 或 8位处理器<br/>
+                                        • <strong>实时控制</strong>：ARM Cortex-M3/M4 或 DSP处理器<br/>
+                                        • <strong>高性能应用</strong>：ARM Cortex-A 或 x86-64<br/>
+                                        • <strong>开源项目</strong>：RISC-V架构<br/>
+                                        • <strong>教学研究</strong>：MIPS架构<br/>
+                                        • <strong>简单控制</strong>：8051或PIC系列
                                     </p>
                                 </div>
                             </a-alert>
@@ -8108,5 +8711,66 @@ code {
 }
 .mqtt-usage-guide p {
     line-height: 1.6;
+}
+
+/* t8-4 通用寄存器速查样式 */
+.register-details h4 {
+    margin: 0 0 16px 0;
+    color: var(--color-text-1);
+    font-weight: 600;
+}
+
+.register-details .arco-descriptions-item-label {
+    font-weight: 600;
+    color: var(--color-text-1);
+}
+
+.register-details .arco-descriptions-item-value {
+    line-height: 1.6;
+}
+
+.register-details strong {
+    color: var(--color-primary);
+}
+
+.chip-overview-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e5e6eb;
+}
+
+.chip-overview-card:hover {
+    border-color: #165dff;
+    box-shadow: 0 4px 12px rgba(22, 93, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.register-item {
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: #f7f8fa;
+    border-radius: 6px;
+    border-left: 3px solid #165dff;
+}
+
+.register-item:last-child {
+    margin-bottom: 0;
+}
+
+.register-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.register-fullname {
+    font-weight: 600;
+    color: #1d2129;
+}
+
+.register-description {
+    font-size: 12px;
+    color: #4e5969;
+    line-height: 1.5;
 }
 </style>

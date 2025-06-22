@@ -424,6 +424,13 @@ function closeWindow() {
                     </p>
                   </a-card>
                 </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t8-4')">
+                  <a-card class="card-demo" title="通用寄存器速查" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      各种芯片寄存器信息
+                    </p>
+                  </a-card>
+                </a-card-grid>
               </a-card>
             </div>
           </a-tab-pane>
