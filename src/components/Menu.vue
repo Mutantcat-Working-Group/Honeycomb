@@ -100,6 +100,20 @@ function closeWindow() {
                     </p>
                   </a-card>
                 </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t1-5')">
+                  <a-card class="card-demo" title="进制转换" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      数字进制相互转换
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t1-6')">
+                  <a-card class="card-demo" title="补码转换" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      原码反码补码转换
+                    </p>
+                  </a-card>
+                </a-card-grid>
               </a-card>
             </div>
           </a-tab-pane>

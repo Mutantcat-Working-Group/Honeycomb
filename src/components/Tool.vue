@@ -2064,6 +2064,223 @@ function copyColorValue(value: string) {
     });
 }
 
+// t1-5 进制转换
+const t1_5_input = ref('')
+const t1_5_fromBase = ref(10)
+const t1_5_toBase = ref(16)
+const t1_5_result = ref('')
+
+// 进制转换函数
+function convertBase() {
+    const input = t1_5_input.value.trim();
+    if (!input) {
+        Message.warning({ content: '请输入要转换的数字', position: 'bottom' });
+        return;
+    }
+
+    try {
+        // 验证输入是否为有效的源进制数字
+        const decimal = parseInt(input, t1_5_fromBase.value);
+        if (isNaN(decimal)) {
+            Message.error({ content: `输入的数字不是有效的${t1_5_fromBase.value}进制数`, position: 'bottom' });
+            return;
+        }
+
+        // 转换为目标进制
+        const result = decimal.toString(t1_5_toBase.value).toUpperCase();
+        t1_5_result.value = result;
+        
+        Message.success({ content: '转换成功!', position: 'bottom' });
+    } catch (error) {
+        Message.error({ content: '转换失败，请检查输入', position: 'bottom' });
+    }
+}
+
+// 交换进制
+function swapBase() {
+    const temp = t1_5_fromBase.value;
+    t1_5_fromBase.value = t1_5_toBase.value;
+    t1_5_toBase.value = temp;
+    
+    // 如果有输入值，重新转换
+    if (t1_5_input.value.trim()) {
+        convertBase();
+    }
+}
+
+// 清空进制转换
+function clear_t1_5() {
+    t1_5_input.value = '';
+    t1_5_result.value = '';
+}
+
+// 复制进制转换结果
+function copy_t1_5_result() {
+    if (!t1_5_result.value) {
+        Message.warning({ content: '没有可复制的结果', position: 'bottom' });
+        return;
+    }
+    
+    navigator.clipboard.writeText(t1_5_result.value).then(() => {
+        Message.success({ content: '已复制到剪贴板', position: 'bottom' });
+    }).catch(() => {
+        Message.error({ content: '复制失败', position: 'bottom' });
+    });
+}
+
+// t1-6 补码转换
+const t1_6_input = ref('')
+const t1_6_bitWidth = ref(8)
+const t1_6_results = ref({
+    decimal: 0,
+    original: '',
+    inverse: '',
+    complement: '',
+    binary: ''
+})
+
+// 补码转换函数
+function convertComplement() {
+    const input = t1_6_input.value.trim();
+    if (!input) {
+        Message.warning({ content: '请输入要转换的数字', position: 'bottom' });
+        return;
+    }
+
+    try {
+        let decimal: number;
+        
+        // 判断输入类型
+        if (input.startsWith('0b') || input.match(/^[01]+$/)) {
+            // 二进制输入
+            const binaryStr = input.startsWith('0b') ? input.slice(2) : input;
+            if (binaryStr.length > t1_6_bitWidth.value) {
+                Message.error({ content: `二进制位数超过设定的${t1_6_bitWidth.value}位`, position: 'bottom' });
+                return;
+            }
+            decimal = parseInt(binaryStr, 2);
+            
+            // 如果是补码形式的负数
+            if (binaryStr.length === t1_6_bitWidth.value && binaryStr[0] === '1') {
+                decimal = decimal - Math.pow(2, t1_6_bitWidth.value);
+            }
+        } else {
+            // 十进制输入
+            decimal = parseInt(input, 10);
+            if (isNaN(decimal)) {
+                Message.error({ content: '输入的数字格式不正确', position: 'bottom' });
+                return;
+            }
+        }
+
+        // 检查数字范围
+        const maxValue = Math.pow(2, t1_6_bitWidth.value - 1) - 1;
+        const minValue = -Math.pow(2, t1_6_bitWidth.value - 1);
+        
+        if (decimal > maxValue || decimal < minValue) {
+            Message.error({ 
+                content: `数字超出${t1_6_bitWidth.value}位有符号整数范围 [${minValue}, ${maxValue}]`, 
+                position: 'bottom' 
+            });
+            return;
+        }
+
+        // 计算原码、反码、补码
+        const absValue = Math.abs(decimal);
+        const isNegative = decimal < 0;
+        
+        // 原码（符号位 + 数值的二进制）
+        let original = absValue.toString(2).padStart(t1_6_bitWidth.value - 1, '0');
+        original = (isNegative ? '1' : '0') + original;
+        
+        let inverse = '';
+        let complement = '';
+        
+        if (isNegative) {
+            // 负数：反码是原码除符号位外按位取反
+            inverse = '1' + original.slice(1).split('').map(bit => bit === '0' ? '1' : '0').join('');
+            
+            // 补码是反码+1
+            let carry = 1;
+            let complementBits = inverse.split('').reverse();
+            for (let i = 0; i < complementBits.length; i++) {
+                if (carry === 0) break;
+                if (complementBits[i] === '0') {
+                    complementBits[i] = '1';
+                    carry = 0;
+                } else {
+                    complementBits[i] = '0';
+                }
+            }
+            complement = complementBits.reverse().join('');
+        } else {
+            // 正数：原码、反码、补码都相同
+            inverse = original;
+            complement = original;
+        }
+
+        // 更新结果
+        t1_6_results.value = {
+            decimal: decimal,
+            original: original,
+            inverse: inverse,
+            complement: complement,
+            binary: complement // 计算机中实际存储的就是补码
+        };
+        
+        Message.success({ content: '转换成功!', position: 'bottom' });
+    } catch (error) {
+        Message.error({ content: '转换失败，请检查输入', position: 'bottom' });
+    }
+}
+
+// 清空补码转换
+function clear_t1_6() {
+    t1_6_input.value = '';
+    t1_6_results.value = {
+        decimal: 0,
+        original: '',
+        inverse: '',
+        complement: '',
+        binary: ''
+    };
+}
+
+// 复制补码转换结果
+function copy_t1_6_result(type: string) {
+    let value = '';
+    switch (type) {
+        case 'decimal':
+            value = t1_6_results.value.decimal.toString();
+            break;
+        case 'original':
+            value = t1_6_results.value.original;
+            break;
+        case 'inverse':
+            value = t1_6_results.value.inverse;
+            break;
+        case 'complement':
+            value = t1_6_results.value.complement;
+            break;
+        case 'binary':
+            value = t1_6_results.value.binary;
+            break;
+        default:
+            return;
+    }
+    
+    if (!value) {
+        Message.warning({ content: '没有可复制的结果', position: 'bottom' });
+        return;
+    }
+    
+    navigator.clipboard.writeText(value).then(() => {
+        Message.success({ content: '已复制到剪贴板', position: 'bottom' });
+    }).catch(() => {
+        Message.error({ content: '复制失败', position: 'bottom' });
+    });
+}
+
 // t2-1
 const t2_1_in: any = ref("")
 const t2_1_out: any = ref("")
@@ -5824,6 +6041,263 @@ CertUtil: -hashfile 命令成功完成。</code></pre>
                                 </a-col>
                             </a-row>
                         </a-card>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
+        <!-- t1-5 进制转换 -->
+        <div v-show="tooltype == 't1-5'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="进制转换" @back="switchToMenu"
+                    subtitle="数字进制相互转换">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar">
+                    <a-col :span="24">
+                        <div style="margin-bottom: 20px;">
+                            <a-alert type="info" show-icon>
+                                支持2-36进制之间的数字转换。常用进制：二进制(2)、八进制(8)、十进制(10)、十六进制(16)
+                            </a-alert>
+                        </div>
+
+                        <!-- 输入区域 -->
+                        <a-card title="输入数字" :bordered="false" style="margin-bottom: 15px;">
+                            <a-row style="margin-bottom: 15px;">
+                                <a-col :span="24">
+                                    <a-input 
+                                        v-model="t1_5_input" 
+                                        placeholder="请输入要转换的数字" 
+                                        style="font-size: 16px;"
+                                        @press-enter="convertBase"
+                                    />
+                                </a-col>
+                            </a-row>
+                            <a-row>
+                                <a-col :span="11">
+                                    <div style="display: flex; align-items: center;">
+                                        <span style="margin-right: 10px; font-weight: 500;">从</span>
+                                        <a-select v-model="t1_5_fromBase" style="flex: 1;">
+                                            <a-option :value="2">二进制 (2)</a-option>
+                                            <a-option :value="8">八进制 (8)</a-option>
+                                            <a-option :value="10">十进制 (10)</a-option>
+                                            <a-option :value="16">十六进制 (16)</a-option>
+                                            <a-option v-for="i in 36" :key="i" :value="i" v-show="![2,8,10,16].includes(i)">
+                                                {{ i }}进制
+                                            </a-option>
+                                        </a-select>
+                                        <span style="margin-left: 10px;">进制</span>
+                                    </div>
+                                </a-col>
+                                <a-col :span="2" style="display: flex; justify-content: center; align-items: center;">
+                                    <a-button @click="swapBase" type="text">
+                                        ⇄
+                                    </a-button>
+                                </a-col>
+                                <a-col :span="11">
+                                    <div style="display: flex; align-items: center;">
+                                        <span style="margin-right: 10px; font-weight: 500;">转为</span>
+                                        <a-select v-model="t1_5_toBase" style="flex: 1;">
+                                            <a-option :value="2">二进制 (2)</a-option>
+                                            <a-option :value="8">八进制 (8)</a-option>
+                                            <a-option :value="10">十进制 (10)</a-option>
+                                            <a-option :value="16">十六进制 (16)</a-option>
+                                            <a-option v-for="i in 36" :key="i" :value="i" v-show="![2,8,10,16].includes(i)">
+                                                {{ i }}进制
+                                            </a-option>
+                                        </a-select>
+                                        <span style="margin-left: 10px;">进制</span>
+                                    </div>
+                                </a-col>
+                            </a-row>
+                        </a-card>
+
+                        <!-- 操作按钮 -->
+                        <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+                            <a-space>
+                                <a-button type="primary" @click="convertBase" size="large">转换</a-button>
+                                <a-button @click="clear_t1_5">清空</a-button>
+                            </a-space>
+                        </div>
+
+                        <!-- 结果显示 -->
+                        <a-card title="转换结果" :bordered="false" v-show="t1_5_result">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <a-input 
+                                    v-model="t1_5_result" 
+                                    readonly 
+                                    style="flex: 1; font-size: 16px; font-family: monospace;"
+                                />
+                                <a-button @click="copy_t1_5_result" type="primary">复制</a-button>
+                            </div>
+                        </a-card>
+
+                        <!-- 进制参考表 -->
+                        <a-card title="常用进制对照" :bordered="false" style="margin-top: 20px;">
+                            <div style="overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background-color: #f5f5f5;">
+                                            <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">十进制</th>
+                                            <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">二进制</th>
+                                            <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">八进制</th>
+                                            <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">十六进制</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="i in 16" :key="i">
+                                            <td style="padding: 6px; border: 1px solid #ddd; text-align: center;">{{ i - 1 }}</td>
+                                            <td style="padding: 6px; border: 1px solid #ddd; text-align: center; font-family: monospace;">{{ (i - 1).toString(2) }}</td>
+                                            <td style="padding: 6px; border: 1px solid #ddd; text-align: center; font-family: monospace;">{{ (i - 1).toString(8) }}</td>
+                                            <td style="padding: 6px; border: 1px solid #ddd; text-align: center; font-family: monospace;">{{ (i - 1).toString(16).toUpperCase() }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </a-card>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
+        <!-- t1-6 补码转换 -->
+        <div v-show="tooltype == 't1-6'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="补码转换" @back="switchToMenu"
+                    subtitle="原码反码补码转换">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar">
+                    <a-col :span="24">
+                        <div style="margin-bottom: 20px;">
+                            <a-alert type="info" show-icon>
+                                支持十进制数字和二进制数字的原码、反码、补码相互转换。输入二进制时可以加0b前缀或直接输入。
+                            </a-alert>
+                        </div>
+
+                        <!-- 配置区域 -->
+                        <a-card title="转换配置" :bordered="false" style="margin-bottom: 15px;">
+                            <a-row>
+                                <a-col :span="12">
+                                    <div style="display: flex; align-items: center;">
+                                        <span style="margin-right: 10px; font-weight: 500;">位宽：</span>
+                                        <a-select v-model="t1_6_bitWidth" style="width: 120px;">
+                                            <a-option :value="8">8位</a-option>
+                                            <a-option :value="16">16位</a-option>
+                                            <a-option :value="32">32位</a-option>
+                                        </a-select>
+                                    </div>
+                                </a-col>
+                                <a-col :span="12">
+                                    <div style="color: #666; font-size: 14px;">
+                                        支持范围：{{ -Math.pow(2, t1_6_bitWidth - 1) }} ~ {{ Math.pow(2, t1_6_bitWidth - 1) - 1 }}
+                                    </div>
+                                </a-col>
+                            </a-row>
+                        </a-card>
+
+                        <!-- 输入区域 -->
+                        <a-card title="输入数字" :bordered="false" style="margin-bottom: 15px;">
+                            <a-row style="margin-bottom: 15px;">
+                                <a-col :span="24">
+                                    <a-input 
+                                        v-model="t1_6_input" 
+                                        placeholder="请输入十进制数字或二进制数字（如：-5 或 0b1011 或 1011）" 
+                                        style="font-size: 16px;"
+                                        @press-enter="convertComplement"
+                                    />
+                                </a-col>
+                            </a-row>
+                            <a-row>
+                                <a-col :span="24" style="display: flex; justify-content: center;">
+                                    <a-space>
+                                        <a-button type="primary" @click="convertComplement" size="large">转换</a-button>
+                                        <a-button @click="clear_t1_6">清空</a-button>
+                                    </a-space>
+                                </a-col>
+                            </a-row>
+                        </a-card>
+
+                        <!-- 结果显示 -->
+                        <div v-show="t1_6_results.original">
+                            <a-card title="转换结果" :bordered="false" style="margin-bottom: 15px;">
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                    <!-- 十进制 -->
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="width: 80px; font-weight: 500;">十进制：</span>
+                                        <a-input 
+                                            :value="t1_6_results.decimal" 
+                                            readonly 
+                                            style="flex: 1; font-family: monospace;"
+                                        />
+                                        <a-button @click="copy_t1_6_result('decimal')" size="small">复制</a-button>
+                                    </div>
+                                    
+                                    <!-- 原码 -->
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="width: 80px; font-weight: 500;">原码：</span>
+                                        <a-input 
+                                            :value="t1_6_results.original" 
+                                            readonly 
+                                            style="flex: 1; font-family: monospace; letter-spacing: 1px;"
+                                        />
+                                        <a-button @click="copy_t1_6_result('original')" size="small">复制</a-button>
+                                    </div>
+                                    
+                                    <!-- 反码 -->
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="width: 80px; font-weight: 500;">反码：</span>
+                                        <a-input 
+                                            :value="t1_6_results.inverse" 
+                                            readonly 
+                                            style="flex: 1; font-family: monospace; letter-spacing: 1px;"
+                                        />
+                                        <a-button @click="copy_t1_6_result('inverse')" size="small">复制</a-button>
+                                    </div>
+                                    
+                                    <!-- 补码 -->
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="width: 80px; font-weight: 500;">补码：</span>
+                                        <a-input 
+                                            :value="t1_6_results.complement" 
+                                            readonly 
+                                            style="flex: 1; font-family: monospace; letter-spacing: 1px;"
+                                        />
+                                        <a-button @click="copy_t1_6_result('complement')" size="small">复制</a-button>
+                                    </div>
+                                </div>
+                            </a-card>
+
+                            <!-- 知识点说明 -->
+                            <a-card title="知识点说明" :bordered="false">
+                                <div style="line-height: 1.6;">
+                                    <p><strong>原码：</strong>符号位 + 数值的二进制表示（0表示正数，1表示负数）</p>
+                                    <p><strong>反码：</strong>正数的反码与原码相同；负数的反码是符号位不变，其他位按位取反</p>
+                                    <p><strong>补码：</strong>正数的补码与原码相同；负数的补码是反码加1</p>
+                                    <p><strong>说明：</strong>计算机内部使用补码来表示和存储数字，这样可以统一正负数的运算规则</p>
+                                </div>
+                            </a-card>
+                        </div>
                     </a-col>
                 </a-row>
             </div>
