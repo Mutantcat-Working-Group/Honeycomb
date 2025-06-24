@@ -1576,6 +1576,220 @@ const t8_4_filteredRegisters = computed(() => {
     return filtered;
 });
 
+// t8-5 汇编速查
+interface AssemblyInstruction {
+    mnemonic: string;
+    operands: string;
+    description: string;
+    example: string;
+    category: string;
+}
+
+interface InstructionSet {
+    name: string;
+    description: string;
+    instructions: AssemblyInstruction[];
+}
+
+const t8_5_instructionSets: InstructionSet[] = [
+    {
+        name: "8086",
+        description: "Intel 8086 16位处理器指令集",
+        instructions: [
+            { mnemonic: "MOV", operands: "dest, src", description: "数据传送指令", example: "MOV AX, BX", category: "数据传送" },
+            { mnemonic: "ADD", operands: "dest, src", description: "加法运算", example: "ADD AX, BX", category: "算术运算" },
+            { mnemonic: "SUB", operands: "dest, src", description: "减法运算", example: "SUB AX, BX", category: "算术运算" },
+            { mnemonic: "MUL", operands: "src", description: "无符号乘法", example: "MUL BX", category: "算术运算" },
+            { mnemonic: "DIV", operands: "src", description: "无符号除法", example: "DIV BX", category: "算术运算" },
+            { mnemonic: "INC", operands: "dest", description: "自增1", example: "INC AX", category: "算术运算" },
+            { mnemonic: "DEC", operands: "dest", description: "自减1", example: "DEC AX", category: "算术运算" },
+            { mnemonic: "AND", operands: "dest, src", description: "按位与", example: "AND AX, BX", category: "逻辑运算" },
+            { mnemonic: "OR", operands: "dest, src", description: "按位或", example: "OR AX, BX", category: "逻辑运算" },
+            { mnemonic: "XOR", operands: "dest, src", description: "按位异或", example: "XOR AX, BX", category: "逻辑运算" },
+            { mnemonic: "NOT", operands: "dest", description: "按位取反", example: "NOT AX", category: "逻辑运算" },
+            { mnemonic: "SHL", operands: "dest, count", description: "逻辑左移", example: "SHL AX, 1", category: "移位运算" },
+            { mnemonic: "SHR", operands: "dest, count", description: "逻辑右移", example: "SHR AX, 1", category: "移位运算" },
+            { mnemonic: "CMP", operands: "op1, op2", description: "比较两个操作数", example: "CMP AX, BX", category: "比较运算" },
+            { mnemonic: "JMP", operands: "label", description: "无条件跳转", example: "JMP LOOP", category: "跳转指令" },
+            { mnemonic: "JE", operands: "label", description: "相等时跳转", example: "JE EQUAL", category: "跳转指令" },
+            { mnemonic: "JNE", operands: "label", description: "不相等时跳转", example: "JNE NOT_EQUAL", category: "跳转指令" },
+            { mnemonic: "JL", operands: "label", description: "小于时跳转", example: "JL LESS", category: "跳转指令" },
+            { mnemonic: "JG", operands: "label", description: "大于时跳转", example: "JG GREATER", category: "跳转指令" },
+            { mnemonic: "PUSH", operands: "src", description: "压栈", example: "PUSH AX", category: "栈操作" },
+            { mnemonic: "POP", operands: "dest", description: "出栈", example: "POP AX", category: "栈操作" },
+            { mnemonic: "CALL", operands: "proc", description: "过程调用", example: "CALL PROC1", category: "过程调用" },
+            { mnemonic: "RET", operands: "", description: "过程返回", example: "RET", category: "过程调用" },
+            { mnemonic: "INT", operands: "type", description: "中断调用", example: "INT 21H", category: "中断指令" },
+            { mnemonic: "NOP", operands: "", description: "空操作", example: "NOP", category: "其他" }
+        ]
+    },
+    {
+        name: "RISC-V",
+        description: "RISC-V 开源指令集架构",
+        instructions: [
+            { mnemonic: "ADD", operands: "rd, rs1, rs2", description: "加法运算", example: "ADD x1, x2, x3", category: "算术运算" },
+            { mnemonic: "SUB", operands: "rd, rs1, rs2", description: "减法运算", example: "SUB x1, x2, x3", category: "算术运算" },
+            { mnemonic: "ADDI", operands: "rd, rs1, imm", description: "立即数加法", example: "ADDI x1, x2, 10", category: "算术运算" },
+            { mnemonic: "LUI", operands: "rd, imm", description: "加载立即数到高位", example: "LUI x1, 0x12345", category: "数据传送" },
+            { mnemonic: "AUIPC", operands: "rd, imm", description: "PC相对地址加载", example: "AUIPC x1, 0x1000", category: "数据传送" },
+            { mnemonic: "LW", operands: "rd, offset(rs1)", description: "加载字", example: "LW x1, 4(x2)", category: "数据传送" },
+            { mnemonic: "SW", operands: "rs2, offset(rs1)", description: "存储字", example: "SW x1, 4(x2)", category: "数据传送" },
+            { mnemonic: "LB", operands: "rd, offset(rs1)", description: "加载字节", example: "LB x1, 0(x2)", category: "数据传送" },
+            { mnemonic: "SB", operands: "rs2, offset(rs1)", description: "存储字节", example: "SB x1, 0(x2)", category: "数据传送" },
+            { mnemonic: "AND", operands: "rd, rs1, rs2", description: "按位与", example: "AND x1, x2, x3", category: "逻辑运算" },
+            { mnemonic: "OR", operands: "rd, rs1, rs2", description: "按位或", example: "OR x1, x2, x3", category: "逻辑运算" },
+            { mnemonic: "XOR", operands: "rd, rs1, rs2", description: "按位异或", example: "XOR x1, x2, x3", category: "逻辑运算" },
+            { mnemonic: "ANDI", operands: "rd, rs1, imm", description: "立即数按位与", example: "ANDI x1, x2, 0xFF", category: "逻辑运算" },
+            { mnemonic: "ORI", operands: "rd, rs1, imm", description: "立即数按位或", example: "ORI x1, x2, 0x10", category: "逻辑运算" },
+            { mnemonic: "XORI", operands: "rd, rs1, imm", description: "立即数按位异或", example: "XORI x1, x2, -1", category: "逻辑运算" },
+            { mnemonic: "SLL", operands: "rd, rs1, rs2", description: "逻辑左移", example: "SLL x1, x2, x3", category: "移位运算" },
+            { mnemonic: "SRL", operands: "rd, rs1, rs2", description: "逻辑右移", example: "SRL x1, x2, x3", category: "移位运算" },
+            { mnemonic: "SRA", operands: "rd, rs1, rs2", description: "算术右移", example: "SRA x1, x2, x3", category: "移位运算" },
+            { mnemonic: "SLLI", operands: "rd, rs1, shamt", description: "立即数逻辑左移", example: "SLLI x1, x2, 2", category: "移位运算" },
+            { mnemonic: "SRLI", operands: "rd, rs1, shamt", description: "立即数逻辑右移", example: "SRLI x1, x2, 2", category: "移位运算" },
+            { mnemonic: "SRAI", operands: "rd, rs1, shamt", description: "立即数算术右移", example: "SRAI x1, x2, 2", category: "移位运算" },
+            { mnemonic: "SLT", operands: "rd, rs1, rs2", description: "小于设置", example: "SLT x1, x2, x3", category: "比较运算" },
+            { mnemonic: "SLTU", operands: "rd, rs1, rs2", description: "无符号小于设置", example: "SLTU x1, x2, x3", category: "比较运算" },
+            { mnemonic: "SLTI", operands: "rd, rs1, imm", description: "立即数小于设置", example: "SLTI x1, x2, 10", category: "比较运算" },
+            { mnemonic: "BEQ", operands: "rs1, rs2, offset", description: "相等时分支", example: "BEQ x1, x2, LOOP", category: "分支指令" },
+            { mnemonic: "BNE", operands: "rs1, rs2, offset", description: "不相等时分支", example: "BNE x1, x2, END", category: "分支指令" },
+            { mnemonic: "BLT", operands: "rs1, rs2, offset", description: "小于时分支", example: "BLT x1, x2, LESS", category: "分支指令" },
+            { mnemonic: "BGE", operands: "rs1, rs2, offset", description: "大于等于时分支", example: "BGE x1, x2, GTE", category: "分支指令" },
+            { mnemonic: "JAL", operands: "rd, offset", description: "跳转并链接", example: "JAL x1, FUNC", category: "跳转指令" },
+            { mnemonic: "JALR", operands: "rd, rs1, offset", description: "寄存器跳转并链接", example: "JALR x0, x1, 0", category: "跳转指令" },
+            { mnemonic: "NOP", operands: "", description: "空操作", example: "NOP", category: "其他" },
+            { mnemonic: "EBREAK", operands: "", description: "环境断点", example: "EBREAK", category: "其他" },
+            { mnemonic: "ECALL", operands: "", description: "环境调用", example: "ECALL", category: "其他" }
+        ]
+    },
+    {
+        name: "ARM",
+        description: "ARM 处理器指令集",
+        instructions: [
+            { mnemonic: "MOV", operands: "Rd, Operand2", description: "数据传送", example: "MOV R0, R1", category: "数据传送" },
+            { mnemonic: "MVN", operands: "Rd, Operand2", description: "传送取反数据", example: "MVN R0, R1", category: "数据传送" },
+            { mnemonic: "LDR", operands: "Rd, [Rn]", description: "加载寄存器", example: "LDR R0, [R1]", category: "数据传送" },
+            { mnemonic: "STR", operands: "Rd, [Rn]", description: "存储寄存器", example: "STR R0, [R1]", category: "数据传送" },
+            { mnemonic: "LDRB", operands: "Rd, [Rn]", description: "加载字节", example: "LDRB R0, [R1]", category: "数据传送" },
+            { mnemonic: "STRB", operands: "Rd, [Rn]", description: "存储字节", example: "STRB R0, [R1]", category: "数据传送" },
+            { mnemonic: "ADD", operands: "Rd, Rn, Operand2", description: "加法运算", example: "ADD R0, R1, R2", category: "算术运算" },
+            { mnemonic: "SUB", operands: "Rd, Rn, Operand2", description: "减法运算", example: "SUB R0, R1, R2", category: "算术运算" },
+            { mnemonic: "MUL", operands: "Rd, Rm, Rs", description: "乘法运算", example: "MUL R0, R1, R2", category: "算术运算" },
+            { mnemonic: "AND", operands: "Rd, Rn, Operand2", description: "按位与", example: "AND R0, R1, R2", category: "逻辑运算" },
+            { mnemonic: "ORR", operands: "Rd, Rn, Operand2", description: "按位或", example: "ORR R0, R1, R2", category: "逻辑运算" },
+            { mnemonic: "EOR", operands: "Rd, Rn, Operand2", description: "按位异或", example: "EOR R0, R1, R2", category: "逻辑运算" },
+            { mnemonic: "BIC", operands: "Rd, Rn, Operand2", description: "位清零", example: "BIC R0, R1, R2", category: "逻辑运算" },
+            { mnemonic: "LSL", operands: "Rd, Rm, Rs", description: "逻辑左移", example: "LSL R0, R1, R2", category: "移位运算" },
+            { mnemonic: "LSR", operands: "Rd, Rm, Rs", description: "逻辑右移", example: "LSR R0, R1, R2", category: "移位运算" },
+            { mnemonic: "ASR", operands: "Rd, Rm, Rs", description: "算术右移", example: "ASR R0, R1, R2", category: "移位运算" },
+            { mnemonic: "CMP", operands: "Rn, Operand2", description: "比较指令", example: "CMP R0, R1", category: "比较运算" },
+            { mnemonic: "TST", operands: "Rn, Operand2", description: "测试指令", example: "TST R0, R1", category: "比较运算" },
+            { mnemonic: "B", operands: "label", description: "无条件分支", example: "B LOOP", category: "分支指令" },
+            { mnemonic: "BL", operands: "label", description: "带链接的分支", example: "BL SUBROUTINE", category: "分支指令" },
+            { mnemonic: "BEQ", operands: "label", description: "相等时分支", example: "BEQ EQUAL", category: "分支指令" },
+            { mnemonic: "BNE", operands: "label", description: "不相等时分支", example: "BNE NOT_EQUAL", category: "分支指令" },
+            { mnemonic: "BLT", operands: "label", description: "小于时分支", example: "BLT LESS", category: "分支指令" },
+            { mnemonic: "BGT", operands: "label", description: "大于时分支", example: "BGT GREATER", category: "分支指令" },
+            { mnemonic: "PUSH", operands: "{reglist}", description: "压栈", example: "PUSH {R0-R3}", category: "栈操作" },
+            { mnemonic: "POP", operands: "{reglist}", description: "出栈", example: "POP {R0-R3}", category: "栈操作" }
+        ]
+    },
+    {
+        name: "MIPS",
+        description: "MIPS 处理器指令集",
+        instructions: [
+            { mnemonic: "ADD", operands: "$rd, $rs, $rt", description: "加法运算", example: "ADD $t0, $t1, $t2", category: "算术运算" },
+            { mnemonic: "SUB", operands: "$rd, $rs, $rt", description: "减法运算", example: "SUB $t0, $t1, $t2", category: "算术运算" },
+            { mnemonic: "ADDI", operands: "$rt, $rs, imm", description: "立即数加法", example: "ADDI $t0, $t1, 10", category: "算术运算" },
+            { mnemonic: "MUL", operands: "$rd, $rs, $rt", description: "乘法运算", example: "MUL $t0, $t1, $t2", category: "算术运算" },
+            { mnemonic: "DIV", operands: "$rs, $rt", description: "除法运算", example: "DIV $t0, $t1", category: "算术运算" },
+            { mnemonic: "AND", operands: "$rd, $rs, $rt", description: "按位与", example: "AND $t0, $t1, $t2", category: "逻辑运算" },
+            { mnemonic: "OR", operands: "$rd, $rs, $rt", description: "按位或", example: "OR $t0, $t1, $t2", category: "逻辑运算" },
+            { mnemonic: "XOR", operands: "$rd, $rs, $rt", description: "按位异或", example: "XOR $t0, $t1, $t2", category: "逻辑运算" },
+            { mnemonic: "ANDI", operands: "$rt, $rs, imm", description: "立即数按位与", example: "ANDI $t0, $t1, 0xFF", category: "逻辑运算" },
+            { mnemonic: "ORI", operands: "$rt, $rs, imm", description: "立即数按位或", example: "ORI $t0, $t1, 0x10", category: "逻辑运算" },
+            { mnemonic: "SLL", operands: "$rd, $rt, shamt", description: "逻辑左移", example: "SLL $t0, $t1, 2", category: "移位运算" },
+            { mnemonic: "SRL", operands: "$rd, $rt, shamt", description: "逻辑右移", example: "SRL $t0, $t1, 2", category: "移位运算" },
+            { mnemonic: "SRA", operands: "$rd, $rt, shamt", description: "算术右移", example: "SRA $t0, $t1, 2", category: "移位运算" },
+            { mnemonic: "LW", operands: "$rt, offset($rs)", description: "加载字", example: "LW $t0, 4($sp)", category: "数据传送" },
+            { mnemonic: "SW", operands: "$rt, offset($rs)", description: "存储字", example: "SW $t0, 4($sp)", category: "数据传送" },
+            { mnemonic: "LB", operands: "$rt, offset($rs)", description: "加载字节", example: "LB $t0, 0($t1)", category: "数据传送" },
+            { mnemonic: "SB", operands: "$rt, offset($rs)", description: "存储字节", example: "SB $t0, 0($t1)", category: "数据传送" },
+            { mnemonic: "BEQ", operands: "$rs, $rt, label", description: "相等时分支", example: "BEQ $t0, $t1, LOOP", category: "分支指令" },
+            { mnemonic: "BNE", operands: "$rs, $rt, label", description: "不相等时分支", example: "BNE $t0, $t1, END", category: "分支指令" },
+            { mnemonic: "J", operands: "target", description: "无条件跳转", example: "J MAIN", category: "跳转指令" },
+            { mnemonic: "JAL", operands: "target", description: "跳转并链接", example: "JAL FUNCTION", category: "跳转指令" },
+            { mnemonic: "JR", operands: "$rs", description: "寄存器跳转", example: "JR $ra", category: "跳转指令" }
+        ]
+    }
+];
+
+const t8_5_selectedInstructionSet = ref("8086");
+const t8_5_searchTerm = ref("");
+const t8_5_categoryFilter = ref("all");
+
+// 计算过滤后的指令
+const t8_5_filteredInstructions = computed(() => {
+    const instructionSet = t8_5_instructionSets.find(set => set.name === t8_5_selectedInstructionSet.value);
+    if (!instructionSet) return [];
+    
+    let filtered = instructionSet.instructions;
+    
+    // 按分类过滤
+    if (t8_5_categoryFilter.value !== "all") {
+        filtered = filtered.filter(inst => inst.category === t8_5_categoryFilter.value);
+    }
+    
+    // 按搜索词过滤
+    if (t8_5_searchTerm.value) {
+        const term = t8_5_searchTerm.value.toLowerCase();
+        filtered = filtered.filter(inst => 
+            inst.mnemonic.toLowerCase().includes(term) ||
+            inst.description.toLowerCase().includes(term) ||
+            inst.example.toLowerCase().includes(term)
+        );
+    }
+    
+    return filtered;
+});
+
+// 获取当前指令集的所有分类
+const t8_5_categories = computed(() => {
+    const instructionSet = t8_5_instructionSets.find(set => set.name === t8_5_selectedInstructionSet.value);
+    if (!instructionSet) return [];
+    
+    const categories = [...new Set(instructionSet.instructions.map(inst => inst.category))];
+    return categories.sort();
+});
+
+// 复制指令到剪贴板
+function copyInstruction(instruction: AssemblyInstruction) {
+    const text = `${instruction.mnemonic} ${instruction.operands}`;
+    navigator.clipboard.writeText(text).then(() => {
+        Message.success({ content: '已复制指令: ' + text, position: 'bottom' });
+    }).catch(() => {
+        Message.error({ content: '复制失败', position: 'bottom' });
+    });
+}
+
+// 获取分类颜色
+function getCategoryColor(category: string): string {
+    const colorMap: Record<string, string> = {
+        '数据传送': 'blue',
+        '算术运算': 'green',
+        '逻辑运算': 'orange',
+        '移位运算': 'purple',
+        '比较运算': 'cyan',
+        '跳转指令': 'red',
+        '分支指令': 'red',
+        '栈操作': 'magenta',
+        '过程调用': 'gold',
+        '中断指令': 'lime',
+        '其他': 'gray'
+    };
+    return colorMap[category] || 'default';
+}
+
 // 监听工具类型变化，如果切换到电阻计算器就初始化
 watch(() => props.tooltype, (newType) => {
     if (newType === 't8-2') {
@@ -8852,6 +9066,274 @@ xhr.send(JSON.stringify({ name: 'example' }));</code></pre>
             </div>
         </div>
 
+        <!-- t8-5 汇编速查 -->
+        <div v-show="tooltype == 't8-5'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="汇编速查" @back="switchToMenu"
+                    subtitle="各种指令集汇编速查">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> <template
+                                    #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> <template
+                                    #icon><img src="../assets/close.png" style="width: 15px;" /></template> </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+            <div class="one-tool-content">
+                <a-row class="page-content custom-scrollbar">
+                    <a-col :span="24">
+                        <div style="margin-bottom: 20px;">
+                            <a-alert type="info" show-icon>
+                                快速查找和学习各种处理器架构的汇编指令，包括8086、RISC-V、ARM、MIPS等主流指令集。
+                            </a-alert>
+                        </div>
+
+                        <!-- 指令集选择和搜索 -->
+                        <a-card title="指令集选择" :bordered="false" style="margin-bottom: 20px;">
+                            <a-row :gutter="16">
+                                <a-col :span="8">
+                                    <div style="margin-bottom: 8px; font-weight: 500;">指令集架构</div>
+                                    <a-select v-model="t8_5_selectedInstructionSet" style="width: 100%;">
+                                        <a-option v-for="set in t8_5_instructionSets" :key="set.name" :value="set.name">
+                                            {{ set.name }} - {{ set.description }}
+                                        </a-option>
+                                    </a-select>
+                                </a-col>
+                                <a-col :span="8">
+                                    <div style="margin-bottom: 8px; font-weight: 500;">分类筛选</div>
+                                    <a-select v-model="t8_5_categoryFilter" style="width: 100%;" allow-clear>
+                                        <a-option value="all">全部分类</a-option>
+                                        <a-option v-for="category in t8_5_categories" :key="category" :value="category">
+                                            {{ category }}
+                                        </a-option>
+                                    </a-select>
+                                </a-col>
+                                <a-col :span="8">
+                                    <div style="margin-bottom: 8px; font-weight: 500;">搜索指令</div>
+                                    <a-input v-model="t8_5_searchTerm" placeholder="搜索指令名称、描述或示例..." allow-clear>
+                                        <template #prefix><icon-search /></template>
+                                    </a-input>
+                                </a-col>
+                            </a-row>
+                        </a-card>
+
+                        <!-- 指令统计 -->
+                        <div v-if="t8_5_filteredInstructions.length > 0" style="margin-bottom: 16px;">
+                            <a-card>
+                                <a-row :gutter="16">
+                                    <a-col :span="8">
+                                        <div style="text-align: center; padding: 16px;">
+                                            <div style="font-size: 24px; font-weight: bold; color: #1890ff;">
+                                                {{ t8_5_selectedInstructionSet }}
+                                            </div>
+                                            <div style="color: #666; margin-top: 4px;">当前指令集</div>
+                                        </div>
+                                    </a-col>
+                                    <a-col :span="8">
+                                        <div style="text-align: center; padding: 16px;">
+                                            <div style="font-size: 24px; font-weight: bold; color: #52c41a;">
+                                                {{ t8_5_filteredInstructions.length }}
+                                            </div>
+                                            <div style="color: #666; margin-top: 4px;">显示指令数</div>
+                                        </div>
+                                    </a-col>
+                                    <a-col :span="8">
+                                        <div style="text-align: center; padding: 16px;">
+                                            <div style="font-size: 24px; font-weight: bold; color: #fa8c16;">
+                                                {{ t8_5_categories.length }}
+                                            </div>
+                                            <div style="color: #666; margin-top: 4px;">分类数量</div>
+                                        </div>
+                                    </a-col>
+                                </a-row>
+                            </a-card>
+                        </div>
+
+                        <!-- 指令列表 -->
+                        <div v-if="t8_5_filteredInstructions.length > 0">
+                            <a-card title="指令详情" :bordered="false">
+                                <a-table 
+                                    :data="t8_5_filteredInstructions" 
+                                    :pagination="{ pageSize: 20 }"
+                                    :scroll="{ x: 'max-content' }"
+                                    table-layout-fixed
+                                >
+                                    <template #columns>
+                                        <a-table-column title="指令" data-index="mnemonic" width="120" fixed="left">
+                                            <template #cell="{ record }">
+                                                <a-tag color="blue" style="font-family: monospace; font-weight: bold;">
+                                                    {{ record.mnemonic }}
+                                                </a-tag>
+                                            </template>
+                                        </a-table-column>
+                                        <a-table-column title="操作数" data-index="operands" width="200">
+                                            <template #cell="{ record }">
+                                                <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">
+                                                    {{ record.operands }}
+                                                </code>
+                                            </template>
+                                        </a-table-column>
+                                        <a-table-column title="分类" data-index="category" width="120">
+                                            <template #cell="{ record }">
+                                                <a-tag :color="getCategoryColor(record.category)">
+                                                    {{ record.category }}
+                                                </a-tag>
+                                            </template>
+                                        </a-table-column>
+                                        <a-table-column title="描述" data-index="description" width="250" />
+                                        <a-table-column title="示例" data-index="example" width="200">
+                                            <template #cell="{ record }">
+                                                <code style="background: #f0f9ff; padding: 2px 6px; border-radius: 3px; color: #1e40af; border: 1px solid #e0f2fe;">
+                                                    {{ record.example }}
+                                                </code>
+                                            </template>
+                                        </a-table-column>
+                                        <a-table-column title="操作" width="100" fixed="right">
+                                            <template #cell="{ record }">
+                                                <a-button size="small" @click="copyInstruction(record)">
+                                                    复制
+                                                </a-button>
+                                            </template>
+                                        </a-table-column>
+                                    </template>
+                                </a-table>
+                            </a-card>
+                        </div>
+
+                        <!-- 无结果提示 -->
+                        <div v-else style="text-align: center; padding: 40px 0;">
+                            <a-empty description="未找到匹配的指令">
+                                <a-button type="primary" @click="t8_5_searchTerm = ''; t8_5_categoryFilter = 'all'">
+                                    清除筛选条件
+                                </a-button>
+                            </a-empty>
+                        </div>
+
+                        <!-- 指令集说明 -->
+                        <a-card title="指令集说明" :bordered="false" style="margin-top: 20px;">
+                            <a-collapse>
+                                <a-collapse-item header="8086 汇编指令集" key="8086">
+                                    <div class="instruction-set-detail">
+                                        <div class="processor-intro">
+                                            <span class="processor-icon">💻</span>
+                                            <strong>Intel 8086</strong> 是16位处理器，是x86架构的开端。
+                                        </div>
+                                        <div class="feature-section">
+                                            <h4>🔧 核心特点</h4>
+                                            <ul class="feature-list">
+                                                <li><span class="feature-icon">⚙️</span>16位寄存器，可分为高8位和低8位</li>
+                                                <li><span class="feature-icon">🗃️</span>段式内存管理</li>
+                                                <li><span class="feature-icon">📍</span>丰富的寻址模式</li>
+                                                <li><span class="feature-icon">🏗️</span>CISC架构，指令复杂但功能强大</li>
+                                            </ul>
+                                        </div>
+                                        <div class="application-section">
+                                            <h4>🎯 主要应用</h4>
+                                            <span class="application-tag">早期PC</span>
+                                            <span class="application-tag">教学</span>
+                                            <span class="application-tag">底层系统编程</span>
+                                        </div>
+                                    </div>
+                                </a-collapse-item>
+                                
+                                <a-collapse-item header="RISC-V 指令集" key="RISC-V">
+                                    <div class="instruction-set-detail">
+                                        <div class="processor-intro">
+                                            <span class="processor-icon">🚀</span>
+                                            <strong>RISC-V</strong> 是开源的RISC指令集架构。
+                                        </div>
+                                        <div class="feature-section">
+                                            <h4>🔧 核心特点</h4>
+                                            <ul class="feature-list">
+                                                <li><span class="feature-icon">🆓</span>开源免费，可自由使用和修改</li>
+                                                <li><span class="feature-icon">🧩</span>模块化设计，支持扩展</li>
+                                                <li><span class="feature-icon">📏</span>固定32位指令长度</li>
+                                                <li><span class="feature-icon">0️⃣</span>x0寄存器恒为0，简化设计</li>
+                                            </ul>
+                                        </div>
+                                        <div class="application-section">
+                                            <h4>🎯 主要应用</h4>
+                                            <span class="application-tag">学术研究</span>
+                                            <span class="application-tag">嵌入式系统</span>
+                                            <span class="application-tag">开源处理器</span>
+                                        </div>
+                                    </div>
+                                </a-collapse-item>
+                                
+                                <a-collapse-item header="ARM 指令集" key="ARM">
+                                    <div class="instruction-set-detail">
+                                        <div class="processor-intro">
+                                            <span class="processor-icon">📱</span>
+                                            <strong>ARM</strong> 是广泛使用的RISC架构。
+                                        </div>
+                                        <div class="feature-section">
+                                            <h4>🔧 核心特点</h4>
+                                            <ul class="feature-list">
+                                                <li><span class="feature-icon">🔋</span>低功耗设计</li>
+                                                <li><span class="feature-icon">🎯</span>条件执行指令</li>
+                                                <li><span class="feature-icon">↔️</span>灵活的移位操作</li>
+                                                <li><span class="feature-icon">📍</span>多种寻址模式</li>
+                                            </ul>
+                                        </div>
+                                        <div class="application-section">
+                                            <h4>🎯 主要应用</h4>
+                                            <span class="application-tag">移动设备</span>
+                                            <span class="application-tag">嵌入式系统</span>
+                                            <span class="application-tag">IoT设备</span>
+                                        </div>
+                                    </div>
+                                </a-collapse-item>
+                                
+                                <a-collapse-item header="MIPS 指令集" key="MIPS">
+                                    <div class="instruction-set-detail">
+                                        <div class="processor-intro">
+                                            <span class="processor-icon">🎓</span>
+                                            <strong>MIPS</strong> 是经典的RISC架构。
+                                        </div>
+                                        <div class="feature-section">
+                                            <h4>🔧 核心特点</h4>
+                                            <ul class="feature-list">
+                                                <li><span class="feature-icon">✨</span>简洁的指令格式</li>
+                                                <li><span class="feature-icon">📏</span>固定32位指令长度</li>
+                                                <li><span class="feature-icon">⏰</span>延迟槽概念</li>
+                                                <li><span class="feature-icon">📋</span>32个通用寄存器</li>
+                                            </ul>
+                                        </div>
+                                        <div class="application-section">
+                                            <h4>🎯 主要应用</h4>
+                                            <span class="application-tag">嵌入式系统</span>
+                                            <span class="application-tag">网络设备</span>
+                                            <span class="application-tag">教学</span>
+                                        </div>
+                                    </div>
+                                </a-collapse-item>
+                            </a-collapse>
+                        </a-card>
+
+                        <!-- 学习提示 -->
+                        <div style="margin-top: 20px;">
+                            <a-alert type="success" show-icon>
+                                <template #icon><icon-info-circle /></template>
+                                <div>
+                                    <p style="margin: 0 0 10px 0;"><strong>💡 学习建议</strong></p>
+                                    <p style="margin: 0;">
+                                        • <strong>初学者</strong>：建议从8086开始，理解基本概念<br/>
+                                        • <strong>嵌入式开发</strong>：重点学习ARM指令集<br/>
+                                        • <strong>学术研究</strong>：RISC-V是很好的选择<br/>
+                                        • <strong>理解RISC</strong>：MIPS是经典的教学架构<br/>
+                                        • 可以点击"复制"按钮将指令复制到剪贴板
+                                    </p>
+                                </div>
+                            </a-alert>
+                        </div>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -8888,6 +9370,111 @@ xhr.send(JSON.stringify({ name: 'example' }));</code></pre>
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #555;
     /* 滚动条滑块在悬停时的背景颜色 */
+}
+
+/* 指令集说明展开框美化样式 */
+.instruction-set-detail {
+    padding: 16px;
+    line-height: 1.6;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 8px;
+    margin: 8px 0;
+}
+
+.processor-intro {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.processor-icon {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.feature-section {
+    margin-bottom: 16px;
+}
+
+.feature-section h4 {
+    margin: 0 0 12px 0;
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 6px;
+    padding: 12px;
+}
+
+.feature-list li {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.feature-list li:last-child {
+    border-bottom: none;
+}
+
+.feature-icon {
+    font-size: 16px;
+    margin-right: 10px;
+    width: 20px;
+    display: inline-block;
+    text-align: center;
+}
+
+.application-section {
+    margin-top: 16px;
+}
+
+.application-section h4 {
+    margin: 0 0 12px 0;
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.application-tag {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    margin: 4px 8px 4px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.application-tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 修复表格垂直滚动问题 */
+.arco-table-container {
+    overflow-y: visible !important;
+}
+
+.arco-table-body {
+    max-height: none !important;
+    overflow-y: visible !important;
+}
+
+.arco-table {
+    overflow: visible !important;
 }
 
 .tool-container {

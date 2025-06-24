@@ -445,6 +445,13 @@ function closeWindow() {
                     </p>
                   </a-card>
                 </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t8-5')">
+                  <a-card class="card-demo" title="汇编速查" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      各种指令集汇编速查
+                    </p>
+                  </a-card>
+                </a-card-grid>
               </a-card>
             </div>
           </a-tab-pane>
