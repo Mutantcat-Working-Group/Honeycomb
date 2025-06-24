@@ -1659,7 +1659,23 @@ const t8_5_instructionSets: InstructionSet[] = [
             { mnemonic: "JALR", operands: "rd, rs1, offset", description: "寄存器跳转并链接", example: "JALR x0, x1, 0", category: "跳转指令" },
             { mnemonic: "NOP", operands: "", description: "空操作", example: "NOP", category: "其他" },
             { mnemonic: "EBREAK", operands: "", description: "环境断点", example: "EBREAK", category: "其他" },
-            { mnemonic: "ECALL", operands: "", description: "环境调用", example: "ECALL", category: "其他" }
+            { mnemonic: "ECALL", operands: "", description: "环境调用", example: "ECALL", category: "其他" },
+            // 伪指令 (Pseudo Instructions)
+            { mnemonic: "LI", operands: "rd, imm", description: "加载立即数 (伪指令)", example: "LI x1, 0x12345", category: "数据传送" },
+            { mnemonic: "MV", operands: "rd, rs", description: "移动数据 (伪指令)", example: "MV x1, x2", category: "数据传送" },
+            { mnemonic: "NOT", operands: "rd, rs", description: "按位取反 (伪指令)", example: "NOT x1, x2", category: "逻辑运算" },
+            { mnemonic: "NEG", operands: "rd, rs", description: "取负值 (伪指令)", example: "NEG x1, x2", category: "算术运算" },
+            { mnemonic: "J", operands: "offset", description: "无条件跳转 (伪指令)", example: "J LABEL", category: "跳转指令" },
+            { mnemonic: "JR", operands: "rs", description: "寄存器跳转 (伪指令)", example: "JR x1", category: "跳转指令" },
+            { mnemonic: "RET", operands: "", description: "函数返回 (伪指令)", example: "RET", category: "跳转指令" },
+            { mnemonic: "CALL", operands: "offset", description: "函数调用 (伪指令)", example: "CALL FUNC", category: "跳转指令" },
+            { mnemonic: "TAIL", operands: "offset", description: "尾调用 (伪指令)", example: "TAIL FUNC", category: "跳转指令" },
+            { mnemonic: "LA", operands: "rd, symbol", description: "加载地址 (伪指令)", example: "LA x1, DATA", category: "数据传送" },
+            { mnemonic: "LLA", operands: "rd, symbol", description: "加载本地地址 (伪指令)", example: "LLA x1, LOCAL", category: "数据传送" },
+            { mnemonic: "SEQZ", operands: "rd, rs", description: "相等置1 (伪指令)", example: "SEQZ x1, x2", category: "比较运算" },
+            { mnemonic: "SNEZ", operands: "rd, rs", description: "不等置1 (伪指令)", example: "SNEZ x1, x2", category: "比较运算" },
+            { mnemonic: "SLTZ", operands: "rd, rs", description: "小于0置1 (伪指令)", example: "SLTZ x1, x2", category: "比较运算" },
+            { mnemonic: "SGTZ", operands: "rd, rs", description: "大于0置1 (伪指令)", example: "SGTZ x1, x2", category: "比较运算" }
         ]
     },
     {
