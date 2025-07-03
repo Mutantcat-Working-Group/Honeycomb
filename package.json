@@ -33,7 +33,7 @@
     "electron": "^37.2.0",
     "electron-builder": "^26.0.12",
     "typescript": "^5.4.2",
-    "vite": "^5.1.5",
+    "vite": "^7.0.0",
     "vite-plugin-electron": "^0.29.0",
     "vite-plugin-electron-renderer": "^0.14.5",
     "vue": "^3.4.21",
