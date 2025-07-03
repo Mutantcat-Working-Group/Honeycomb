@@ -1675,7 +1675,11 @@ const t8_5_instructionSets: InstructionSet[] = [
             { mnemonic: "SEQZ", operands: "rd, rs", description: "相等置1 (伪指令)", example: "SEQZ x1, x2", category: "比较运算" },
             { mnemonic: "SNEZ", operands: "rd, rs", description: "不等置1 (伪指令)", example: "SNEZ x1, x2", category: "比较运算" },
             { mnemonic: "SLTZ", operands: "rd, rs", description: "小于0置1 (伪指令)", example: "SLTZ x1, x2", category: "比较运算" },
-            { mnemonic: "SGTZ", operands: "rd, rs", description: "大于0置1 (伪指令)", example: "SGTZ x1, x2", category: "比较运算" }
+            { mnemonic: "SGTZ", operands: "rd, rs", description: "大于0置1 (伪指令)", example: "SGTZ x1, x2", category: "比较运算" },
+            { mnemonic: "BLE", operands: "rs1, rs2, offset", description: "小于等于分支", example: "BLE x1, x2, LOOP", category: "分支指令" },
+            { mnemonic: "BLEU", operands: "rs1, rs2, offset", description: "无符号小于等于分支", example: "BLEU x1, x2, LOOP", category: "分支指令" },
+            { mnemonic: "BGT", operands: "rs1, rs2, offset", description: "大于分支", example: "BGT x1, x2, GREATER", category: "分支指令" },
+            { mnemonic: "BGTU", operands: "rs1, rs2, offset", description: "无符号大于分支", example: "BGTU x1, x2, GREATER", category: "分支指令" }
         ]
     },
     {
@@ -8645,6 +8649,36 @@ xhr.send(JSON.stringify({ name: 'example' }));</code></pre>
                                             </a-descriptions-item>
                                             <a-descriptions-item label="RV128I">
                                                 128位整数指令集，为未来高性能计算需求设计。目前主要用于研究和长远规划。
+                                            </a-descriptions-item>
+                                        </a-descriptions>
+                                    </div>
+
+                                    <div class="instruction-group">
+                                        <h4>🔄 常用伪指令</h4>
+                                        <a-descriptions bordered size="small" :column="1">
+                                            <a-descriptions-item label="BLE - 小于等于分支">
+                                                小于等于时分支跳转，是 BGE 的反向伪指令。格式：BLE rs1, rs2, offset
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="BLEU - 无符号小于等于分支">
+                                                无符号小于等于时分支跳转，是 BGEU 的反向伪指令。格式：BLEU rs1, rs2, offset
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="BGT - 大于分支">
+                                                大于时分支跳转，是 BLT 的反向伪指令。格式：BGT rs1, rs2, offset
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="BGTU - 无符号大于分支">
+                                                无符号大于时分支跳转，是 BLTU 的反向伪指令。格式：BGTU rs1, rs2, offset
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="J - 无条件跳转">
+                                                无条件跳转到目标地址，是 JAL zero, offset 的伪指令。格式：J offset
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="RET - 函数返回">
+                                                从函数返回，是 JALR x0, 0(x1) 的伪指令。格式：RET
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="MV - 寄存器移动">
+                                                寄存器间数据移动，是 ADDI rd, rs, 0 的伪指令。格式：MV rd, rs
+                                            </a-descriptions-item>
+                                            <a-descriptions-item label="NOT - 按位取反">
+                                                寄存器值按位取反，是 XORI rd, rs, -1 的伪指令。格式：NOT rd, rs
                                             </a-descriptions-item>
                                         </a-descriptions>
                                     </div>
