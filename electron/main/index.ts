@@ -3,6 +3,9 @@ import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
+import { spawn, ChildProcess } from 'node:child_process'
+import fs from 'node:fs'
+import http from 'node:http'
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -14,6 +17,11 @@ try {
 } catch (error) {
   console.error('无法导入MQTT模块:', error);
 }
+
+// RTSP流处理相关变量
+let ffmpegProcess: ChildProcess | null = null;
+let httpServer: http.Server | null = null;
+let currentStreamPort: number = 8080;
 
 // The built directory structure
 //
@@ -549,5 +557,371 @@ ipcMain.on('mqtt-publish-disconnect', (event) => {
     }
   } else {
     console.log('没有活动的MQTT发布者客户端连接');
+  }
+});
+
+// RTSP流处理功能
+
+// 检查FFmpeg是否可用
+function checkFFmpegAvailable(): Promise<boolean> {
+  return new Promise((resolve) => {
+    const ffmpegTest = spawn('ffmpeg', ['-version']);
+    
+    let output = '';
+    ffmpegTest.stdout?.on('data', (data) => {
+      output += data.toString();
+    });
+    
+    ffmpegTest.on('close', (code) => {
+      if (code === 0 && output.includes('ffmpeg version')) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    });
+    
+    ffmpegTest.on('error', () => {
+      resolve(false);
+    });
+  });
+}
+
+// 找到可用端口
+function findAvailablePort(startPort: number): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const server = http.createServer();
+    
+    server.listen(startPort, () => {
+      const port = (server.address() as any)?.port;
+      server.close(() => {
+        resolve(port);
+      });
+    });
+    
+    server.on('error', () => {
+      findAvailablePort(startPort + 1).then(resolve).catch(reject);
+    });
+  });
+}
+
+// 启动RTSP流转换
+ipcMain.handle('start-rtsp-stream', async (event, { rtspUrl, config }) => {
+  try {
+    console.log('启动RTSP流转换:', rtspUrl);
+    
+    // 检查FFmpeg是否可用
+    const ffmpegAvailable = await checkFFmpegAvailable();
+    if (!ffmpegAvailable) {
+      return {
+        success: false,
+        error: 'FFmpeg未安装或不可用。请安装FFmpeg并确保其在系统PATH中。'
+      };
+    }
+    
+    // 停止现有的流
+    if (ffmpegProcess) {
+      ffmpegProcess.kill();
+      ffmpegProcess = null;
+    }
+    
+    if (httpServer) {
+      httpServer.close();
+      httpServer = null;
+    }
+    
+    // 找到可用端口
+    currentStreamPort = await findAvailablePort(8080);
+    
+    // 构建FFmpeg命令 - 转换为HLS格式实现低延迟流
+    const ffmpegArgs = [
+      '-i', rtspUrl,
+      '-c:v', 'libx264',
+      '-preset', 'ultrafast',
+      '-tune', 'zerolatency',
+      '-crf', '23',
+      '-maxrate', '2000k',
+      '-bufsize', '1M',
+      '-g', '20',
+      '-profile:v', 'baseline',
+      '-level', '3.1',
+      '-pix_fmt', 'yuv420p',
+      '-f', 'hls',
+      '-hls_time', '1',
+      '-hls_list_size', '3',
+      '-hls_flags', 'delete_segments+independent_segments',
+      '-hls_allow_cache', '0',
+      '-hls_segment_type', 'mpegts',
+      '-hls_segment_filename', path.join(process.env.VITE_PUBLIC || '', 'stream_%03d.ts'),
+      path.join(process.env.VITE_PUBLIC || '', 'stream.m3u8')
+    ];
+    
+    // 添加音频处理
+    if (config.enableAudio) {
+      ffmpegArgs.push('-c:a', 'aac', '-b:a', '128k');
+    } else {
+      ffmpegArgs.push('-an');
+    }
+    
+    // 设置传输协议
+    if (config.protocol === 'tcp') {
+      ffmpegArgs.unshift('-rtsp_transport', 'tcp');
+    }
+    
+    console.log('FFmpeg命令:', 'ffmpeg', ffmpegArgs.join(' '));
+    
+    // 启动FFmpeg进程
+    ffmpegProcess = spawn('ffmpeg', ffmpegArgs);
+    
+    let ffmpegOutput = '';
+    
+    ffmpegProcess.stderr?.on('data', (data) => {
+      const output = data.toString();
+      ffmpegOutput += output;
+      console.log('FFmpeg输出:', output);
+    });
+    
+    ffmpegProcess.on('close', (code) => {
+      console.log(`FFmpeg进程退出，代码: ${code}`);
+      if (code !== 0) {
+        console.error('FFmpeg错误输出:', ffmpegOutput);
+      }
+    });
+    
+    ffmpegProcess.on('error', (err) => {
+      console.error('FFmpeg进程错误:', err);
+    });
+    
+    // 启动HTTP服务器来提供HLS文件
+    const publicDir = process.env.VITE_PUBLIC || '';
+    
+    httpServer = http.createServer((req, res) => {
+      const urlPath = req.url || '';
+      let filePath = '';
+      
+      if (urlPath === '/stream.m3u8') {
+        filePath = path.join(publicDir, 'stream.m3u8');
+        res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
+      } else if (urlPath.match(/^\/stream_\d+\.ts$/)) {
+        filePath = path.join(publicDir, path.basename(urlPath));
+        res.setHeader('Content-Type', 'video/mp2t');
+      } else {
+        res.writeHead(404);
+        res.end('Not Found');
+        return;
+      }
+      
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      
+      if (fs.existsSync(filePath)) {
+        const fileStream = fs.createReadStream(filePath);
+        fileStream.pipe(res);
+        fileStream.on('error', () => {
+          res.writeHead(500);
+          res.end('File read error');
+        });
+      } else {
+        res.writeHead(404);
+        res.end('File not found');
+      }
+    });
+    
+    httpServer.listen(currentStreamPort, () => {
+      console.log(`HTTP服务器启动在端口 ${currentStreamPort}`);
+    });
+    
+    // 等待FFmpeg生成HLS流文件
+    const m3u8Path = path.join(publicDir, 'stream.m3u8');
+    let attempts = 0;
+    const maxAttempts = 15; // 最多等待15秒
+    
+    while (attempts < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      attempts++;
+      
+      if (fs.existsSync(m3u8Path)) {
+        // 检查是否有至少一个TS分片文件
+        const files = fs.readdirSync(publicDir);
+        const tsFiles = files.filter(file => file.startsWith('stream_') && file.endsWith('.ts'));
+        if (tsFiles.length > 0) {
+          console.log(`HLS流已生成，分片数量: ${tsFiles.length}`);
+          break;
+        }
+      }
+      
+      if (attempts >= maxAttempts) {
+        throw new Error('FFmpeg生成HLS流超时');
+      }
+    }
+    
+    return {
+      success: true,
+      streamUrl: `http://localhost:${currentStreamPort}/stream.m3u8`
+    };
+    
+  } catch (error) {
+    console.error('启动RTSP流时出错:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error)
+    };
+  }
+});
+
+// 停止RTSP流
+ipcMain.handle('stop-rtsp-stream', async (event) => {
+  try {
+    console.log('停止RTSP流');
+    
+    if (ffmpegProcess) {
+      ffmpegProcess.kill('SIGTERM');
+      
+      // 如果优雅关闭失败，强制关闭
+      setTimeout(() => {
+        if (ffmpegProcess && !ffmpegProcess.killed) {
+          ffmpegProcess.kill('SIGKILL');
+        }
+      }, 5000);
+      
+      ffmpegProcess = null;
+    }
+    
+    if (httpServer) {
+      httpServer.close();
+      httpServer = null;
+    }
+    
+    // 清理HLS文件
+    try {
+      const publicDir = process.env.VITE_PUBLIC || '';
+      const m3u8Path = path.join(publicDir, 'stream.m3u8');
+      
+      if (fs.existsSync(m3u8Path)) {
+        fs.unlinkSync(m3u8Path);
+      }
+      
+      // 删除TS分片文件
+      const files = fs.readdirSync(publicDir);
+      files.forEach(file => {
+        if (file.startsWith('stream_') && file.endsWith('.ts')) {
+          const filePath = path.join(publicDir, file);
+          fs.unlinkSync(filePath);
+        }
+      });
+    } catch (cleanupError) {
+      console.error('清理HLS文件时出错:', cleanupError);
+    }
+    
+    return { success: true };
+  } catch (error) {
+    console.error('停止RTSP流时出错:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error)
+    };
+  }
+});
+
+// 测试RTSP连接
+ipcMain.handle('test-rtsp-connection', async (event, params) => {
+  const { rtspUrl, timeout = 10000 } = params;
+  
+  try {
+    console.log('测试RTSP连接:', rtspUrl);
+    
+    // 检查FFmpeg是否可用
+    const ffmpegAvailable = await checkFFmpegAvailable();
+    if (!ffmpegAvailable) {
+      return JSON.parse(JSON.stringify({
+        success: false,
+        error: 'FFmpeg未安装或不可用'
+      }));
+    }
+    
+    return new Promise((resolve) => {
+      const testArgs = [
+        '-i', rtspUrl,
+        '-t', '1',
+        '-f', 'null',
+        '-'
+      ];
+      
+      const testProcess = spawn('ffmpeg', testArgs);
+      let errorOutput = '';
+      
+      testProcess.stderr?.on('data', (data) => {
+        errorOutput += data.toString();
+      });
+      
+      const timeoutId = setTimeout(() => {
+        testProcess.kill();
+        resolve(JSON.parse(JSON.stringify({
+          success: false,
+          error: '连接超时'
+        })));
+      }, timeout);
+      
+      testProcess.on('close', (code) => {
+        clearTimeout(timeoutId);
+        
+        try {
+          if (code === 0 || errorOutput.includes('Stream #0')) {
+            // 尝试解析视频信息
+            const resolutionMatch = errorOutput.match(/(\d+)x(\d+)/);
+            const codecMatch = errorOutput.match(/Video: (\w+)/);
+            
+            const resolution = resolutionMatch ? `${resolutionMatch[1]}x${resolutionMatch[2]}` : '未知';
+            const codec = codecMatch ? codecMatch[1] : '未知';
+            
+            resolve(JSON.parse(JSON.stringify({
+              success: true,
+              info: {
+                resolution: resolution,
+                codec: codec
+              }
+            })));
+          } else {
+            resolve(JSON.parse(JSON.stringify({
+              success: false,
+              error: '无法连接到RTSP流'
+            })));
+          }
+        } catch (parseError) {
+          resolve(JSON.parse(JSON.stringify({
+            success: false,
+            error: '解析测试结果时出错'
+          })));
+        }
+      });
+      
+      testProcess.on('error', () => {
+        clearTimeout(timeoutId);
+        resolve(JSON.parse(JSON.stringify({
+          success: false,
+          error: 'FFmpeg进程启动失败'
+        })));
+      });
+    });
+    
+  } catch (error) {
+    console.error('测试RTSP连接时出错:', error);
+    return JSON.parse(JSON.stringify({
+      success: false,
+      error: '测试连接时发生错误'
+    }));
+  }
+});
+
+// 应用退出时清理资源
+app.on('before-quit', () => {
+  if (ffmpegProcess) {
+    ffmpegProcess.kill();
+  }
+  if (httpServer) {
+    httpServer.close();
   }
 });

@@ -50,7 +50,7 @@ function closeWindow() {
                 </a-col>
               </a-row>
               <a-row><a-col :span="24">
-                  <h4>版本：1.1.20250703</h4>
+                  <h4>版本：1.1.20250721</h4>
                 </a-col>
               </a-row>
             </div>
@@ -408,6 +408,13 @@ function closeWindow() {
                   <a-card class="card-demo" title="子网掩码计算器" :bordered="false">
                     <p :style="{ margin: 0 }">
                       IP地址与子网划分
+                    </p>
+                  </a-card>
+                </a-card-grid>
+                <a-card-grid :style="{ width: '24%' }" class="one-card" @click="switchToTool('t7-6')">
+                  <a-card class="card-demo" title="RTSP预览" :bordered="false">
+                    <p :style="{ margin: 0 }">
+                      实时视频流预览
                     </p>
                   </a-card>
                 </a-card-grid>

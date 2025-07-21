@@ -10,6 +10,7 @@ import CryptoJS from 'crypto-js';
 import { load as yamlLoad, dump as yamlDump } from 'js-yaml';
 import axios from 'axios';
 import mqtt from 'mqtt';
+import Hls from 'hls.js';
 
 const props = defineProps({
     toolbar: Boolean,
@@ -17,6 +18,33 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:toolbar', 'update:tooltype']);
+
+// t7-6 RTSP预览功能
+const t7_6_rtspUrl = ref('rtsp://');
+const t7_6_isStreaming = ref(false);
+const t7_6_error = ref('');
+const t7_6_streamStatus = ref('未连接');
+const t7_6_videoElement = ref<HTMLVideoElement | null>(null);
+const t7_6_ffmpegProcess = ref<any>(null);
+
+// RTSP预览配置
+const t7_6_config = ref({
+    enableAudio: false,
+    quality: 'medium', // low, medium, high
+    protocol: 'tcp', // tcp, udp
+    bufferSize: 3
+});
+
+// 常用RTSP地址模板
+const t7_6_urlTemplates = [
+    { name: '海康威视', url: 'rtsp://admin:password@192.168.1.64:554/Streaming/Channels/1' },
+    { name: '大华', url: 'rtsp://admin:password@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0' },
+    { name: '宇视', url: 'rtsp://admin:password@192.168.1.100:554/video1' },
+    { name: '公共测试流', url: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4' },
+    { name: '自定义', url: '' }
+];
+
+const t7_6_selectedTemplate = ref('自定义');
 
 const switchToMenu = () => {
     emit('update:toolbar', false);
@@ -1814,6 +1842,327 @@ function getCategoryColor(category: string): string {
 watch(() => props.tooltype, (newType) => {
     if (newType === 't8-2') {
         t8_2_initResistorCalculator();
+    } else if (newType === 't7-6') {
+        // 切换到RTSP预览时的初始化
+        stopRtspStream();
+    }
+});
+
+// RTSP预览相关函数
+
+// 应用URL模板
+function applyUrlTemplate() {
+    const template = t7_6_urlTemplates.find(t => t.name === t7_6_selectedTemplate.value);
+    if (template && template.url) {
+        t7_6_rtspUrl.value = template.url;
+    }
+}
+
+// 开始RTSP流预览
+async function startRtspStream() {
+    if (!t7_6_rtspUrl.value || t7_6_rtspUrl.value === 'rtsp://') {
+        Message.error({ content: '请输入有效的RTSP地址', position: 'bottom' });
+        return;
+    }
+
+    try {
+        t7_6_isStreaming.value = true;
+        t7_6_error.value = '';
+        t7_6_streamStatus.value = '连接中...';
+
+        // 检查浏览器是否支持MSE
+        if (!window.MediaSource) {
+            throw new Error('您的浏览器不支持Media Source Extensions');
+        }
+
+        // 通过IPC调用主进程启动ffmpeg转换
+        const result = await window.ipcRenderer.invoke('start-rtsp-stream', {
+            rtspUrl: t7_6_rtspUrl.value,
+            config: {
+                enableAudio: t7_6_config.value.enableAudio,
+                quality: t7_6_config.value.quality,
+                protocol: t7_6_config.value.protocol,
+                bufferSize: t7_6_config.value.bufferSize
+            }
+        });
+
+        if (result.success) {
+            // 获取转换后的流地址并播放
+            await playConvertedStream(result.streamUrl);
+            t7_6_streamStatus.value = '已连接';
+            Message.success({ content: 'RTSP流连接成功', position: 'bottom' });
+        } else {
+            throw new Error(result.error);
+        }
+    } catch (error: any) {
+        t7_6_error.value = error.message;
+        t7_6_streamStatus.value = '连接失败';
+        t7_6_isStreaming.value = false;
+        Message.error({ content: `连接失败: ${error.message}`, position: 'bottom' });
+    }
+}
+
+// 播放转换后的流
+async function playConvertedStream(streamUrl: string) {
+    return new Promise((resolve, reject) => {
+        const video = t7_6_videoElement.value;
+        if (!video) {
+            reject(new Error('视频元素未找到'));
+            return;
+        }
+
+        // 清理之前的事件监听器和hls实例
+        video.onloadstart = null;
+        video.oncanplay = null;
+        video.onerror = null;
+        video.onended = null;
+        video.onloadeddata = null;
+        video.onprogress = null;
+        video.onstalled = null;
+        video.onsuspend = null;
+        
+        // 清理之前的hls实例
+        if ((video as any)._hlsInstance) {
+            (video as any)._hlsInstance.destroy();
+            (video as any)._hlsInstance = null;
+        }
+
+        // 设置视频源（HLS格式）
+        if (streamUrl.endsWith('.m3u8')) {
+            // 检查浏览器是否原生支持HLS
+            if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                // Safari等浏览器原生支持HLS
+                video.src = streamUrl;
+                video.autoplay = true;
+                video.muted = !t7_6_config.value.enableAudio;
+                video.controls = true;
+                video.loop = false;
+                video.preload = 'none';
+            } else {
+                // 使用hls.js库支持HLS
+                if (Hls.isSupported()) {
+                    const hls = new Hls({
+                        lowLatencyMode: true,
+                        backBufferLength: 90,
+                        maxBufferLength: 10,
+                        maxMaxBufferLength: 20,
+                        liveSyncDuration: 1,
+                        liveMaxLatencyDuration: 3
+                    });
+                    
+                    hls.loadSource(streamUrl);
+                    hls.attachMedia(video);
+                    
+                    video.autoplay = true;
+                    video.muted = !t7_6_config.value.enableAudio;
+                    video.controls = true;
+                    video.loop = false;
+                    
+                    // 保存hls实例以便后续清理
+                    (video as any)._hlsInstance = hls;
+                    
+                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        console.log('HLS manifest parsed, starting playback');
+                        video.play().catch(e => console.warn('Autoplay failed:', e));
+                    });
+                    
+                    hls.on(Hls.Events.ERROR, (event, data) => {
+                        console.error('HLS error:', event, data);
+                        if (data.fatal) {
+                            reject(new Error(`HLS播放错误: ${data.details}`));
+                        }
+                    });
+                } else {
+                    // 如果hls.js不支持，回退到直接播放
+                    video.src = streamUrl;
+                    video.autoplay = true;
+                    video.muted = !t7_6_config.value.enableAudio;
+                    video.controls = true;
+                    video.loop = false;
+                    video.preload = 'none';
+                }
+            }
+        } else {
+            video.src = streamUrl;
+            video.autoplay = true;
+            video.muted = !t7_6_config.value.enableAudio;
+            video.controls = true;
+            video.loop = false;
+        }
+        
+        console.log('正在播放视频:', streamUrl);
+
+        let hasResolved = false;
+
+        video.onloadstart = () => {
+            if (!hasResolved) {
+                t7_6_streamStatus.value = '加载中...';
+                console.log('开始加载视频');
+            }
+        };
+
+        video.onloadedmetadata = () => {
+            if (!hasResolved) {
+                console.log('视频元数据已加载');
+                t7_6_streamStatus.value = '元数据已加载...';
+            }
+        };
+
+        video.onloadeddata = () => {
+            if (!hasResolved) {
+                console.log('视频数据已加载');
+                t7_6_streamStatus.value = '数据已加载...';
+            }
+        };
+
+        video.oncanplay = () => {
+            if (!hasResolved) {
+                console.log('视频可以播放');
+                t7_6_streamStatus.value = '准备播放...';
+            }
+        };
+
+        video.oncanplaythrough = () => {
+            if (!hasResolved) {
+                console.log('视频可以流畅播放');
+                t7_6_streamStatus.value = '播放中...';
+                hasResolved = true;
+                resolve(true);
+            }
+        };
+
+        video.onerror = (error) => {
+            if (!hasResolved) {
+                console.error('视频播放错误:', error);
+                console.log('视频源:', video.src);
+                console.log('视频元素状态:', {
+                    networkState: video.networkState,
+                    readyState: video.readyState,
+                    error: video.error
+                });
+
+                let errorMessage = '视频播放错误';
+                if (video.error) {
+                    switch (video.error.code) {
+                        case video.error.MEDIA_ERR_ABORTED:
+                            errorMessage = '视频播放被中断';
+                            break;
+                        case video.error.MEDIA_ERR_NETWORK:
+                            errorMessage = '网络错误导致视频下载失败';
+                            break;
+                        case video.error.MEDIA_ERR_DECODE:
+                            errorMessage = '视频解码错误';
+                            break;
+                        case video.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                            errorMessage = '视频格式不受支持或文件损坏';
+                            break;
+                        default:
+                            errorMessage = `视频播放错误 (代码: ${video.error.code})`;
+                    }
+                }
+                hasResolved = true;
+                reject(new Error(errorMessage));
+            }
+        };
+
+        video.onended = () => {
+            t7_6_streamStatus.value = '流已结束';
+        };
+
+        video.onstalled = () => {
+            console.log('视频加载停滞');
+        };
+
+        video.onsuspend = () => {
+            console.log('视频加载暂停');
+        };
+
+        video.onwaiting = () => {
+            console.log('视频缓冲中');
+        };
+
+        // 添加超时处理
+        setTimeout(() => {
+            if (!hasResolved) {
+                hasResolved = true;
+                reject(new Error('视频加载超时'));
+            }
+        }, 30000); // 30秒超时
+    });
+}
+
+// 停止RTSP流预览
+async function stopRtspStream() {
+    try {
+        t7_6_isStreaming.value = false;
+        t7_6_streamStatus.value = '未连接';
+
+        // 停止视频播放
+        const video = t7_6_videoElement.value;
+        if (video) {
+            video.pause();
+            
+            // 清理hls实例
+            if ((video as any)._hlsInstance) {
+                (video as any)._hlsInstance.destroy();
+                (video as any)._hlsInstance = null;
+            }
+            
+            video.src = '';
+            video.load();
+        }
+
+        // 通过IPC调用主进程停止ffmpeg进程
+        await window.ipcRenderer.invoke('stop-rtsp-stream');
+        
+        Message.success({ content: 'RTSP流已停止', position: 'bottom' });
+    } catch (error: any) {
+        Message.error({ content: `停止失败: ${error.message}`, position: 'bottom' });
+    }
+}
+
+// 测试RTSP连接
+async function testRtspConnection() {
+    if (!t7_6_rtspUrl.value || t7_6_rtspUrl.value === 'rtsp://') {
+        Message.error({ content: '请输入有效的RTSP地址', position: 'bottom' });
+        return;
+    }
+
+    try {
+        t7_6_streamStatus.value = '测试中...';
+        
+        const result = await window.ipcRenderer.invoke('test-rtsp-connection', {
+            rtspUrl: t7_6_rtspUrl.value,
+            timeout: 10000
+        });
+
+        if (result.success) {
+            t7_6_streamStatus.value = '连接测试成功';
+            Message.success({ 
+                content: `连接测试成功！分辨率: ${result.info.resolution || '未知'}, 编码: ${result.info.codec || '未知'}`, 
+                position: 'bottom' 
+            });
+        } else {
+            throw new Error(result.error);
+        }
+    } catch (error: any) {
+        t7_6_streamStatus.value = '连接测试失败';
+        Message.error({ content: `连接测试失败: ${error.message}`, position: 'bottom' });
+    }
+}
+
+// 清空RTSP设置
+function clearRtspSettings() {
+    t7_6_rtspUrl.value = 'rtsp://';
+    t7_6_selectedTemplate.value = '自定义';
+    t7_6_error.value = '';
+    t7_6_streamStatus.value = '未连接';
+}
+
+// 组件卸载时清理资源
+onBeforeUnmount(() => {
+    if (t7_6_isStreaming.value) {
+        stopRtspStream();
     }
 });
 
@@ -9384,6 +9733,257 @@ xhr.send(JSON.stringify({ name: 'example' }));</code></pre>
             </div>
         </div>
 
+        <!-- t7-6 RTSP预览 -->
+        <div v-show="tooltype == 't7-6'" class="one-tool">
+            <div :style="{ background: 'var(--color-fill-1)', padding: '2px' }" class="one-tool-head">
+                <a-page-header :style="{ background: 'var(--color-bg-2)' }" title="RTSP预览" @back="switchToMenu"
+                    subtitle="实时视频流预览">
+                    <template #extra>
+                        <div class="can_touch">
+                            <a-button class="header-button no-outline-button" @click="minimizeWindow()"> 
+                                <template #icon><img src="../assets/min.png" style="width: 15px;" /></template>
+                            </a-button>
+                            <a-button class="header-button no-outline-button" @click="closeWindow()"> 
+                                <template #icon><img src="../assets/close.png" style="width: 15px;" /></template> 
+                            </a-button>
+                        </div>
+                    </template>
+                </a-page-header>
+            </div>
+
+            <div class="page-content custom-scrollbar">
+                <a-row>
+                    <a-col :span="24">
+                        <!-- 连接设置 -->
+                        <a-card style="margin-bottom: 15px;">
+                            <template #title>
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <span>连接设置</span>
+                                    <a-tag 
+                                        :color="t7_6_isStreaming ? 'green' : 'blue'" 
+                                        style="margin: 0; border-radius: 12px; font-size: 12px; padding: 2px 12px;"
+                                    >
+                                        <template #icon>
+                                            <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; margin-right: 6px;"></span>
+                                        </template>
+                                        {{ t7_6_streamStatus }}
+                                    </a-tag>
+                                </div>
+                            </template>
+                            <!-- RTSP地址模板选择 -->
+                            <div style="margin-bottom: 15px;">
+                                <a-row :gutter="10">
+                                    <a-col :span="6">
+                                        <span>地址模板：</span>
+                                    </a-col>
+                                    <a-col :span="18">
+                                        <a-select v-model="t7_6_selectedTemplate" @change="applyUrlTemplate" style="width: 100%;">
+                                            <a-option v-for="template in t7_6_urlTemplates" :key="template.name" :value="template.name">
+                                                {{ template.name }}
+                                            </a-option>
+                                        </a-select>
+                                    </a-col>
+                                </a-row>
+                            </div>
+
+                            <!-- RTSP地址输入 -->
+                            <div style="margin-bottom: 15px;">
+                                <a-row :gutter="10">
+                                    <a-col :span="6">
+                                        <span>RTSP地址：</span>
+                                    </a-col>
+                                    <a-col :span="18">
+                                        <a-input v-model="t7_6_rtspUrl" placeholder="请输入RTSP流地址" />
+                                    </a-col>
+                                </a-row>
+                            </div>
+
+                            <!-- 高级配置 -->
+                            <a-collapse>
+                                <a-collapse-item header="高级配置" key="1">
+                                    <a-row :gutter="15">
+                                        <a-col :span="8">
+                                            <div style="margin-bottom: 10px;">
+                                                <span>传输协议：</span>
+                                                <a-select v-model="t7_6_config.protocol" style="width: 100%;">
+                                                    <a-option value="tcp">TCP</a-option>
+                                                    <a-option value="udp">UDP</a-option>
+                                                </a-select>
+                                            </div>
+                                        </a-col>
+                                        <a-col :span="8">
+                                            <div style="margin-bottom: 10px;">
+                                                <span>视频质量：</span>
+                                                <a-select v-model="t7_6_config.quality" style="width: 100%;">
+                                                    <a-option value="low">低质量</a-option>
+                                                    <a-option value="medium">中等质量</a-option>
+                                                    <a-option value="high">高质量</a-option>
+                                                </a-select>
+                                            </div>
+                                        </a-col>
+                                        <a-col :span="8">
+                                            <div style="margin-bottom: 10px;">
+                                                <span>缓冲大小：</span>
+                                                <a-input-number 
+                                                    v-model="t7_6_config.bufferSize" 
+                                                    :min="1" 
+                                                    :max="10" 
+                                                    style="width: 100%;" 
+                                                />
+                                            </div>
+                                        </a-col>
+                                    </a-row>
+                                    <a-row>
+                                        <a-col :span="24">
+                                            <a-checkbox v-model="t7_6_config.enableAudio">启用音频</a-checkbox>
+                                        </a-col>
+                                    </a-row>
+                                </a-collapse-item>
+                            </a-collapse>
+
+                            <!-- 控制按钮 -->
+                            <div style="margin-top: 15px; text-align: center;">
+                                <a-space>
+                                    <a-button 
+                                        type="primary" 
+                                        @click="testRtspConnection"
+                                        :disabled="t7_6_isStreaming"
+                                    >
+                                        测试连接
+                                    </a-button>
+                                    <a-button 
+                                        v-if="!t7_6_isStreaming"
+                                        type="primary" 
+                                        @click="startRtspStream"
+                                        status="success"
+                                    >
+                                        开始预览
+                                    </a-button>
+                                    <a-button 
+                                        v-else
+                                        type="primary" 
+                                        @click="stopRtspStream"
+                                        status="danger"
+                                    >
+                                        停止预览
+                                    </a-button>
+                                    <a-button @click="clearRtspSettings">清空设置</a-button>
+                                </a-space>
+                            </div>
+
+
+
+                            <!-- 错误信息 -->
+                            <div v-if="t7_6_error" style="margin-top: 10px;">
+                                <a-alert type="error" show-icon>
+                                    {{ t7_6_error }}
+                                </a-alert>
+                            </div>
+                        </a-card>
+
+                        <!-- 视频预览区域 -->
+                        <a-card title="视频预览" style="margin-bottom: 15px;">
+                            <div class="rtsp-video-container">
+                                <video 
+                                    ref="t7_6_videoElement"
+                                    class="rtsp-video-player"
+                                    controls
+                                    muted
+                                    autoplay
+                                    playsinline
+                                >
+                                    您的浏览器不支持视频播放
+                                </video>
+                                
+                                <!-- 占位符，当没有视频时显示 -->
+                                <div v-if="!t7_6_isStreaming" class="rtsp-video-placeholder">
+                                    <div class="placeholder-content">
+                                        <img src="../assets/icon.jpg" style="width: 80px; height: 80px; border-radius: 10px; opacity: 0.5;" />
+                                        <p style="margin-top: 15px; color: #999; font-size: 16px;">
+                                            {{ t7_6_streamStatus === '未连接' ? '请输入RTSP地址并开始预览' : t7_6_streamStatus }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a-card>
+
+                        <!-- 使用说明 -->
+                        <a-card title="使用说明">
+                            <div class="rtsp-usage-guide">
+                                <div class="guide-section">
+                                    <h4>🎯 支持的功能</h4>
+                                    <div class="feature-list">
+                                        <div class="feature-item">📹 实时RTSP视频流预览</div>
+                                        <div class="feature-item">🌐 支持TCP/UDP传输协议</div>
+                                        <div class="feature-item">⚙️ 可调节视频质量和缓冲大小</div>
+                                        <div class="feature-item">🔊 支持音频播放</div>
+                                        <div class="feature-item">📋 常用设备地址模板</div>
+                                    </div>
+                                </div>
+
+                                <div class="guide-section">
+                                    <h4>📝 使用步骤</h4>
+                                    <div class="step-list">
+                                        <div class="step-item">
+                                            <span class="step-number">1</span>
+                                            <span class="step-text">选择设备模板或手动输入RTSP地址</span>
+                                        </div>
+                                        <div class="step-item">
+                                            <span class="step-number">2</span>
+                                            <span class="step-text">根据需要调整高级配置</span>
+                                        </div>
+                                        <div class="step-item">
+                                            <span class="step-number">3</span>
+                                            <span class="step-text">点击"测试连接"检查地址是否有效</span>
+                                        </div>
+                                        <div class="step-item">
+                                            <span class="step-number">4</span>
+                                            <span class="step-text">点击"开始预览"开始播放视频流</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="guide-section">
+                                    <h4>🔗 常见RTSP地址格式</h4>
+                                    <div class="format-list">
+                                        <div class="format-item">
+                                            <code>rtsp://username:password@ip:port/path</code>
+                                        </div>
+                                        <div class="format-item">
+                                            <code>rtsp://192.168.1.100:554/stream</code>
+                                        </div>
+                                        <div class="format-item">
+                                            <code>rtsp://admin:123456@192.168.1.64:554/Streaming/Channels/1</code>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="guide-section">
+                                    <h4>⚡ 技术说明</h4>
+                                    <div class="tech-description">
+                                        本功能使用本地FFmpeg进程将RTSP流转换为HLS格式，通过分片传输实现流畅播放，确保兼容性和稳定性。
+                                    </div>
+                                </div>
+                                
+                                <a-alert type="warning" style="margin-top: 15px;">
+                                    <template #icon>⚠️</template>
+                                    <div>
+                                        <p style="margin: 0;"><strong>注意事项：</strong></p>
+                                        <p style="margin: 5px 0 0 0;">
+                                            • 请确保网络连接正常<br/>
+                                            • RTSP地址需要包含正确的用户名和密码<br/>
+                                            • 某些摄像头可能需要特定的端口或路径<br/>
+                                            • 首次使用需要安装FFmpeg（程序会自动提示）
+                                        </p>
+                                    </div>
+                                </a-alert>
+                            </div>
+                        </a-card>
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -9808,6 +10408,156 @@ code {
     color: #86909c;
     font-size: 13px;
     border-left: 3px solid #ff7d00;
+}
+
+/* RTSP预览样式 */
+.rtsp-video-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rtsp-video-player {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+}
+
+.rtsp-video-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    z-index: 1;
+}
+
+.placeholder-content {
+    text-align: center;
+    color: #999;
+}
+
+.rtsp-usage-guide {
+    padding: 5px 0;
+    line-height: 1.6;
+}
+
+.guide-section {
+    margin-bottom: 25px;
+}
+
+.guide-section h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+    font-weight: 600;
+    font-size: 15px;
+    border-left: 4px solid #1890ff;
+    padding-left: 12px;
+}
+
+.feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.feature-item {
+    background: #f8fafb;
+    border: 1px solid #e8eaec;
+    border-radius: 6px;
+    padding: 10px 15px;
+    color: #4e5969;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.feature-item:hover {
+    background: #f0f7ff;
+    border-color: #bed0f7;
+}
+
+.step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: #fafbfc;
+    border-radius: 8px;
+    border-left: 4px solid #52c41a;
+    transition: all 0.2s ease;
+}
+
+.step-item:hover {
+    background: #f6ffed;
+    transform: translateX(2px);
+}
+
+.step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: #52c41a;
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.step-text {
+    color: #4e5969;
+    font-size: 14px;
+}
+
+.format-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.format-item {
+    background: #f7f8fa;
+    border: 1px solid #e8eaec;
+    border-radius: 6px;
+    padding: 12px 15px;
+}
+
+.format-item code {
+    background: transparent;
+    color: #722ed1;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    word-break: break-all;
+}
+
+.tech-description {
+    background: linear-gradient(135deg, #fff7e6 0%, #fff1b8 100%);
+    border: 1px solid #ffe58f;
+    border-radius: 8px;
+    padding: 15px;
+    color: #ad6800;
+    font-size: 14px;
+    line-height: 1.6;
 }
 .rest-history-table {
     width: 100%;
