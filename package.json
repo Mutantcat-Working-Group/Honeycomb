@@ -38,7 +38,7 @@
     "vite-plugin-electron": "^0.29.0",
     "vite-plugin-electron-renderer": "^0.14.5",
     "vue": "^3.4.21",
-    "vue-tsc": "^2.0.6"
+    "vue-tsc": "^3.1.5"
   },
   "dependencies": {
     "@cycjimmy/jsmpeg-player": "^6.1.2",
