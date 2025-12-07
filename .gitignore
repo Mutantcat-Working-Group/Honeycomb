@@ -1,0 +1,70 @@
+# Build directories
+build/
+debug/
+release/
+*.build/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# Qt Creator
+*.pro.user*
+*.qbs.user*
+*.moc
+*.moc.cpp
+*.ui.*
+*.qrc.cpp
+*.qrc.h
+*.autosave
+
+# Qt translations
+*.qm
+*.ts
+
+# Qt unit tests
+target_wrapper.*
+
+# Object files
+*.o
+*.obj
+*.lo
+*.a
+*.la
+*.lib
+*.dll
+*.so
+*.dylib
+*.exe
+
+# Debug files
+*.pdb
+*.ilk
+*.exp
+*.map
+*.dSYM/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+*.tmp
+*.temp
