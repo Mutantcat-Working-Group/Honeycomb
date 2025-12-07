@@ -1,3 +1,0 @@
-set(__QT_DEPLOY_TARGET_appHoneycomb_FILE E:/Projects/Honeycomb/Honeycomb/build/unknown-Debug/appHoneycomb.exe)
-set(__QT_DEPLOY_TARGET_appHoneycomb_TYPE EXECUTABLE)
-set(__QT_DEPLOY_TARGET_appHoneycomb_RUNTIME_DLLS D:/Softwares/Qt/6.10.1/msvc2022_64/bin/Qt6Quickd.dll;D:/Softwares/Qt/6.10.1/msvc2022_64/bin/Qt6OpenGLd.dll;D:/Softwares/Qt/6.10.1/msvc2022_64/bin/Qt6Guid.dll;D:/Softwares/Qt/6.10.1/msvc2022_64/bin/Qt6QmlMetad.dll;D:/Softwares/Qt/6.10.1/msvc2022_64/bin/Qt6QmlModelsd.dll;D:/Softwares/Qt/6.10.1/msvc2022_64/bin/Qt6QmlWorkerScriptd.dll;D:/Softwares/Qt/6.10.1/msvc2022_64/bin/Qt6Qmld.dll;D:/Softwares/Qt/6.10.1/msvc2022_64/bin/Qt6Networkd.dll;D:/Softwares/Qt/6.10.1/msvc2022_64/bin/Qt6Cored.dll)

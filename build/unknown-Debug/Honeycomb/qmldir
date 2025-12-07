@@ -1,6 +1,0 @@
-module Honeycomb
-typeinfo appHoneycomb.qmltypes
-prefer :/qt/qml/Honeycomb/
-Main 254.0 Main.qml
-depends QtQuick
-
