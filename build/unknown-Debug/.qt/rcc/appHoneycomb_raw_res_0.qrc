@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="/qt/qml/Honeycomb/">
+    <file alias="i18n/zh_CN.js">E:/Projects/Honeycomb/Honeycomb/i18n/zh_CN.js</file>
+    <file alias="i18n/en_US.js">E:/Projects/Honeycomb/Honeycomb/i18n/en_US.js</file>
+    <file alias="i18n/i18n.js">E:/Projects/Honeycomb/Honeycomb/i18n/i18n.js</file>
+  </qresource>
+</RCC>
+

@@ -1,0 +1,15 @@
+-rootPath
+E:/Projects/Honeycomb/Honeycomb
+-cmake-output
+-output-file
+E:/Projects/Honeycomb/Honeycomb/build/unknown-Debug/.qt/qml_imports/appHoneycomb_conf.cmake
+-importPath
+E:/Projects/Honeycomb/Honeycomb/build/unknown-Debug/Honeycomb
+-importPath
+E:/Projects/Honeycomb/Honeycomb/build/unknown-Debug
+-importPath
+D:/Softwares/Qt/6.10.1/msvc2022_64/qml
+-qrcFiles
+E:/Projects/Honeycomb/Honeycomb/build/unknown-Debug/.qt/rcc/qmake_Honeycomb.qrc
+E:/Projects/Honeycomb/Honeycomb/build/unknown-Debug/.qt/rcc/appHoneycomb_raw_qml_0.qrc
+E:/Projects/Honeycomb/Honeycomb/build/unknown-Debug/.qt/rcc/appHoneycomb_raw_res_0.qrc

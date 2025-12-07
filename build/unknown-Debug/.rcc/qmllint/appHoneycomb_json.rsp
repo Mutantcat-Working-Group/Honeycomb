@@ -1,0 +1,14 @@
+--bare
+-I
+E:/Projects/Honeycomb/Honeycomb/build/unknown-Debug
+-I
+D:/Softwares/Qt/6.10.1/msvc2022_64/qml
+--resource
+E:/Projects/Honeycomb/Honeycomb/build/unknown-Debug/.qt/rcc/qmake_Honeycomb.qrc
+--resource
+E:/Projects/Honeycomb/Honeycomb/build/unknown-Debug/.qt/rcc/appHoneycomb_raw_qml_0.qrc
+--resource
+E:/Projects/Honeycomb/Honeycomb/build/unknown-Debug/.qt/rcc/appHoneycomb_raw_res_0.qrc
+E:/Projects/Honeycomb/Honeycomb/Main.qml
+--json
+E:/Projects/Honeycomb/Honeycomb/build/unknown-Debug/appHoneycomb_qmllint.json

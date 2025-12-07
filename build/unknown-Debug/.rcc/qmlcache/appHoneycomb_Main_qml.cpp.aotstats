@@ -1,0 +1,15 @@
+{
+    "formatRevision": 1,
+    "modules": [
+        {
+            "moduleFiles": [
+                {
+                    "entries": [
+                    ],
+                    "filePath": "E:/Projects/Honeycomb/Honeycomb/Main.qml"
+                }
+            ],
+            "moduleId": "Honeycomb(appHoneycomb)"
+        }
+    ]
+}

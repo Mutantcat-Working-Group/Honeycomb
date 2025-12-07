@@ -1,0 +1,205 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-48362eebd3e65df2387f.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Honeycomb",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "all_aotstats::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_aotstats-Debug-f8834c634b734022e7a4.json",
+					"name" : "all_aotstats",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint-Debug-a229c10be0638b45f6e7.json",
+					"name" : "all_qmllint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint_json::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint_json-Debug-c2dc41b60f4cf31ee4b6.json",
+					"name" : "all_qmllint_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint_module::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint_module-Debug-cac147e9aa3317ae81c7.json",
+					"name" : "all_qmllint_module",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmltyperegistrations::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmltyperegistrations-Debug-c531fdf88aef1a120d59.json",
+					"name" : "all_qmltyperegistrations",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appHoneycomb::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appHoneycomb-Debug-7b7c8a4fdb98c00d792c.json",
+					"name" : "appHoneycomb",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appHoneycomb_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appHoneycomb_autogen-Debug-f9eb863a3d0bc707d578.json",
+					"name" : "appHoneycomb_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appHoneycomb_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appHoneycomb_autogen_timestamp_deps-Debug-19a654d081fe4b214614.json",
+					"name" : "appHoneycomb_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appHoneycomb_copy_qml::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appHoneycomb_copy_qml-Debug-3967e428fa2439a7d36c.json",
+					"name" : "appHoneycomb_copy_qml",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appHoneycomb_copy_res::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appHoneycomb_copy_res-Debug-6649df6db0a18c57eab9.json",
+					"name" : "appHoneycomb_copy_res",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appHoneycomb_qmlimportscan::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appHoneycomb_qmlimportscan-Debug-7a193d6ef8aab2ab9081.json",
+					"name" : "appHoneycomb_qmlimportscan",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appHoneycomb_qmllint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appHoneycomb_qmllint-Debug-ae77923a7da3ebfe278c.json",
+					"name" : "appHoneycomb_qmllint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appHoneycomb_qmllint_json::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appHoneycomb_qmllint_json-Debug-18e9f2cc687ee1598bc7.json",
+					"name" : "appHoneycomb_qmllint_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appHoneycomb_qmllint_module::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appHoneycomb_qmllint_module-Debug-99ab3fb14b938ecfe02b.json",
+					"name" : "appHoneycomb_qmllint_module",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appHoneycomb_qmltyperegistration::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appHoneycomb_qmltyperegistration-Debug-beb1eeb77209ae024a51.json",
+					"name" : "appHoneycomb_qmltyperegistration",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "generate_qmlls_build_ini_file::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-generate_qmlls_build_ini_file-Debug-74d4313bae8195141af3.json",
+					"name" : "generate_qmlls_build_ini_file",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "module_appHoneycomb_aotstats_target::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-module_appHoneycomb_aotstats_target-Debug-c46f8e5d54a2f5d5c258.json",
+					"name" : "module_appHoneycomb_aotstats_target",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "E:/Projects/Honeycomb/Honeycomb/build/unknown-Debug",
+		"source" : "E:/Projects/Honeycomb/Honeycomb"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

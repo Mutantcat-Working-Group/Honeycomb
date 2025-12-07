@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/qt/qml/Honeycomb">
+    <file alias="qmldir">E:/Projects/Honeycomb/Honeycomb/build/unknown-Debug/Honeycomb/qmldir</file>
+  </qresource>
+</RCC>
+
