@@ -1,3 +1,4 @@
+#include <QIcon>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
@@ -13,6 +14,5 @@ int main(int argc, char *argv[])
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
     engine.loadFromModule("Honeycomb", "Main");
-
     return app.exec();
 }
