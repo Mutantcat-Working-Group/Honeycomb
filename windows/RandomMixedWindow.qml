@@ -190,12 +190,6 @@ Window {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         clip: true
-                        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-                        ScrollBar.vertical.policy: ScrollBar.AsNeeded
-                        
-                        Component.onCompleted: {
-                            ScrollBar.vertical.width = 5
-                        }
                         
                         TextArea {
                             id: resultText

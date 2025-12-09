@@ -236,12 +236,6 @@ ApplicationWindow {
                     Layout.fillHeight: true
                     clip: true
                     contentWidth: availableWidth
-                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-                    ScrollBar.vertical.policy: ScrollBar.AsNeeded
-                    
-                    Component.onCompleted: {
-                        ScrollBar.vertical.width = 5
-                    }
                     
                     Flickable {
                         anchors.fill: parent
