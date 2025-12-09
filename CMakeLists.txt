@@ -11,18 +11,6 @@ qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appHoneycomb
     main.cpp
-    src/RandomNumberGenerator.h
-    src/RandomNumberGenerator.cpp
-    src/RandomLetterGenerator.h
-    src/RandomLetterGenerator.cpp
-    src/RandomMixedGenerator.h
-    src/RandomMixedGenerator.cpp
-    src/BarcodeGenerator.h
-    src/BarcodeGenerator.cpp
-    src/QRCodeGenerator.h
-    src/QRCodeGenerator.cpp
-    lib/qrcodegen/qrcodegen.hpp
-    lib/qrcodegen/qrcodegen.cpp
     app.rc
 )
 
