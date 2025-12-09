@@ -237,16 +237,7 @@ ApplicationWindow {
                     ScrollBar.vertical.policy: ScrollBar.AsNeeded
                     
                     Component.onCompleted: {
-                        ScrollBar.vertical.width = 4
-                        // 隐藏上下箭头按钮
-                        if (ScrollBar.vertical.decrementButton) {
-                            ScrollBar.vertical.decrementButton.visible = false
-                            ScrollBar.vertical.decrementButton.height = 0
-                        }
-                        if (ScrollBar.vertical.incrementButton) {
-                            ScrollBar.vertical.incrementButton.visible = false
-                            ScrollBar.vertical.incrementButton.height = 0
-                        }
+                        ScrollBar.vertical.width = 8
                     }
                     
                     Flickable {
