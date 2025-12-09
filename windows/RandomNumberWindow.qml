@@ -65,8 +65,8 @@ Window {
                     id: lengthInput
                     Layout.preferredWidth: 100
                     text: "8"
-                    placeholderText: "1-100"
-                    validator: IntValidator { bottom: 1; top: 100 }
+                    placeholderText: "1-999"
+                    validator: IntValidator { bottom: 1; top: 999 }
                     horizontalAlignment: TextInput.AlignCenter
                     
                     background: Rectangle {
@@ -159,9 +159,16 @@ Window {
                     }
                     
                     ScrollView {
+                        id: scrollView
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         clip: true
+                        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                        ScrollBar.vertical.policy: ScrollBar.AsNeeded
+                        
+                        Component.onCompleted: {
+                            ScrollBar.vertical.width = 4
+                        }
                         
                         TextArea {
                             id: resultText
@@ -172,6 +179,7 @@ Window {
                             font.family: "Consolas, Monaco, monospace"
                             color: "#333"
                             selectByMouse: true
+                            implicitWidth: parent.width
                             
                             background: Rectangle {
                                 color: "transparent"

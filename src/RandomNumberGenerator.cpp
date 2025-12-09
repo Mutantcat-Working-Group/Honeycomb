@@ -15,7 +15,7 @@ int RandomNumberGenerator::length() const
 void RandomNumberGenerator::setLength(int length)
 {
     if (length < 1) length = 1;
-    if (length > 100) length = 100;
+    if (length > 999) length = 999;
     
     if (m_length != length) {
         m_length = length;
