@@ -17,10 +17,12 @@ qt_add_qml_module(appHoneycomb
     URI Honeycomb
     QML_FILES
         Main.qml
+        windows/AboutWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
         i18n/i18n.js
+        assets/icons/icon.jpg
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

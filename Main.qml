@@ -15,6 +15,27 @@ ApplicationWindow {
     // 当前选中的导航索引
     property int currentNavIndex: 1
     
+    // 窗口组件映射
+    property var windowComponents: ({
+        "关于蜂巢": "qrc:/qt/qml/Honeycomb/windows/AboutWindow.qml"
+    })
+    
+    // 打开工具窗口的函数
+    function openToolWindow(toolTitle) {
+        var componentPath = windowComponents[toolTitle]
+        if (componentPath) {
+            var component = Qt.createComponent(componentPath)
+            if (component.status === Component.Ready) {
+                var window = component.createObject(mainWindow)
+                window.show()
+            } else if (component.status === Component.Error) {
+                console.log("Error creating window:", component.errorString())
+            }
+        } else {
+            console.log("No window component for:", toolTitle)
+        }
+    }
+    
     // 导航项数据
     property var navItems: [
         {text: "工具说明", desc: "软件介绍与帮助", icon: ""},
@@ -271,7 +292,7 @@ ApplicationWindow {
                                         onExited: parent.hovered = false
                                         
                                         onClicked: {
-                                            console.log("Clicked:", modelData.title)
+                                            openToolWindow(modelData.title)
                                         }
                                     }
                                 }
