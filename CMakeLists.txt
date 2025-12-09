@@ -19,6 +19,10 @@ qt_add_executable(appHoneycomb
     src/RandomMixedGenerator.cpp
     src/BarcodeGenerator.h
     src/BarcodeGenerator.cpp
+    src/QRCodeGenerator.h
+    src/QRCodeGenerator.cpp
+    lib/qrcodegen/qrcodegen.hpp
+    lib/qrcodegen/qrcodegen.cpp
     app.rc
 )
 
@@ -31,6 +35,7 @@ qt_add_qml_module(appHoneycomb
         windows/RandomLetterWindow.qml
         windows/RandomMixedWindow.qml
         windows/BarcodeWindow.qml
+        windows/QRCodeWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
@@ -46,6 +51,10 @@ qt_add_qml_module(appHoneycomb
         src/RandomMixedGenerator.cpp
         src/BarcodeGenerator.h
         src/BarcodeGenerator.cpp
+        src/QRCodeGenerator.h
+        src/QRCodeGenerator.cpp
+        lib/qrcodegen/qrcodegen.hpp
+        lib/qrcodegen/qrcodegen.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

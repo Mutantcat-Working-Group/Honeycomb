@@ -8,6 +8,7 @@
 #include "src/RandomLetterGenerator.h"
 #include "src/RandomMixedGenerator.h"
 #include "src/BarcodeGenerator.h"
+#include "src/QRCodeGenerator.h"
 
 int main(int argc, char *argv[])
 {
@@ -19,19 +20,22 @@ int main(int argc, char *argv[])
     // 设置 Qt Quick Controls 样式为 Basic，支持自定义控件外观
     QQuickStyle::setStyle("Basic");
 
-    // 创建条形码图像提供器
+    // 创建图像提供器
     g_barcodeImageProvider = new BarcodeImageProvider();
+    g_qrcodeImageProvider = new QRCodeImageProvider();
 
     // 注册 C++ 类型到 QML
     qmlRegisterType<RandomNumberGenerator>("Honeycomb", 1, 0, "RandomNumberGenerator");
     qmlRegisterType<RandomLetterGenerator>("Honeycomb", 1, 0, "RandomLetterGenerator");
     qmlRegisterType<RandomMixedGenerator>("Honeycomb", 1, 0, "RandomMixedGenerator");
     qmlRegisterType<BarcodeGenerator>("Honeycomb", 1, 0, "BarcodeGenerator");
+    qmlRegisterType<QRCodeGenerator>("Honeycomb", 1, 0, "QRCodeGenerator");
 
     QQmlApplicationEngine engine;
     
     // 添加图像提供器到引擎
     engine.addImageProvider("barcode", g_barcodeImageProvider);
+    engine.addImageProvider("qrcode", g_qrcodeImageProvider);
     
     QObject::connect(
         &engine,

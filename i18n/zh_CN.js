@@ -37,7 +37,7 @@ function getZhLang() {
         // 编码工具分类
         toolBarcode: "条形码生成",
         toolBarcodeDesc: "数字生成条形码",
-        toolQrcode: "二维码码生成",
+        toolQrcode: "二维码生成",
         toolQrcodeDesc: "文字生成二维码",
         toolTimestamp: "时间戳转换",
         toolTimestampDesc: "时间戳与日期互转",
@@ -176,6 +176,11 @@ function getZhLang() {
         barcodeInputHint: "请输入要生成条形码的内容",
         saveBarcode: "保存条形码",
         saveSuccess: "保存成功",
-        copySuccess: "已复制到剪贴板"
+        copySuccess: "已复制到剪贴板",
+        
+        // 二维码工具
+        qrcodeInput: "输入内容",
+        qrcodeInputHint: "请输入要生成二维码的文字",
+        saveQRCode: "保存二维码"
     };
 }

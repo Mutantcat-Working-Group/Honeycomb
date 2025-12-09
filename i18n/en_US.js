@@ -176,6 +176,11 @@ function getEnLang() {
         barcodeInputHint: "Enter content for barcode",
         saveBarcode: "Save Barcode",
         saveSuccess: "Saved successfully",
-        copySuccess: "Copied to clipboard"
+        copySuccess: "Copied to clipboard",
+        
+        // QR Code tool
+        qrcodeInput: "Input",
+        qrcodeInputHint: "Enter text to generate QR code",
+        saveQRCode: "Save QR Code"
     };
 }
