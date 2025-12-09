@@ -181,6 +181,26 @@ function getEnLang() {
         // QR Code tool
         qrcodeInput: "Input",
         qrcodeInputHint: "Enter text to generate QR code",
-        saveQRCode: "Save QR Code"
+        saveQRCode: "Save QR Code",
+        
+        // Trim Space tool
+        trimAllSpaces: "All Spaces",
+        trimEdgeSpaces: "Edge Spaces",
+        trimExtraSpaces: "Extra Spaces",
+        inputText: "Input Text",
+        outputResult: "Output Result",
+        charCount: "Characters",
+        inputPlaceholder: "Paste or enter the text to process here...",
+        outputPlaceholder: "The result will be displayed here...",
+        clearInput: "Clear",
+        copyResult: "Copy Result",
+        copied: "Copied",
+        process: "Process",
+        removedChars: "Removed",
+        spaceCount: "Spaces",
+        currentMode: "Current Mode",
+        clickToProcess: "Click to process",
+        textTooLong: "Text too long, please process in parts (max 100k chars)",
+        processError: "Processing error, please check the text"
     };
 }

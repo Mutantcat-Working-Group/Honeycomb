@@ -24,6 +24,7 @@ qt_add_qml_module(appHoneycomb
         windows/RandomMixedWindow.qml
         windows/BarcodeWindow.qml
         windows/QRCodeWindow.qml
+        windows/TrimSpaceWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js

@@ -181,6 +181,26 @@ function getZhLang() {
         // 二维码工具
         qrcodeInput: "输入内容",
         qrcodeInputHint: "请输入要生成二维码的文字",
-        saveQRCode: "保存二维码"
+        saveQRCode: "保存二维码",
+        
+        // 字符串去空格工具
+        trimAllSpaces: "所有空格",
+        trimEdgeSpaces: "首尾空格",
+        trimExtraSpaces: "多余空格",
+        inputText: "输入文本",
+        outputResult: "输出结果",
+        charCount: "字符数",
+        inputPlaceholder: "在此粘贴或输入需要处理的文本...",
+        outputPlaceholder: "处理结果将显示在这里...",
+        clearInput: "清空",
+        copyResult: "复制结果",
+        copied: "已复制",
+        process: "处理",
+        removedChars: "移除字符",
+        spaceCount: "空格数量",
+        currentMode: "当前模式",
+        clickToProcess: "点击处理",
+        textTooLong: "文本过长，请分段处理（最大10万字符）",
+        processError: "处理出错，请检查文本内容"
     };
 }

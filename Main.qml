@@ -22,7 +22,8 @@ ApplicationWindow {
         "随机字符串": "qrc:/qt/qml/Honeycomb/windows/RandomLetterWindow.qml",
         "随机混合串": "qrc:/qt/qml/Honeycomb/windows/RandomMixedWindow.qml",
         "条形码生成": "qrc:/qt/qml/Honeycomb/windows/BarcodeWindow.qml",
-        "二维码生成": "qrc:/qt/qml/Honeycomb/windows/QRCodeWindow.qml"
+        "二维码生成": "qrc:/qt/qml/Honeycomb/windows/QRCodeWindow.qml",
+        "字符串去空格": "qrc:/qt/qml/Honeycomb/windows/TrimSpaceWindow.qml"
     })
     
     // 打开工具窗口的函数
