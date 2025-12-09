@@ -161,6 +161,7 @@ function getEnLang() {
         // Common buttons and labels
         generateBtn: "Generate",
         copyBtn: "Copy",
+        saveBtn: "Save",
         resultLabel: "Result",
         clickToGenerate: "Click button above to generate",
         randomNumLength: "Length",
@@ -168,6 +169,13 @@ function getEnLang() {
         randomMixLength: "Mixed Length",
         includeUpper: "Include Uppercase",
         includeLower: "Include Lowercase",
-        includeDigits: "Include Digits"
+        includeDigits: "Include Digits",
+        
+        // Barcode tool
+        barcodeInput: "Input",
+        barcodeInputHint: "Enter content for barcode",
+        saveBarcode: "Save Barcode",
+        saveSuccess: "Saved successfully",
+        copySuccess: "Copied to clipboard"
     };
 }

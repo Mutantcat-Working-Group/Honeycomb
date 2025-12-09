@@ -161,6 +161,7 @@ function getZhLang() {
         // 通用按钮和标签
         generateBtn: "生成",
         copyBtn: "复制",
+        saveBtn: "保存",
         resultLabel: "结果",
         clickToGenerate: "点击上方按钮生成",
         randomNumLength: "随机数长度",
@@ -168,6 +169,13 @@ function getZhLang() {
         randomMixLength: "混合串长度",
         includeUpper: "包含大写字母",
         includeLower: "包含小写字母",
-        includeDigits: "包含数字"
+        includeDigits: "包含数字",
+        
+        // 条形码工具
+        barcodeInput: "输入内容",
+        barcodeInputHint: "请输入要生成条形码的内容",
+        saveBarcode: "保存条形码",
+        saveSuccess: "保存成功",
+        copySuccess: "已复制到剪贴板"
     };
 }
