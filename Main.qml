@@ -27,7 +27,8 @@ ApplicationWindow {
         if (componentPath) {
             var component = Qt.createComponent(componentPath)
             if (component.status === Component.Ready) {
-                var window = component.createObject(mainWindow)
+                // 使用 null 作为父级，让窗口在任务栏显示为独立窗口
+                var window = component.createObject(null)
                 window.show()
             } else if (component.status === Component.Error) {
                 console.log("Error creating window:", component.errorString())
@@ -237,7 +238,7 @@ ApplicationWindow {
                     ScrollBar.vertical.policy: ScrollBar.AsNeeded
                     
                     Component.onCompleted: {
-                        ScrollBar.vertical.width = 8
+                        ScrollBar.vertical.width = 5
                     }
                     
                     Flickable {

@@ -167,7 +167,7 @@ Window {
                         ScrollBar.vertical.policy: ScrollBar.AsNeeded
                         
                         Component.onCompleted: {
-                            ScrollBar.vertical.width = 4
+                            ScrollBar.vertical.width = 5
                         }
                         
                         TextArea {
