@@ -21,8 +21,8 @@ ApplicationWindow {
     })
     
     // 打开工具窗口的函数
-    function openToolWindow(toolTitle) {
-        var componentPath = windowComponents[toolTitle]
+    function openToolWindow(toolKey) {
+        var componentPath = windowComponents[toolKey]
         if (componentPath) {
             var component = Qt.createComponent(componentPath)
             if (component.status === Component.Ready) {
@@ -32,96 +32,96 @@ ApplicationWindow {
                 console.log("Error creating window:", component.errorString())
             }
         } else {
-            console.log("No window component for:", toolTitle)
+            console.log("No window component for:", toolKey)
         }
     }
     
     // 导航项数据
     property var navItems: [
-        {text: "工具说明", desc: "软件介绍与帮助", icon: ""},
-        {text: "编码工具", desc: "编码转换相关工具", icon: ""},
-        {text: "字符工具", desc: "字符处理相关工具", icon: ""},
-        {text: "开发工具", desc: "开发辅助相关工具", icon: ""},
-        {text: "加密工具", desc: "加密解密相关工具", icon: ""},
-        {text: "随机工具", desc: "随机生成相关工具", icon: ""},
-        {text: "网络工具", desc: "网络测试相关工具", icon: ""},
-        {text: "硬件工具", desc: "硬件信息相关工具", icon: ""}
+        {text: I18n.t("navToolInfo"), desc: I18n.t("navToolInfoDesc"), icon: ""},
+        {text: I18n.t("navEncode"), desc: I18n.t("navEncodeDesc"), icon: ""},
+        {text: I18n.t("navString"), desc: I18n.t("navStringDesc"), icon: ""},
+        {text: I18n.t("navDev"), desc: I18n.t("navDevDesc"), icon: ""},
+        {text: I18n.t("navEncrypt"), desc: I18n.t("navEncryptDesc"), icon: ""},
+        {text: I18n.t("navRandom"), desc: I18n.t("navRandomDesc"), icon: ""},
+        {text: I18n.t("navNetwork"), desc: I18n.t("navNetworkDesc"), icon: ""},
+        {text: I18n.t("navHardware"), desc: I18n.t("navHardwareDesc"), icon: ""}
     ]
     
     // 各分类的工具数据
     property var toolsData: {
         0: [ // 工具说明
-            {title: "关于蜂巢", subtitle: "软件介绍与说明"},
-            {title: "使用帮助", subtitle: "功能使用指南"},
-            {title: "更新日志", subtitle: "版本更新记录"},
-            {title: "反馈建议", subtitle: "问题反馈与建议"},
-            {title: "软件设置", subtitle: "修改本软件设置"}
+            {title: I18n.t("toolAbout"), subtitle: I18n.t("toolAboutDesc"), key: "关于蜂巢"},
+            {title: I18n.t("toolHelp"), subtitle: I18n.t("toolHelpDesc"), key: "使用帮助"},
+            {title: I18n.t("toolChangelog"), subtitle: I18n.t("toolChangelogDesc"), key: "更新日志"},
+            {title: I18n.t("toolFeedback"), subtitle: I18n.t("toolFeedbackDesc"), key: "反馈建议"},
+            {title: I18n.t("toolSettings"), subtitle: I18n.t("toolSettingsDesc"), key: "软件设置"}
         ],
         1: [ // 编码工具
-            {title: "条形码生成", subtitle: "数字生成条形码"},
-            {title: "二维码码生成", subtitle: "文字生成二维码"},
-            {title: "时间戳转换", subtitle: "时间戳与日期互转"},
-            {title: "颜色值转换", subtitle: "颜色编码转换"},
-            {title: "中文转Unicode", subtitle: "中文与Unicode互转"},
-            {title: "ASCII码表", subtitle: "ASCII码对照表"},
-            {title: "进制转换", subtitle: "数字进制相互转换"},
-            {title: "补码转换", subtitle: "原码反码补码转换"}
+            {title: I18n.t("toolBarcode"), subtitle: I18n.t("toolBarcodeDesc"), key: "条形码生成"},
+            {title: I18n.t("toolQrcode"), subtitle: I18n.t("toolQrcodeDesc"), key: "二维码生成"},
+            {title: I18n.t("toolTimestamp"), subtitle: I18n.t("toolTimestampDesc"), key: "时间戳转换"},
+            {title: I18n.t("toolColor"), subtitle: I18n.t("toolColorDesc"), key: "颜色值转换"},
+            {title: I18n.t("toolUnicode"), subtitle: I18n.t("toolUnicodeDesc"), key: "中文转Unicode"},
+            {title: I18n.t("toolAscii"), subtitle: I18n.t("toolAsciiDesc"), key: "ASCII码表"},
+            {title: I18n.t("toolRadix"), subtitle: I18n.t("toolRadixDesc"), key: "进制转换"},
+            {title: I18n.t("toolComplement"), subtitle: I18n.t("toolComplementDesc"), key: "补码转换"}
         ],
         2: [ // 字符工具
-            {title: "字符串去空格", subtitle: "去除字符串中的空格"},
-            {title: "字符串去回车", subtitle: "去除字符串中的回车"},
-            {title: "去除空格回车", subtitle: "去除文中空格和回车"},
-            {title: "替换与转义", subtitle: "替换指定字符"},
-            {title: "字数统计", subtitle: "文本字符分析"},
-            {title: "文本对比", subtitle: "比较文本差异"},
-            {title: "正则测试", subtitle: "测试正则表达式"},
-            {title: "大小写转换", subtitle: "文本大小写转换"}
+            {title: I18n.t("toolTrimSpace"), subtitle: I18n.t("toolTrimSpaceDesc"), key: "字符串去空格"},
+            {title: I18n.t("toolTrimNewline"), subtitle: I18n.t("toolTrimNewlineDesc"), key: "字符串去回车"},
+            {title: I18n.t("toolTrimAll"), subtitle: I18n.t("toolTrimAllDesc"), key: "去除空格回车"},
+            {title: I18n.t("toolReplace"), subtitle: I18n.t("toolReplaceDesc"), key: "替换与转义"},
+            {title: I18n.t("toolWordCount"), subtitle: I18n.t("toolWordCountDesc"), key: "字数统计"},
+            {title: I18n.t("toolTextDiff"), subtitle: I18n.t("toolTextDiffDesc"), key: "文本对比"},
+            {title: I18n.t("toolRegex"), subtitle: I18n.t("toolRegexDesc"), key: "正则测试"},
+            {title: I18n.t("toolCase"), subtitle: I18n.t("toolCaseDesc"), key: "大小写转换"}
         ],
         3: [ // 开发工具
-            {title: "JSON格式化", subtitle: "将JSON格式化输出"},
-            {title: "JSON转YAML", subtitle: "JSON与YAML转换"},
-            {title: "屏幕取色器", subtitle: "拾取屏幕任意颜色"},
-            {title: "颜色选择器", subtitle: "从色板中选择颜色"},
-            {title: "常用HTML颜色", subtitle: "常用网页色系和色块"},
-            {title: "回车转br标签", subtitle: "换行符转HTML标签"},
-            {title: "常用浏览器UA", subtitle: "浏览器User-Agent"},
-            {title: "Go交叉编译", subtitle: "跨平台编译参考"},
-            {title: "htaccess转nginx", subtitle: "转换htaccess规则"},
-            {title: "Manifest权限大全", subtitle: "Android权限对照表"},
-            {title: "HTTP状态码", subtitle: "HTTP状态码大全"},
-            {title: "Content-Type", subtitle: "MIME类型参考大全"},
-            {title: "HTML特殊字符", subtitle: "HTML字符编解码"}
+            {title: I18n.t("toolJsonFormat"), subtitle: I18n.t("toolJsonFormatDesc"), key: "JSON格式化"},
+            {title: I18n.t("toolJsonYaml"), subtitle: I18n.t("toolJsonYamlDesc"), key: "JSON转YAML"},
+            {title: I18n.t("toolColorPicker"), subtitle: I18n.t("toolColorPickerDesc"), key: "屏幕取色器"},
+            {title: I18n.t("toolColorSelect"), subtitle: I18n.t("toolColorSelectDesc"), key: "颜色选择器"},
+            {title: I18n.t("toolHtmlColor"), subtitle: I18n.t("toolHtmlColorDesc"), key: "常用HTML颜色"},
+            {title: I18n.t("toolBrTag"), subtitle: I18n.t("toolBrTagDesc"), key: "回车转br标签"},
+            {title: I18n.t("toolUserAgent"), subtitle: I18n.t("toolUserAgentDesc"), key: "常用浏览器UA"},
+            {title: I18n.t("toolGoCross"), subtitle: I18n.t("toolGoCrossDesc"), key: "Go交叉编译"},
+            {title: I18n.t("toolHtaccess"), subtitle: I18n.t("toolHtaccessDesc"), key: "htaccess转nginx"},
+            {title: I18n.t("toolManifest"), subtitle: I18n.t("toolManifestDesc"), key: "Manifest权限大全"},
+            {title: I18n.t("toolHttpStatus"), subtitle: I18n.t("toolHttpStatusDesc"), key: "HTTP状态码"},
+            {title: I18n.t("toolContentType"), subtitle: I18n.t("toolContentTypeDesc"), key: "Content-Type"},
+            {title: I18n.t("toolHtmlChar"), subtitle: I18n.t("toolHtmlCharDesc"), key: "HTML特殊字符"}
         ],
         4: [ // 加密工具
-            {title: "Windows加密", subtitle: "Windows自带指令"},
-            {title: "MD5加密", subtitle: "字符串转MD5"},
-            {title: "SHA1加密", subtitle: "字符串转SHA1"},
-            {title: "SHA256加密", subtitle: "字符串转SHA256"},
-            {title: "密码强度分析", subtitle: "分析密码安全强度"}
+            {title: I18n.t("toolWinEncrypt"), subtitle: I18n.t("toolWinEncryptDesc"), key: "Windows加密"},
+            {title: I18n.t("toolMd5"), subtitle: I18n.t("toolMd5Desc"), key: "MD5加密"},
+            {title: I18n.t("toolSha1"), subtitle: I18n.t("toolSha1Desc"), key: "SHA1加密"},
+            {title: I18n.t("toolSha256"), subtitle: I18n.t("toolSha256Desc"), key: "SHA256加密"},
+            {title: I18n.t("toolPwdStrength"), subtitle: I18n.t("toolPwdStrengthDesc"), key: "密码强度分析"}
         ],
         5: [ // 随机工具
-            {title: "随机数字", subtitle: "生成随机数字"},
-            {title: "随机字符串", subtitle: "生成随机字符串"},
-            {title: "随机混合串", subtitle: "生成字母数字混合串"},
-            {title: "随机MAC地址", subtitle: "生成网络设备MAC地址"},
-            {title: "随机IPv4地址", subtitle: "生成随机IPv4地址"},
-            {title: "随机IPv6地址", subtitle: "生成随机IPv6地址"},
-            {title: "生成UUID", subtitle: "生成唯一标识符"}
+            {title: I18n.t("toolRandomNum"), subtitle: I18n.t("toolRandomNumDesc"), key: "随机数字"},
+            {title: I18n.t("toolRandomStr"), subtitle: I18n.t("toolRandomStrDesc"), key: "随机字符串"},
+            {title: I18n.t("toolRandomMix"), subtitle: I18n.t("toolRandomMixDesc"), key: "随机混合串"},
+            {title: I18n.t("toolRandomMac"), subtitle: I18n.t("toolRandomMacDesc"), key: "随机MAC地址"},
+            {title: I18n.t("toolRandomIpv4"), subtitle: I18n.t("toolRandomIpv4Desc"), key: "随机IPv4地址"},
+            {title: I18n.t("toolRandomIpv6"), subtitle: I18n.t("toolRandomIpv6Desc"), key: "随机IPv6地址"},
+            {title: I18n.t("toolUuid"), subtitle: I18n.t("toolUuidDesc"), key: "生成UUID"}
         ],
         6: [ // 网络工具
-            {title: "WebSocket测试", subtitle: "WebSocket测试"},
-            {title: "RESTful测试", subtitle: "API接口测试"},
-            {title: "MQTT监听", subtitle: "MQTT订阅监听"},
-            {title: "MQTT广播", subtitle: "MQTT消息发布"},
-            {title: "子网掩码计算器", subtitle: "IP地址与子网划分"},
-            {title: "RTSP预览", subtitle: "实时视频流预览"}
+            {title: I18n.t("toolWebsocket"), subtitle: I18n.t("toolWebsocketDesc"), key: "WebSocket测试"},
+            {title: I18n.t("toolRestful"), subtitle: I18n.t("toolRestfulDesc"), key: "RESTful测试"},
+            {title: I18n.t("toolMqttSub"), subtitle: I18n.t("toolMqttSubDesc"), key: "MQTT监听"},
+            {title: I18n.t("toolMqttPub"), subtitle: I18n.t("toolMqttPubDesc"), key: "MQTT广播"},
+            {title: I18n.t("toolSubnet"), subtitle: I18n.t("toolSubnetDesc"), key: "子网掩码计算器"},
+            {title: I18n.t("toolRtsp"), subtitle: I18n.t("toolRtspDesc"), key: "RTSP预览"}
         ],
         7: [ // 硬件工具
-            {title: "寄存器寻址范围", subtitle: "不同位数寄存器范围"},
-            {title: "电阻阻值计算", subtitle: "彩色环带电阻速查"},
-            {title: "RISC-V指令集模块", subtitle: "RISC-V指令集模块名"},
-            {title: "通用寄存器速查", subtitle: "各种芯片寄存器信息"},
-            {title: "汇编速查", subtitle: "各种指令集汇编速查"}
+            {title: I18n.t("toolRegister"), subtitle: I18n.t("toolRegisterDesc"), key: "寄存器寻址范围"},
+            {title: I18n.t("toolResistor"), subtitle: I18n.t("toolResistorDesc"), key: "电阻阻值计算"},
+            {title: I18n.t("toolRiscv"), subtitle: I18n.t("toolRiscvDesc"), key: "RISC-V指令集模块"},
+            {title: I18n.t("toolRegisterRef"), subtitle: I18n.t("toolRegisterRefDesc"), key: "通用寄存器速查"},
+            {title: I18n.t("toolAsm"), subtitle: I18n.t("toolAsmDesc"), key: "汇编速查"}
         ]
     }
     
@@ -292,7 +292,7 @@ ApplicationWindow {
                                         onExited: parent.hovered = false
                                         
                                         onClicked: {
-                                            openToolWindow(modelData.title)
+                                            openToolWindow(modelData.key)
                                         }
                                     }
                                 }

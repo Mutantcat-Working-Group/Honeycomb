@@ -1,12 +1,13 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "../i18n/i18n.js" as I18n
 
 Window {
     id: aboutWindow
     width: 500
     height: 400
-    title: "关于蜂巢"
+    title: I18n.t("aboutTitle")
     flags: Qt.Window
     modality: Qt.NonModal
     
@@ -33,7 +34,7 @@ Window {
             // 描述文字
             Text {
                 Layout.alignment: Qt.AlignHCenter
-                text: "蜂巢工具箱是一个离线工具箱，提供了一些常用的工具。"
+                text: I18n.t("aboutDesc")
                 font.pixelSize: 16
                 color: "#333"
                 wrapMode: Text.WordWrap
@@ -44,7 +45,7 @@ Window {
             // 官网
             Text {
                 Layout.alignment: Qt.AlignHCenter
-                text: "官网：www.mutantcat.org"
+                text: I18n.t("aboutWebsite")
                 font.pixelSize: 14
                 color: "#666"
             }
@@ -52,7 +53,7 @@ Window {
             // 版本号
             Text {
                 Layout.alignment: Qt.AlignHCenter
-                text: "版本：1.1.20251209"
+                text: I18n.t("aboutVersion")
                 font.pixelSize: 14
                 color: "#666"
             }
