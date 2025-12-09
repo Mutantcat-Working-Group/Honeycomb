@@ -17,6 +17,7 @@ qt_add_executable(appHoneycomb
     src/RandomLetterGenerator.cpp
     src/RandomMixedGenerator.h
     src/RandomMixedGenerator.cpp
+    app.rc
 )
 
 qt_add_qml_module(appHoneycomb
@@ -32,6 +33,7 @@ qt_add_qml_module(appHoneycomb
         i18n/en_US.js
         i18n/i18n.js
         assets/icons/icon.jpg
+        logo.png
     SOURCES
         src/RandomNumberGenerator.h
         src/RandomNumberGenerator.cpp
