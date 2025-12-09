@@ -156,6 +156,13 @@ function getEnLang() {
         aboutTitle: "About Honeycomb",
         aboutDesc: "Honeycomb is an offline toolbox that provides some commonly used tools.",
         aboutWebsite: "Website: www.mutantcat.org",
-        aboutVersion: "Version: 1.1.20251209"
+        aboutVersion: "Version: 1.1.20251209",
+        
+        // Common buttons and labels
+        generateBtn: "Generate",
+        copyBtn: "Copy",
+        resultLabel: "Result",
+        clickToGenerate: "Click button above to generate",
+        randomNumLength: "Length"
     };
 }

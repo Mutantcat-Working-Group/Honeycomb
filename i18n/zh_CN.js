@@ -156,6 +156,13 @@ function getZhLang() {
         aboutTitle: "关于蜂巢",
         aboutDesc: "蜂巢工具箱是一个离线工具箱，提供了一些常用的工具。",
         aboutWebsite: "官网：www.mutantcat.org",
-        aboutVersion: "版本：1.1.20251209"
+        aboutVersion: "版本：1.1.20251209",
+        
+        // 通用按钮和标签
+        generateBtn: "生成",
+        copyBtn: "复制",
+        resultLabel: "结果",
+        clickToGenerate: "点击上方按钮生成",
+        randomNumLength: "随机数长度"
     };
 }

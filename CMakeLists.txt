@@ -11,6 +11,8 @@ qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appHoneycomb
     main.cpp
+    src/RandomNumberGenerator.h
+    src/RandomNumberGenerator.cpp
 )
 
 qt_add_qml_module(appHoneycomb
@@ -18,11 +20,15 @@ qt_add_qml_module(appHoneycomb
     QML_FILES
         Main.qml
         windows/AboutWindow.qml
+        windows/RandomNumberWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
         i18n/i18n.js
         assets/icons/icon.jpg
+    SOURCES
+        src/RandomNumberGenerator.h
+        src/RandomNumberGenerator.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
