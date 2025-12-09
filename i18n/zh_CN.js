@@ -163,6 +163,11 @@ function getZhLang() {
         copyBtn: "复制",
         resultLabel: "结果",
         clickToGenerate: "点击上方按钮生成",
-        randomNumLength: "随机数长度"
+        randomNumLength: "随机数长度",
+        randomStrLength: "字符串长度",
+        randomMixLength: "混合串长度",
+        includeUpper: "包含大写字母",
+        includeLower: "包含小写字母",
+        includeDigits: "包含数字"
     };
 }

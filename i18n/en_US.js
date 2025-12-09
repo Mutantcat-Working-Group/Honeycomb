@@ -163,6 +163,11 @@ function getEnLang() {
         copyBtn: "Copy",
         resultLabel: "Result",
         clickToGenerate: "Click button above to generate",
-        randomNumLength: "Length"
+        randomNumLength: "Length",
+        randomStrLength: "String Length",
+        randomMixLength: "Mixed Length",
+        includeUpper: "Include Uppercase",
+        includeLower: "Include Lowercase",
+        includeDigits: "Include Digits"
     };
 }

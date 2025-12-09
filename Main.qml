@@ -18,7 +18,9 @@ ApplicationWindow {
     // 窗口组件映射
     property var windowComponents: ({
         "关于蜂巢": "qrc:/qt/qml/Honeycomb/windows/AboutWindow.qml",
-        "随机数字": "qrc:/qt/qml/Honeycomb/windows/RandomNumberWindow.qml"
+        "随机数字": "qrc:/qt/qml/Honeycomb/windows/RandomNumberWindow.qml",
+        "随机字符串": "qrc:/qt/qml/Honeycomb/windows/RandomLetterWindow.qml",
+        "随机混合串": "qrc:/qt/qml/Honeycomb/windows/RandomMixedWindow.qml"
     })
     
     // 打开工具窗口的函数
