@@ -21,12 +21,18 @@ Window {
     
     // 定时器更新当前系统时间显示
     Timer {
-        interval: 100
-        running: true
+        id: updateTimer
+        interval: 1000
+        running: timestampWindow.visible
         repeat: true
         onTriggered: {
             currentTimestamp = Date.now()
         }
+    }
+    
+    // 窗口关闭时停止定时器
+    onClosing: {
+        updateTimer.stop()
     }
     
     // 格式化日期时间
