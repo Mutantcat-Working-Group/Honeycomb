@@ -158,6 +158,14 @@ function getEnLang() {
         aboutWebsite: "Website: www.mutantcat.org",
         aboutVersion: "Version: 1.1.20251209",
         
+        // Changelog window
+        changelogTitle: "Changelog",
+        changelogVersion: "Version",
+        changelogDate: "Date",
+        changelogDescription: "Description",
+        changelogQtMigration: "Migrated to Qt",
+        changelogQtMigrationDesc: "Complete UI framework refactoring using Qt/QML technology stack, providing smoother user experience and cross-platform support",
+        
         // Common buttons and labels
         generateBtn: "Generate",
         copyBtn: "Copy",
