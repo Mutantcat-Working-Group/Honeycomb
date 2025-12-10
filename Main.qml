@@ -24,6 +24,7 @@ ApplicationWindow {
         "条形码生成": "qrc:/qt/qml/Honeycomb/windows/BarcodeWindow.qml",
         "二维码生成": "qrc:/qt/qml/Honeycomb/windows/QRCodeWindow.qml",
         "时间戳转换": "qrc:/qt/qml/Honeycomb/windows/TimestampWindow.qml",
+        "颜色值转换": "qrc:/qt/qml/Honeycomb/windows/ColorConverterWindow.qml",
         "字符串去空格": "qrc:/qt/qml/Honeycomb/windows/TrimSpaceWindow.qml",
         "字符串去回车": "qrc:/qt/qml/Honeycomb/windows/TrimNewlineWindow.qml",
         "去除空格回车": "qrc:/qt/qml/Honeycomb/windows/TrimAllWindow.qml",

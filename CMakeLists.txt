@@ -25,6 +25,7 @@ qt_add_qml_module(appHoneycomb
         windows/BarcodeWindow.qml
         windows/QRCodeWindow.qml
         windows/TimestampWindow.qml
+        windows/ColorConverterWindow.qml
         windows/TrimSpaceWindow.qml
         windows/TrimNewlineWindow.qml
         windows/TrimAllWindow.qml

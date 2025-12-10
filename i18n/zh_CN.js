@@ -271,6 +271,18 @@ function getZhLang() {
         sync: "同步",
         copy: "复制",
         copied: "已复制",
-        example: "示例"
+        example: "示例",
+        
+        // 颜色值转换工具
+        randomColor: "随机颜色",
+        colorTip: "点击上方按钮生成随机颜色，或在下方修改颜色值",
+        colorHex: "HEX (#RRGGBB)",
+        colorHexNoHash: "HEX (RRGGBB)",
+        colorRGB: "RGB",
+        colorHSL: "HSL",
+        colorHSV: "HSV",
+        colorRGBFunc: "RGB 函数",
+        colorHSLFunc: "HSL 函数",
+        colorHSVFunc: "HSV 函数"
     };
 }

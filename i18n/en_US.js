@@ -271,6 +271,18 @@ function getEnLang() {
         sync: "Sync",
         copy: "Copy",
         copied: "Copied",
-        example: "Example"
+        example: "Example",
+        
+        // Color Converter tool
+        randomColor: "Random Color",
+        colorTip: "Click the button above to generate a random color, or modify the color values below",
+        colorHex: "HEX (#RRGGBB)",
+        colorHexNoHash: "HEX (RRGGBB)",
+        colorRGB: "RGB",
+        colorHSL: "HSL",
+        colorHSV: "HSV",
+        colorRGBFunc: "RGB Function",
+        colorHSLFunc: "HSL Function",
+        colorHSVFunc: "HSV Function"
     };
 }
