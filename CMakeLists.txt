@@ -21,6 +21,7 @@ qt_add_qml_module(appHoneycomb
         windows/AboutWindow.qml
         windows/HelpWindow.qml
         windows/ChangelogWindow.qml
+        windows/FeedbackWindow.qml
         windows/RandomNumberWindow.qml
         windows/RandomLetterWindow.qml
         windows/RandomMixedWindow.qml

@@ -166,6 +166,12 @@ function getEnLang() {
         changelogQtMigration: "Migrated to Qt",
         changelogQtMigrationDesc: "Complete UI framework refactoring using Qt/QML technology stack, providing smoother user experience and cross-platform support",
         
+        // Feedback window
+        feedbackWebsite: "Official Website",
+        feedbackUrl: "Feedback URL",
+        feedbackGithub: "Github Repository",
+        feedbackEmail: "Feedback Email",
+        
         // Common buttons and labels
         generateBtn: "Generate",
         copyBtn: "Copy",

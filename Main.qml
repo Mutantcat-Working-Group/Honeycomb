@@ -20,6 +20,7 @@ ApplicationWindow {
         "关于蜂巢": "qrc:/qt/qml/Honeycomb/windows/AboutWindow.qml",
         "使用帮助": "qrc:/qt/qml/Honeycomb/windows/HelpWindow.qml",
         "更新日志": "qrc:/qt/qml/Honeycomb/windows/ChangelogWindow.qml",
+        "反馈建议": "qrc:/qt/qml/Honeycomb/windows/FeedbackWindow.qml",
         "随机数字": "qrc:/qt/qml/Honeycomb/windows/RandomNumberWindow.qml",
         "随机字符串": "qrc:/qt/qml/Honeycomb/windows/RandomLetterWindow.qml",
         "随机混合串": "qrc:/qt/qml/Honeycomb/windows/RandomMixedWindow.qml",

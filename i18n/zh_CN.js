@@ -166,6 +166,12 @@ function getZhLang() {
         changelogQtMigration: "迁移至Qt实现",
         changelogQtMigrationDesc: "全面重构UI框架，采用Qt/QML技术栈，提供更流畅的用户体验和跨平台支持",
         
+        // 反馈建议窗口
+        feedbackWebsite: "官方网站",
+        feedbackUrl: "反馈地址",
+        feedbackGithub: "Github 仓库",
+        feedbackEmail: "反馈邮箱",
+        
         // 通用按钮和标签
         generateBtn: "生成",
         copyBtn: "复制",
