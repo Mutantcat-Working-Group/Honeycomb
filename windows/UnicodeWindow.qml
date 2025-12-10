@@ -180,26 +180,7 @@ Window {
                     RowLayout {
                         Layout.fillWidth: true
                         spacing: 10
-                        
-                        Button {
-                            text: I18n.t("clear") || "清空"
-                            Layout.preferredWidth: 80
-                            height: 36
-                            onClicked: leftText = ""
-                            background: Rectangle {
-                                color: parent.hovered ? "#f0f0f0" : "#e8e8e8"
-                                radius: 4
-                                border.color: "#ccc"
-                                border.width: 1
-                            }
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: 13
-                                color: "#333"
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
-                        }
+                        layoutDirection: "RightToLeft"
                         
                         Button {
                             id: copyLeftBtn
@@ -229,6 +210,26 @@ Window {
                                 id: copyLeftTimer
                                 interval: 1500
                                 onTriggered: copyLeftBtn.text = I18n.t("copy") || "复制"
+                            }
+                        }
+
+                        Button {
+                            text: I18n.t("clear") || "清空"
+                            Layout.preferredWidth: 80
+                            height: 36
+                            onClicked: leftText = ""
+                            background: Rectangle {
+                                color: parent.hovered ? "#f0f0f0" : "#e8e8e8"
+                                radius: 4
+                                border.color: "#ccc"
+                                border.width: 1
+                            }
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 13
+                                color: "#333"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
                             }
                         }
                         
@@ -342,27 +343,8 @@ Window {
                     RowLayout {
                         Layout.fillWidth: true
                         spacing: 10
-                        
-                        Button {
-                            text: I18n.t("clear") || "清空"
-                            Layout.preferredWidth: 80
-                            height: 36
-                            onClicked: rightText = ""
-                            background: Rectangle {
-                                color: parent.hovered ? "#f0f0f0" : "#e8e8e8"
-                                radius: 4
-                                border.color: "#ccc"
-                                border.width: 1
-                            }
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: 13
-                                color: "#333"
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
-                        }
-                        
+                        layoutDirection: "RightToLeft"
+                         
                         Button {
                             id: copyRightBtn
                             text: I18n.t("copy") || "复制"
@@ -391,6 +373,26 @@ Window {
                                 id: copyRightTimer
                                 interval: 1500
                                 onTriggered: copyRightBtn.text = I18n.t("copy") || "复制"
+                            }
+                        }
+
+                        Button {
+                            text: I18n.t("clear") || "清空"
+                            Layout.preferredWidth: 80
+                            height: 36
+                            onClicked: rightText = ""
+                            background: Rectangle {
+                                color: parent.hovered ? "#f0f0f0" : "#e8e8e8"
+                                radius: 4
+                                border.color: "#ccc"
+                                border.width: 1
+                            }
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 13
+                                color: "#333"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
                             }
                         }
                         
