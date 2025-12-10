@@ -283,6 +283,14 @@ function getEnLang() {
         colorHSV: "HSV",
         colorRGBFunc: "RGB Function",
         colorHSLFunc: "HSL Function",
-        colorHSVFunc: "HSV Function"
+        colorHSVFunc: "HSV Function",
+        
+        // Unicode Converter tool
+        chineseText: "Chinese Text",
+        unicodeText: "Unicode Code",
+        unicodePlaceholderChinese: "Enter Chinese text here...",
+        unicodePlaceholderCode: "Enter Unicode code here...",
+        unicodeTip: "Supported formats: \\uXXXX, &#xXXXX;, &#XXXXX;, U+XXXX",
+        clear: "Clear"
     };
 }

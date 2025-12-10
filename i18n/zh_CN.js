@@ -283,6 +283,14 @@ function getZhLang() {
         colorHSV: "HSV",
         colorRGBFunc: "RGB 函数",
         colorHSLFunc: "HSL 函数",
-        colorHSVFunc: "HSV 函数"
+        colorHSVFunc: "HSV 函数",
+        
+        // 中文转Unicode工具
+        chineseText: "中文文本",
+        unicodeText: "Unicode 编码",
+        unicodePlaceholderChinese: "在此输入中文文本...",
+        unicodePlaceholderCode: "在此输入Unicode编码...",
+        unicodeTip: "支持格式：\\uXXXX、&#xXXXX;、&#XXXXX;、U+XXXX",
+        clear: "清空"
     };
 }
