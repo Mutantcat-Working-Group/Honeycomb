@@ -7,6 +7,7 @@ set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
 find_package(yaml-cpp REQUIRED)
+find_package(LibreSSL REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -51,6 +52,8 @@ qt_add_qml_module(appHoneycomb
         assets/icons/icon.jpg
         logo.png
     SOURCES
+        lib/qrcodegen/qrcodegen.hpp
+        lib/qrcodegen/qrcodegen.cpp
         src/RandomNumberGenerator.h
         src/RandomNumberGenerator.cpp
         src/RandomLetterGenerator.h
@@ -62,9 +65,6 @@ qt_add_qml_module(appHoneycomb
         src/QRCodeGenerator.h
         src/QRCodeGenerator.cpp
         src/JsonYamlConverter.h
-        lib/qrcodegen/qrcodegen.hpp
-        lib/qrcodegen/qrcodegen.cpp
-
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -83,6 +83,7 @@ target_link_libraries(appHoneycomb
         Qt6::Quick
         Qt6::QuickControls2
         yaml-cpp::yaml-cpp
+        libressl::libressl
 )
 
 include(GNUInstallDirs)
