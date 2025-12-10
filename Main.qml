@@ -35,7 +35,8 @@ ApplicationWindow {
         "替换与转义": "qrc:/qt/qml/Honeycomb/windows/ReplaceWindow.qml",
         "字数统计": "qrc:/qt/qml/Honeycomb/windows/WordCountWindow.qml",
         "文本对比": "qrc:/qt/qml/Honeycomb/windows/TextDiffWindow.qml",
-        "正则测试": "qrc:/qt/qml/Honeycomb/windows/RegexWindow.qml"
+        "正则测试": "qrc:/qt/qml/Honeycomb/windows/RegexWindow.qml",
+        "大小写转换": "qrc:/qt/qml/Honeycomb/windows/CaseConvertWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收

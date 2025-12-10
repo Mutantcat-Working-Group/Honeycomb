@@ -384,6 +384,20 @@ function getZhLang() {
         regexZeroMore: "0或多次",
         regexOneMore: "1或多次",
         regexZeroOne: "0或1次",
-        chars: "字符"
+        chars: "字符",
+        
+        // 大小写转换工具
+        caseConvert: "大小写转换",
+        caseMode: "转换模式:",
+        caseUpper: "全部大写",
+        caseLower: "全部小写",
+        caseCapitalize: "首字母大写",
+        caseTitleCase: "单词首字母大写",
+        caseToggle: "大小写互换",
+        casePlaceholder: "在此输入要转换的文本...",
+        caseTips: "功能说明",
+        caseTipsContent: "• 全部大写: hello → HELLO  • 全部小写: HELLO → hello  • 首字母大写: hello world → Hello world  • 单词首字母大写: hello world → Hello World  • 大小写互换: HeLLo → hEllO",
+        convert: "转换",
+        outputText: "输出结果"
     };
 }

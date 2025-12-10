@@ -384,6 +384,20 @@ function getEnLang() {
         regexZeroMore: "0 or more",
         regexOneMore: "1 or more",
         regexZeroOne: "0 or 1",
-        chars: "chars"
+        chars: "chars",
+        
+        // Case Convert tool
+        caseConvert: "Case Convert",
+        caseMode: "Convert Mode:",
+        caseUpper: "UPPERCASE",
+        caseLower: "lowercase",
+        caseCapitalize: "Capitalize",
+        caseTitleCase: "Title Case",
+        caseToggle: "tOGGLE cASE",
+        casePlaceholder: "Enter text to convert...",
+        caseTips: "Tips",
+        caseTipsContent: "• UPPERCASE: hello → HELLO  • lowercase: HELLO → hello  • Capitalize: hello world → Hello world  • Title Case: hello world → Hello World  • tOGGLE: HeLLo → hEllO",
+        convert: "Convert",
+        outputText: "Output Result"
     };
 }

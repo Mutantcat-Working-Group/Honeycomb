@@ -165,13 +165,16 @@ Window {
                 // 中间按钮区
                 ColumnLayout {
                     Layout.preferredWidth: 80
-                    Layout.alignment: Qt.AlignVCenter
+                    Layout.fillHeight: true
                     spacing: 10
+                    
+                    Item { Layout.fillHeight: true }
                     
                     Button {
                         text: I18n.t("diffCompare") || "比较"
                         Layout.preferredWidth: 70
                         Layout.preferredHeight: 36
+                        Layout.alignment: Qt.AlignHCenter
                         onClicked: compareTexts()
                         
                         background: Rectangle {
@@ -191,6 +194,7 @@ Window {
                         text: I18n.t("diffSwap") || "交换"
                         Layout.preferredWidth: 70
                         Layout.preferredHeight: 36
+                        Layout.alignment: Qt.AlignHCenter
                         onClicked: swapTexts()
                         
                         background: Rectangle {
@@ -212,6 +216,7 @@ Window {
                         text: I18n.t("clear") || "清空"
                         Layout.preferredWidth: 70
                         Layout.preferredHeight: 36
+                        Layout.alignment: Qt.AlignHCenter
                         onClicked: clearAll()
                         
                         background: Rectangle {
@@ -228,6 +233,8 @@ Window {
                             verticalAlignment: Text.AlignVCenter
                         }
                     }
+                    
+                    Item { Layout.fillHeight: true }
                 }
                 
                 // 右侧输入
