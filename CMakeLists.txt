@@ -27,6 +27,7 @@ qt_add_qml_module(appHoneycomb
         windows/TimestampWindow.qml
         windows/ColorConverterWindow.qml
         windows/UnicodeWindow.qml
+        windows/AsciiTableWindow.qml
         windows/TrimSpaceWindow.qml
         windows/TrimNewlineWindow.qml
         windows/TrimAllWindow.qml

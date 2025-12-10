@@ -291,6 +291,13 @@ function getEnLang() {
         unicodePlaceholderChinese: "Enter Chinese text here...",
         unicodePlaceholderCode: "Enter Unicode code here...",
         unicodeTip: "Supported formats: \\uXXXX, &#xXXXX;, &#XXXXX;, U+XXXX",
-        clear: "Clear"
+        clear: "Clear",
+        
+        // ASCII Table tool
+        asciiChar: "Char",
+        asciiDesc: "Description",
+        asciiControl: "Control Characters (0-31, 127)",
+        asciiPrintable: "Printable Characters (32-126)",
+        asciiTotal: "Total 128 characters"
     };
 }

@@ -291,6 +291,13 @@ function getZhLang() {
         unicodePlaceholderChinese: "在此输入中文文本...",
         unicodePlaceholderCode: "在此输入Unicode编码...",
         unicodeTip: "支持格式：\\uXXXX、&#xXXXX;、&#XXXXX;、U+XXXX",
-        clear: "清空"
+        clear: "清空",
+        
+        // ASCII码表工具
+        asciiChar: "字符",
+        asciiDesc: "说明",
+        asciiControl: "控制字符 (0-31, 127)",
+        asciiPrintable: "可打印字符 (32-126)",
+        asciiTotal: "共 128 个字符"
     };
 }
