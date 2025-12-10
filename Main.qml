@@ -32,6 +32,9 @@ ApplicationWindow {
         "字数统计": "qrc:/qt/qml/Honeycomb/windows/WordCountWindow.qml"
     })
     
+    // 存储已打开的窗口引用，防止被垃圾回收
+    property var openedWindows: []
+    
     // 打开工具窗口的函数
     function openToolWindow(toolKey) {
         var componentPath = windowComponents[toolKey]
@@ -40,7 +43,19 @@ ApplicationWindow {
             if (component.status === Component.Ready) {
                 // 使用 null 作为父级，让窗口在任务栏显示为独立窗口
                 var window = component.createObject(null)
-                window.show()
+                if (window) {
+                    // 保存引用防止被垃圾回收
+                    openedWindows.push(window)
+                    // 窗口关闭时从列表移除并销毁
+                    window.closing.connect(function() {
+                        var idx = openedWindows.indexOf(window)
+                        if (idx !== -1) {
+                            openedWindows.splice(idx, 1)
+                        }
+                        window.destroy()
+                    })
+                    window.show()
+                }
             } else if (component.status === Component.Error) {
                 console.log("Error creating window:", component.errorString())
             }
