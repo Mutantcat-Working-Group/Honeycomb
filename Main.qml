@@ -18,6 +18,7 @@ ApplicationWindow {
     // 窗口组件映射
     property var windowComponents: ({
         "关于蜂巢": "qrc:/qt/qml/Honeycomb/windows/AboutWindow.qml",
+        "使用帮助": "qrc:/qt/qml/Honeycomb/windows/HelpWindow.qml",
         "随机数字": "qrc:/qt/qml/Honeycomb/windows/RandomNumberWindow.qml",
         "随机字符串": "qrc:/qt/qml/Honeycomb/windows/RandomLetterWindow.qml",
         "随机混合串": "qrc:/qt/qml/Honeycomb/windows/RandomMixedWindow.qml",

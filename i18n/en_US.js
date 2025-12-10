@@ -398,6 +398,37 @@ function getEnLang() {
         caseTips: "Tips",
         caseTipsContent: "• UPPERCASE: hello → HELLO  • lowercase: HELLO → hello  • Capitalize: hello world → Hello world  • Title Case: hello world → Hello World  • tOGGLE: HeLLo → hEllO",
         convert: "Convert",
-        outputText: "Output Result"
+        outputText: "Output Result",
+        
+        // Help Window
+        helpWelcome: "👋 Welcome to Honeycomb",
+        helpWelcomeDesc: "Honeycomb is an offline toolbox for developers, providing encoding conversion, string processing, encryption, random generation and many other useful tools without internet connection.",
+        helpBasic: "📖 Basic Operations",
+        helpBasic1: "• Use the left navigation bar to switch between tool categories",
+        helpBasic2: "• Click on a tool card to open the corresponding tool window",
+        helpBasic3: "• Each tool opens in a separate window without affecting the main interface",
+        helpBasic4: "• The same tool can be opened multiple times for comparison or batch processing",
+        helpBasic5: "• Tool windows can be moved and resized freely, closing one won't affect others",
+        helpCategory: "🗂️ Tool Categories",
+        helpCatEncode: "📦 Encoding Tools",
+        helpCatEncodeDesc: "Barcode, QR code, timestamp, radix conversion, etc.",
+        helpCatString: "📝 String Tools",
+        helpCatStringDesc: "Trim spaces, text diff, regex test, case convert, etc.",
+        helpCatDev: "🛠️ Developer Tools",
+        helpCatDevDesc: "JSON formatter, color picker, HTTP status codes, etc.",
+        helpCatEncrypt: "🔐 Encryption Tools",
+        helpCatEncryptDesc: "MD5, SHA1, SHA256 hash encryption",
+        helpCatRandom: "🎲 Random Tools",
+        helpCatRandomDesc: "Random numbers, strings, UUID, MAC address, etc.",
+        helpCatNetwork: "🌐 Network Tools",
+        helpCatNetworkDesc: "WebSocket testing, RESTful testing, etc.",
+        helpCatHardware: "💻 Hardware Tools",
+        helpCatHardwareDesc: "Register reference, resistor calculator, instruction sets, etc.",
+        helpShortcut: "⌨️ Tips",
+        helpShortcut1: "• Most tools support Ctrl+V to paste content directly",
+        helpShortcut2: "• Click 'Copy' button to copy results to clipboard",
+        helpShortcut3: "• Some tools support real-time conversion as you type",
+        helpShortcut4: "• Interface languages can be switched in software settings",
+        helpFooter: "For questions or suggestions, please use the 'Feedback' feature ❤️"
     };
 }

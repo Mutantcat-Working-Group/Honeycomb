@@ -398,6 +398,37 @@ function getZhLang() {
         caseTips: "功能说明",
         caseTipsContent: "• 全部大写: hello → HELLO  • 全部小写: HELLO → hello  • 首字母大写: hello world → Hello world  • 单词首字母大写: hello world → Hello World  • 大小写互换: HeLLo → hEllO",
         convert: "转换",
-        outputText: "输出结果"
+        outputText: "输出结果",
+        
+        // 使用帮助
+        helpWelcome: "👋 欢迎使用蜂巢工具箱",
+        helpWelcomeDesc: "蜂巢工具箱是一款面向开发者的离线工具集合，提供编码转换、字符处理、加密解密、随机生成等多种实用工具，无需联网即可使用。",
+        helpBasic: "📖 基本操作",
+        helpBasic1: "• 左侧导航栏可以切换不同的工具分类",
+        helpBasic2: "• 点击右侧的工具卡片即可打开对应的工具窗口",
+        helpBasic3: "• 每个工具都会在独立的窗口中打开，不会影响主界面",
+        helpBasic4: "• 同一个工具可以同时打开多个窗口，方便对比或批量处理",
+        helpBasic5: "• 工具窗口可以自由移动、调整大小，关闭后不影响其他窗口",
+        helpCategory: "🗂️ 工具分类",
+        helpCatEncode: "📦 编码工具",
+        helpCatEncodeDesc: "条形码、二维码、时间戳、进制转换等",
+        helpCatString: "📝 字符工具",
+        helpCatStringDesc: "去空格、文本对比、正则测试、大小写转换等",
+        helpCatDev: "🛠️ 开发工具",
+        helpCatDevDesc: "JSON格式化、颜色选择器、HTTP状态码等",
+        helpCatEncrypt: "🔐 加密工具",
+        helpCatEncryptDesc: "MD5、SHA1、SHA256 等哈希加密",
+        helpCatRandom: "🎲 随机工具",
+        helpCatRandomDesc: "随机数字、字符串、UUID、MAC地址等",
+        helpCatNetwork: "🌐 网络工具",
+        helpCatNetworkDesc: "WebSocket测试、RESTful测试等",
+        helpCatHardware: "💻 硬件工具",
+        helpCatHardwareDesc: "寄存器速查、电阻计算、指令集等",
+        helpShortcut: "⌨️ 常用操作",
+        helpShortcut1: "• 大部分工具支持 Ctrl+V 直接粘贴内容到输入框",
+        helpShortcut2: "• 点击「复制」按钮可将结果复制到剪贴板",
+        helpShortcut3: "• 部分工具支持实时转换，输入内容后自动显示结果",
+        helpShortcut4: "• 软件设置中可切换界面语言",
+        helpFooter: "如有问题或建议，欢迎通过「反馈建议」功能联系我们 ❤️"
     };
 }
