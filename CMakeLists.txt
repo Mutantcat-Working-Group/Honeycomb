@@ -28,6 +28,7 @@ qt_add_qml_module(appHoneycomb
         windows/TrimNewlineWindow.qml
         windows/TrimAllWindow.qml
         windows/ReplaceWindow.qml
+        windows/WordCountWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js

@@ -234,6 +234,24 @@ function getZhLang() {
         htmlEncode: "HTML 编码",
         htmlDecode: "HTML 解码",
         urlEncode: "URL 编码",
-        urlDecode: "URL 解码"
+        urlDecode: "URL 解码",
+        
+        // 字数统计工具
+        analyzeBtn: "开始统计",
+        wordCountPlaceholder: "在此粘贴或输入需要统计的文本...",
+        statsResult: "统计结果",
+        charStats: "📝 字符统计",
+        textStats: "📄 文本统计",
+        totalChars: "总字符数",
+        charsNoSpace: "字符(不含空格)",
+        chineseChars: "中文字符",
+        englishChars: "英文字母",
+        numbers: "数字",
+        spaces: "空格",
+        punctuations: "标点符号",
+        lines: "行数",
+        paragraphs: "段落数",
+        englishWords: "英文单词",
+        copyStats: "复制统计"
     };
 }

@@ -234,6 +234,24 @@ function getEnLang() {
         htmlEncode: "HTML Encode",
         htmlDecode: "HTML Decode",
         urlEncode: "URL Encode",
-        urlDecode: "URL Decode"
+        urlDecode: "URL Decode",
+        
+        // Word Count tool
+        analyzeBtn: "Analyze",
+        wordCountPlaceholder: "Paste or enter the text to analyze...",
+        statsResult: "Statistics",
+        charStats: "📝 Character Stats",
+        textStats: "📄 Text Stats",
+        totalChars: "Total Characters",
+        charsNoSpace: "Chars (no spaces)",
+        chineseChars: "Chinese Chars",
+        englishChars: "English Letters",
+        numbers: "Numbers",
+        spaces: "Spaces",
+        punctuations: "Punctuations",
+        lines: "Lines",
+        paragraphs: "Paragraphs",
+        englishWords: "English Words",
+        copyStats: "Copy Stats"
     };
 }
