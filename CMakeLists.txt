@@ -31,6 +31,7 @@ qt_add_qml_module(appHoneycomb
         windows/RadixWindow.qml
         windows/ComplementWindow.qml
         windows/TextDiffWindow.qml
+        windows/RegexWindow.qml
         windows/TrimSpaceWindow.qml
         windows/TrimNewlineWindow.qml
         windows/TrimAllWindow.qml
