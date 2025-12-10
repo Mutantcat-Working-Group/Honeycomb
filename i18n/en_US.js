@@ -328,6 +328,29 @@ function getEnLang() {
         complementOverflow: "Value out of range",
         complementTip1: "• Positive numbers have identical codes",
         complementTip2: "• One's complement = flip all bits except sign",
-        complementTip3: "• Two's complement = One's complement + 1"
+        complementTip3: "• Two's complement = One's complement + 1",
+        
+        // Text Diff tool
+        diffLeftText: "Original Text",
+        diffRightText: "Compare Text",
+        diffLeftPlaceholder: "Enter original text here...",
+        diffRightPlaceholder: "Enter compare text here...",
+        diffCompare: "Compare",
+        diffSwap: "Swap",
+        diffDetails: "Diff Details",
+        diffLineNum: "Line",
+        diffStatus: "Status",
+        diffTotal: "Total Lines",
+        diffChanged: "Changed",
+        diffAdded: "Added",
+        diffRemoved: "Removed",
+        diffModified: "Modified",
+        diffNew: "New",
+        diffDeleted: "Deleted",
+        diffFoundDiff: "Found",
+        diffDiffLines: "differences",
+        diffNoDiff: "No difference",
+        diffEmptyHint: "Click 'Compare' to view differences",
+        lines: "lines"
     };
 }

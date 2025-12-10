@@ -328,6 +328,29 @@ function getZhLang() {
         complementOverflow: "数值超出范围",
         complementTip1: "• 正数的原码、反码、补码相同",
         complementTip2: "• 负数的反码 = 原码符号位不变，其他位取反",
-        complementTip3: "• 负数的补码 = 反码 + 1"
+        complementTip3: "• 负数的补码 = 反码 + 1",
+        
+        // 文本对比工具
+        diffLeftText: "原始文本",
+        diffRightText: "对比文本",
+        diffLeftPlaceholder: "在此输入原始文本...",
+        diffRightPlaceholder: "在此输入对比文本...",
+        diffCompare: "比较",
+        diffSwap: "交换",
+        diffDetails: "差异详情",
+        diffLineNum: "行号",
+        diffStatus: "状态",
+        diffTotal: "总行数",
+        diffChanged: "修改",
+        diffAdded: "新增",
+        diffRemoved: "删除",
+        diffModified: "修改",
+        diffNew: "新增",
+        diffDeleted: "删除",
+        diffFoundDiff: "发现",
+        diffDiffLines: "处差异",
+        diffNoDiff: "无差异",
+        diffEmptyHint: "点击「比较」按钮查看差异",
+        lines: "行"
     };
 }
