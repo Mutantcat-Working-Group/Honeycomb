@@ -298,6 +298,36 @@ function getEnLang() {
         asciiDesc: "Description",
         asciiControl: "Control Characters (0-31, 127)",
         asciiPrintable: "Printable Characters (32-126)",
-        asciiTotal: "Total 128 characters"
+        asciiTotal: "Total 128 characters",
+        
+        // Radix Converter tool
+        radixBinary: "Binary",
+        radixOctal: "Octal",
+        radixDecimal: "Decimal",
+        radixHex: "Hexadecimal",
+        radixInput: "Input",
+        radixInputPlaceholder: "Enter a number...",
+        radixFrom: "From",
+        radixTo: "To",
+        convertBtn: "Convert",
+        radixPlaceholder: "Result will be displayed here",
+        radixInvalidInput: "Invalid input",
+        radixError: "Conversion error",
+        radixTip: "Tip: Binary supports 0-1, Octal supports 0-7, Decimal supports 0-9, Hex supports 0-9 and A-F",
+        
+        // Complement Converter tool
+        bitWidth: "Bit Width",
+        decimal: "Decimal",
+        originalCode: "Sign-Magnitude",
+        inverseCode: "One's Complement",
+        complementCode: "Two's Complement",
+        decimalPlaceholder: "Enter decimal number...",
+        binaryPlaceholder: "Enter binary number...",
+        complementInvalidInput: "Invalid input",
+        complementInvalidBinary: "Invalid binary number",
+        complementOverflow: "Value out of range",
+        complementTip1: "• Positive numbers have identical codes",
+        complementTip2: "• One's complement = flip all bits except sign",
+        complementTip3: "• Two's complement = One's complement + 1"
     };
 }

@@ -298,6 +298,36 @@ function getZhLang() {
         asciiDesc: "说明",
         asciiControl: "控制字符 (0-31, 127)",
         asciiPrintable: "可打印字符 (32-126)",
-        asciiTotal: "共 128 个字符"
+        asciiTotal: "共 128 个字符",
+        
+        // 进制转换工具
+        radixBinary: "二进制",
+        radixOctal: "八进制",
+        radixDecimal: "十进制",
+        radixHex: "十六进制",
+        radixInput: "输入",
+        radixInputPlaceholder: "请输入数字...",
+        radixFrom: "从",
+        radixTo: "到",
+        convertBtn: "转换",
+        radixPlaceholder: "转换结果将显示在这里",
+        radixInvalidInput: "无效输入",
+        radixError: "转换错误",
+        radixTip: "提示：二进制仅支持0-1，八进制支持0-7，十进制支持0-9，十六进制支持0-9和A-F",
+        
+        // 补码转换工具
+        bitWidth: "位宽",
+        decimal: "十进制",
+        originalCode: "原码",
+        inverseCode: "反码",
+        complementCode: "补码",
+        decimalPlaceholder: "输入十进制数...",
+        binaryPlaceholder: "输入二进制数...",
+        complementInvalidInput: "无效输入",
+        complementInvalidBinary: "无效的二进制数",
+        complementOverflow: "数值超出范围",
+        complementTip1: "• 正数的原码、反码、补码相同",
+        complementTip2: "• 负数的反码 = 原码符号位不变，其他位取反",
+        complementTip3: "• 负数的补码 = 反码 + 1"
     };
 }

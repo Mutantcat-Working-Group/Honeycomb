@@ -27,6 +27,8 @@ ApplicationWindow {
         "颜色值转换": "qrc:/qt/qml/Honeycomb/windows/ColorConverterWindow.qml",
         "中文转Unicode": "qrc:/qt/qml/Honeycomb/windows/UnicodeWindow.qml",
         "ASCII码表": "qrc:/qt/qml/Honeycomb/windows/AsciiTableWindow.qml",
+        "进制转换": "qrc:/qt/qml/Honeycomb/windows/RadixWindow.qml",
+        "补码转换": "qrc:/qt/qml/Honeycomb/windows/ComplementWindow.qml",
         "字符串去空格": "qrc:/qt/qml/Honeycomb/windows/TrimSpaceWindow.qml",
         "字符串去回车": "qrc:/qt/qml/Honeycomb/windows/TrimNewlineWindow.qml",
         "去除空格回车": "qrc:/qt/qml/Honeycomb/windows/TrimAllWindow.qml",

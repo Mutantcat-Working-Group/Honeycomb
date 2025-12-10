@@ -28,6 +28,8 @@ qt_add_qml_module(appHoneycomb
         windows/ColorConverterWindow.qml
         windows/UnicodeWindow.qml
         windows/AsciiTableWindow.qml
+        windows/RadixWindow.qml
+        windows/ComplementWindow.qml
         windows/TrimSpaceWindow.qml
         windows/TrimNewlineWindow.qml
         windows/TrimAllWindow.qml
