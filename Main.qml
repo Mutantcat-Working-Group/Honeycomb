@@ -23,7 +23,10 @@ ApplicationWindow {
         "随机混合串": "qrc:/qt/qml/Honeycomb/windows/RandomMixedWindow.qml",
         "条形码生成": "qrc:/qt/qml/Honeycomb/windows/BarcodeWindow.qml",
         "二维码生成": "qrc:/qt/qml/Honeycomb/windows/QRCodeWindow.qml",
-        "字符串去空格": "qrc:/qt/qml/Honeycomb/windows/TrimSpaceWindow.qml"
+        "字符串去空格": "qrc:/qt/qml/Honeycomb/windows/TrimSpaceWindow.qml",
+        "字符串去回车": "qrc:/qt/qml/Honeycomb/windows/TrimNewlineWindow.qml",
+        "去除空格回车": "qrc:/qt/qml/Honeycomb/windows/TrimAllWindow.qml",
+        "替换与转义": "qrc:/qt/qml/Honeycomb/windows/ReplaceWindow.qml"
     })
     
     // 打开工具窗口的函数

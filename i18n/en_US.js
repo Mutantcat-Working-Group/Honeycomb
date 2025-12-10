@@ -201,6 +201,39 @@ function getEnLang() {
         currentMode: "Current Mode",
         clickToProcess: "Click to process",
         textTooLong: "Text too long, please process in parts (max 100k chars)",
-        processError: "Processing error, please check the text"
+        processError: "Processing error, please check the text",
+        
+        // Trim Newline tool
+        trimAllNewlines: "All Newlines",
+        trimExtraNewlines: "Extra Newlines",
+        trimEmptyLines: "Empty Lines",
+        newlineCount: "Newlines",
+        
+        // Trim All tool
+        trimAllWhitespace: "Remove All",
+        mergeWhitespace: "Merge",
+        trimLineEdges: "Trim Lines",
+        whitespaceCount: "Whitespace",
+        
+        // Replace tool
+        normalReplace: "Normal",
+        regexReplace: "Regex",
+        escapeConvert: "Escape",
+        searchFor: "Find",
+        replaceWith: "Replace",
+        searchPlaceholder: "Enter text to find...",
+        regexPlaceholder: "Enter regex pattern...",
+        replacePlaceholder: "Enter replacement text...",
+        matchCount: "Matches",
+        clickToReplace: "Click to replace",
+        clickToConvert: "Click to convert",
+        regexError: "Regex error",
+        escapeType: "Escape Type",
+        escapeToChar: "Escape → Character",
+        charToEscape: "Character → Escape",
+        htmlEncode: "HTML Encode",
+        htmlDecode: "HTML Decode",
+        urlEncode: "URL Encode",
+        urlDecode: "URL Decode"
     };
 }

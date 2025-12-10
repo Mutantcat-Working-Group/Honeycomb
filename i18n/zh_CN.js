@@ -201,6 +201,39 @@ function getZhLang() {
         currentMode: "当前模式",
         clickToProcess: "点击处理",
         textTooLong: "文本过长，请分段处理（最大10万字符）",
-        processError: "处理出错，请检查文本内容"
+        processError: "处理出错，请检查文本内容",
+        
+        // 字符串去回车工具
+        trimAllNewlines: "所有回车",
+        trimExtraNewlines: "多余回车",
+        trimEmptyLines: "去除空行",
+        newlineCount: "回车数量",
+        
+        // 去除空格回车工具
+        trimAllWhitespace: "全部去除",
+        mergeWhitespace: "合并空白",
+        trimLineEdges: "整理行",
+        whitespaceCount: "空白字符",
+        
+        // 替换与转义工具
+        normalReplace: "普通替换",
+        regexReplace: "正则替换",
+        escapeConvert: "转义处理",
+        searchFor: "查找",
+        replaceWith: "替换",
+        searchPlaceholder: "输入要查找的文本...",
+        regexPlaceholder: "输入正则表达式...",
+        replacePlaceholder: "输入替换后的文本...",
+        matchCount: "匹配数量",
+        clickToReplace: "点击替换",
+        clickToConvert: "点击转换",
+        regexError: "正则表达式错误",
+        escapeType: "转义类型",
+        escapeToChar: "转义符 → 实际字符",
+        charToEscape: "实际字符 → 转义符",
+        htmlEncode: "HTML 编码",
+        htmlDecode: "HTML 解码",
+        urlEncode: "URL 编码",
+        urlDecode: "URL 解码"
     };
 }
