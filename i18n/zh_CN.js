@@ -178,6 +178,16 @@ function getZhLang() {
         saveBtn: "保存",
         resultLabel: "结果",
         clickToGenerate: "点击上方按钮生成",
+        formatBtn: "格式化",
+        clearBtn: "清空",
+        
+        // JSON 格式化工具
+        jsonInputPlaceholder: "在此输入或粘贴 JSON 数据...",
+        jsonFormatError: "JSON 格式错误: ",
+        jsonCharCount: "字符数",
+        jsonClickToFormat: "点击格式化",
+        jsonCopyResult: "复制结果",
+        jsonClearInput: "清空",
         randomNumLength: "随机数长度",
         randomStrLength: "字符串长度",
         randomMixLength: "混合串长度",

@@ -39,7 +39,8 @@ ApplicationWindow {
         "字数统计": "qrc:/qt/qml/Honeycomb/windows/WordCountWindow.qml",
         "文本对比": "qrc:/qt/qml/Honeycomb/windows/TextDiffWindow.qml",
         "正则测试": "qrc:/qt/qml/Honeycomb/windows/RegexWindow.qml",
-        "大小写转换": "qrc:/qt/qml/Honeycomb/windows/CaseConvertWindow.qml"
+        "大小写转换": "qrc:/qt/qml/Honeycomb/windows/CaseConvertWindow.qml",
+        "JSON格式化": "qrc:/qt/qml/Honeycomb/windows/JsonFormatWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收

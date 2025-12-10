@@ -178,6 +178,16 @@ function getEnLang() {
         saveBtn: "Save",
         resultLabel: "Result",
         clickToGenerate: "Click button above to generate",
+        formatBtn: "Format",
+        clearBtn: "Clear",
+        
+        // JSON Format tool
+        jsonInputPlaceholder: "Enter or paste JSON data here...",
+        jsonFormatError: "JSON format error: ",
+        jsonCharCount: "Characters",
+        jsonClickToFormat: "Click to format",
+        jsonCopyResult: "Copy Result",
+        jsonClearInput: "Clear",
         randomNumLength: "Length",
         randomStrLength: "String Length",
         randomMixLength: "Mixed Length",
