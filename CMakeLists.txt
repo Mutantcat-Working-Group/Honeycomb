@@ -6,8 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
+find_package(yaml-cpp REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.8)
+
 
 qt_add_executable(appHoneycomb
     main.cpp
@@ -59,8 +61,10 @@ qt_add_qml_module(appHoneycomb
         src/BarcodeGenerator.cpp
         src/QRCodeGenerator.h
         src/QRCodeGenerator.cpp
+        src/JsonYamlConverter.h
         lib/qrcodegen/qrcodegen.hpp
         lib/qrcodegen/qrcodegen.cpp
+
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -75,7 +79,10 @@ set_target_properties(appHoneycomb PROPERTIES
 )
 
 target_link_libraries(appHoneycomb
-    PRIVATE Qt6::Quick Qt6::QuickControls2
+    PRIVATE
+        Qt6::Quick
+        Qt6::QuickControls2
+        yaml-cpp::yaml-cpp
 )
 
 include(GNUInstallDirs)
