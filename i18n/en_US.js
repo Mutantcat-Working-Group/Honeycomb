@@ -252,6 +252,25 @@ function getEnLang() {
         lines: "Lines",
         paragraphs: "Paragraphs",
         englishWords: "English Words",
-        copyStats: "Copy Stats"
+        copyStats: "Copy Stats",
+        
+        // Timestamp Converter tool
+        currentTime: "Current Time",
+        useCurrentTime: "Use Current Time",
+        timestamp: "Timestamp",
+        timestampMs: "Millisecond Timestamp",
+        timestampSec: "Second Timestamp",
+        timestampISO: "ISO 8601",
+        timestampUTC: "UTC Time",
+        timestampLocal: "Local Time",
+        timestampDate: "Date",
+        timestampTime: "Time",
+        timestampFull: "Full Time (with ms)",
+        timestampCompact: "Compact Format",
+        timestampChinese: "Chinese Format",
+        sync: "Sync",
+        copy: "Copy",
+        copied: "Copied",
+        example: "Example"
     };
 }

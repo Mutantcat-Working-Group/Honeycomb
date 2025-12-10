@@ -252,6 +252,25 @@ function getZhLang() {
         lines: "行数",
         paragraphs: "段落数",
         englishWords: "英文单词",
-        copyStats: "复制统计"
+        copyStats: "复制统计",
+        
+        // 时间戳转换工具
+        currentTime: "当前时间",
+        useCurrentTime: "使用当前时间",
+        timestamp: "时间戳",
+        timestampMs: "毫秒时间戳",
+        timestampSec: "秒时间戳",
+        timestampISO: "ISO 8601",
+        timestampUTC: "UTC 时间",
+        timestampLocal: "本地时间",
+        timestampDate: "日期",
+        timestampTime: "时间",
+        timestampFull: "完整时间（含毫秒）",
+        timestampCompact: "紧凑格式",
+        timestampChinese: "中文格式",
+        sync: "同步",
+        copy: "复制",
+        copied: "已复制",
+        example: "示例"
     };
 }
