@@ -118,6 +118,7 @@ Window {
                 ColumnLayout {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    Layout.preferredWidth: (parent.width - 15 - 80) / 2
                     spacing: 10
                     
                     RowLayout {
@@ -302,6 +303,7 @@ Window {
                 ColumnLayout {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    Layout.preferredWidth: (parent.width - 15 - 80) / 2
                     spacing: 10
                     
                     RowLayout {
