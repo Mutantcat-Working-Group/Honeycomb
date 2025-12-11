@@ -210,7 +210,7 @@ Window {
                         }
 
                         Button {
-                            text: I18n.t("format") || "格式化"
+                            text: I18n.t("formatBtn") || "格式化"
                             Layout.preferredWidth: 80
                             height: 36
                             enabled: leftText.length > 0
