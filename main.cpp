@@ -9,6 +9,7 @@
 #include "src/RandomMixedGenerator.h"
 #include "src/BarcodeGenerator.h"
 #include "src/QRCodeGenerator.h"
+#include "src/JsonYamlConverter.h"
 
 int main(int argc, char *argv[])
 {
@@ -30,6 +31,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<RandomMixedGenerator>("Honeycomb", 1, 0, "RandomMixedGenerator");
     qmlRegisterType<BarcodeGenerator>("Honeycomb", 1, 0, "BarcodeGenerator");
     qmlRegisterType<QRCodeGenerator>("Honeycomb", 1, 0, "QRCodeGenerator");
+    qmlRegisterType<JsonYamlConverter>("Honeycomb", 1, 0, "JsonYamlConverter");
 
     QQmlApplicationEngine engine;
     

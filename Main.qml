@@ -40,7 +40,8 @@ ApplicationWindow {
         "文本对比": "qrc:/qt/qml/Honeycomb/windows/TextDiffWindow.qml",
         "正则测试": "qrc:/qt/qml/Honeycomb/windows/RegexWindow.qml",
         "大小写转换": "qrc:/qt/qml/Honeycomb/windows/CaseConvertWindow.qml",
-        "JSON格式化": "qrc:/qt/qml/Honeycomb/windows/JsonFormatWindow.qml"
+        "JSON格式化": "qrc:/qt/qml/Honeycomb/windows/JsonFormatWindow.qml",
+        "JSON转YAML": "qrc:/qt/qml/Honeycomb/windows/JsonYamlWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
