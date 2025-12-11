@@ -8,6 +8,7 @@ set(CMAKE_AUTORCC ON)
 find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
 find_package(yaml-cpp REQUIRED)
 find_package(LibreSSL REQUIRED)
+find_package(jsoncpp REQUIRED)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -83,6 +84,7 @@ target_link_libraries(appHoneycomb
         Qt6::Quick
         Qt6::QuickControls2
         yaml-cpp::yaml-cpp
+        JsonCpp::JsonCpp
         libressl::libressl
 )
 
