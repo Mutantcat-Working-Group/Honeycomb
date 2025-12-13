@@ -10,6 +10,7 @@
 #include "src/BarcodeGenerator.h"
 #include "src/QRCodeGenerator.h"
 #include "src/JsonYamlConverter.h"
+#include "src/ColorPicker.h"
 
 int main(int argc, char *argv[])
 {
@@ -32,6 +33,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<BarcodeGenerator>("Honeycomb", 1, 0, "BarcodeGenerator");
     qmlRegisterType<QRCodeGenerator>("Honeycomb", 1, 0, "QRCodeGenerator");
     qmlRegisterType<JsonYamlConverter>("Honeycomb", 1, 0, "JsonYamlConverter");
+    qmlRegisterType<ColorPicker>("Honeycomb", 1, 0, "ColorPicker");
 
     QQmlApplicationEngine engine;
     

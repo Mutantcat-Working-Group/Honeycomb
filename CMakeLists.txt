@@ -47,6 +47,7 @@ qt_add_qml_module(appHoneycomb
         windows/WordCountWindow.qml
         windows/JsonFormatWindow.qml
         windows/JsonYamlWindow.qml
+        windows/ColorPickerWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
@@ -68,7 +69,9 @@ qt_add_qml_module(appHoneycomb
         src/QRCodeGenerator.cpp
         src/JsonYamlConverter.h
         src/JsonYamlConverter.cpp
-)
+        src/ColorPicker.h
+        src/ColorPicker.cpp
+    )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
