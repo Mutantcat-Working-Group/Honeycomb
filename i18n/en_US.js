@@ -308,6 +308,8 @@ function getEnLang() {
         colorRGBFunc: "RGB Function",
         colorHSLFunc: "HSL Function",
         colorHSVFunc: "HSV Function",
+        startPicking: "Start Picking",
+        stopPicking: "Stop Picking",
         
         // Unicode Converter tool
         chineseText: "Chinese Text",

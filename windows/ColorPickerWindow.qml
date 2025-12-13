@@ -6,10 +6,10 @@ import "../i18n/i18n.js" as I18n
 
 Window {
     id: colorPickerWindow
-    width: 400
-    height: 300
-    minimumWidth: 350
-    minimumHeight: 250
+    width: 550
+    height: 520
+    minimumWidth: 500
+    minimumHeight: 450
     title: I18n.t("toolColorPicker")
     flags: Qt.Window
     modality: Qt.NonModal
@@ -48,11 +48,13 @@ Window {
                     font.pixelSize: 22
                     font.bold: true
                     color: "#333"
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
                 Text {
                     text: I18n.t("toolColorPickerDesc")
                     font.pixelSize: 13
                     color: "#666"
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
             }
             
@@ -66,7 +68,8 @@ Window {
             // 色块显示区
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 120
+                Layout.preferredHeight: 180
+                Layout.bottomMargin: 5
                 color: "white"
                 border.color: "#e0e0e0"
                 border.width: 1
@@ -80,27 +83,42 @@ Window {
                     // 色块
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 60
+                        Layout.preferredHeight: 80
                         color: pickedColor
                         border.color: "#333"
                         border.width: 2
                         radius: 6
                         
-                        Text {
+                        Column {
                             anchors.centerIn: parent
-                            text: pickedColor.toString().toUpperCase()
-                            font.pixelSize: 16
-                            font.bold: true
-                            font.family: "Consolas, Microsoft YaHei"
-                            color: (pickedColor.r * 0.299 + pickedColor.g * 0.587 + pickedColor.b * 0.114) > 0.5 ? "#000000" : "#ffffff"
+                            spacing: 6
+                            
+                            Text {
+                                text: pickedColor.toString().toUpperCase()
+                                font.pixelSize: 18
+                                font.bold: true
+                                font.family: "Consolas, Microsoft YaHei"
+                                color: (pickedColor.r * 0.299 + pickedColor.g * 0.587 + pickedColor.b * 0.114) > 0.5 ? "#000000" : "#ffffff"
+                                anchors.horizontalCenter: parent.horizontalCenter
+                            }
+                            
+                            Text {
+                                text: "RGB(" + Math.round(pickedColor.r * 255) + ", " + 
+                                      Math.round(pickedColor.g * 255) + ", " + 
+                                      Math.round(pickedColor.b * 255) + ")"
+                                font.pixelSize: 11
+                                font.family: "Consolas, Microsoft YaHei"
+                                color: (pickedColor.r * 0.299 + pickedColor.g * 0.587 + pickedColor.b * 0.114) > 0.5 ? "#000000" : "#ffffff"
+                                anchors.horizontalCenter: parent.horizontalCenter
+                            }
                         }
                     }
                     
                     // 按钮
                     Button {
-                        text: isPicking ? (I18n.t("stopPicking") || "停止取色") : (I18n.t("startPicking") || "开始取色")
+                        text: isPicking ? I18n.t("stopPicking") : I18n.t("startPicking")
                         Layout.fillWidth: true
-                        height: 40
+                        Layout.preferredHeight: 38
                         onClicked: {
                             if (isPicking) {
                                 stopPicking()
@@ -123,28 +141,244 @@ Window {
                 }
             }
             
-            // 颜色信息
-            ScrollView {
+            // 颜色信息区域
+            Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                clip: true
+                color: "transparent"
                 
                 ColumnLayout {
-                    width: colorPickerWindow.width - 50
+                    anchors.fill: parent
                     spacing: 12
                     
-                    ColorItem {
-                        label: I18n.t("colorHex") || "HEX (#RRGGBB)"
-                        value: pickedColor.toString().toUpperCase()
-                        readOnly: true
+                    // HEX 颜色项
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 70
+                        color: "white"
+                        border.color: "#e0e0e0"
+                        border.width: 1
+                        radius: 6
+                        
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 15
+                            spacing: 12
+                            
+                            Text {
+                                text: I18n.t("colorHex")
+                                font.pixelSize: 13
+                                font.bold: true
+                                color: "#333"
+                                Layout.preferredWidth: 140
+                            }
+                            
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 36
+                                color: "#f9f9f9"
+                                border.color: "#d0d0d0"
+                                border.width: 1
+                                radius: 4
+                                
+                                Text {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 12
+                                    anchors.rightMargin: 12
+                                    text: pickedColor.toString().toUpperCase()
+                                    font.pixelSize: 13
+                                    font.family: "Consolas, Microsoft YaHei"
+                                    color: "#333"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                            }
+                            
+                            Button {
+                                text: I18n.t("copy")
+                                Layout.preferredWidth: 65
+                                Layout.preferredHeight: 36
+                                onClicked: {
+                                    copyToClipboard(pickedColor.toString().toUpperCase())
+                                    text = I18n.t("copied")
+                                    copyTimer1.start()
+                                }
+                                background: Rectangle {
+                                    color: parent.hovered ? "#f0f0f0" : "#e8e8e8"
+                                    radius: 4
+                                    border.color: "#ccc"
+                                    border.width: 1
+                                }
+                                contentItem: Text {
+                                    text: parent.text
+                                    font.pixelSize: 12
+                                    color: "#333"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                
+                                Timer {
+                                    id: copyTimer1
+                                    interval: 1500
+                                    onTriggered: parent.text = I18n.t("copy")
+                                }
+                            }
+                        }
                     }
                     
-                    ColorRGBItem {
-                        label: I18n.t("colorRGB") || "RGB"
-                        rValue: Math.round(pickedColor.r * 255)
-                        gValue: Math.round(pickedColor.g * 255)
-                        bValue: Math.round(pickedColor.b * 255)
-                        readOnly: true
+                    // RGB 颜色项
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 100
+                        Layout.bottomMargin: 20
+                        color: "white"
+                        border.color: "#e0e0e0"
+                        border.width: 1
+                        radius: 6
+                        
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 15
+                            spacing: 10
+                            
+                            Text {
+                                text: I18n.t("colorRGB")
+                                font.pixelSize: 13
+                                font.bold: true
+                                color: "#333"
+                            }
+                            
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 12
+                                
+                                // R 值
+                                RowLayout {
+                                    spacing: 6
+                                    Text { 
+                                        text: "R:"; 
+                                        font.pixelSize: 13; 
+                                        color: "#e74c3c"; 
+                                        font.bold: true; 
+                                        Layout.preferredWidth: 25 
+                                    }
+                                    Rectangle {
+                                        Layout.preferredWidth: 70
+                                        Layout.preferredHeight: 36
+                                        color: "#f9f9f9"
+                                        border.color: "#d0d0d0"
+                                        border.width: 1
+                                        radius: 4
+                                        Text {
+                                            anchors.fill: parent
+                                            anchors.leftMargin: 8
+                                            anchors.rightMargin: 8
+                                            text: Math.round(pickedColor.r * 255).toString()
+                                            font.pixelSize: 13
+                                            font.family: "Consolas"
+                                            color: "#333"
+                                            verticalAlignment: Text.AlignVCenter
+                                            horizontalAlignment: Text.AlignHCenter
+                                        }
+                                    }
+                                }
+                                
+                                // G 值
+                                RowLayout {
+                                    spacing: 6
+                                    Text { 
+                                        text: "G:"; 
+                                        font.pixelSize: 13; 
+                                        color: "#27ae60"; 
+                                        font.bold: true; 
+                                        Layout.preferredWidth: 25 
+                                    }
+                                    Rectangle {
+                                        Layout.preferredWidth: 70
+                                        Layout.preferredHeight: 36
+                                        color: "#f9f9f9"
+                                        border.color: "#d0d0d0"
+                                        border.width: 1
+                                        radius: 4
+                                        Text {
+                                            anchors.fill: parent
+                                            anchors.leftMargin: 8
+                                            anchors.rightMargin: 8
+                                            text: Math.round(pickedColor.g * 255).toString()
+                                            font.pixelSize: 13
+                                            font.family: "Consolas"
+                                            color: "#333"
+                                            verticalAlignment: Text.AlignVCenter
+                                            horizontalAlignment: Text.AlignHCenter
+                                        }
+                                    }
+                                }
+                                
+                                // B 值
+                                RowLayout {
+                                    spacing: 6
+                                    Text { 
+                                        text: "B:"; 
+                                        font.pixelSize: 13; 
+                                        color: "#3498db"; 
+                                        font.bold: true; 
+                                        Layout.preferredWidth: 25 
+                                    }
+                                    Rectangle {
+                                        Layout.preferredWidth: 70
+                                        Layout.preferredHeight: 36
+                                        color: "#f9f9f9"
+                                        border.color: "#d0d0d0"
+                                        border.width: 1
+                                        radius: 4
+                                        Text {
+                                            anchors.fill: parent
+                                            anchors.leftMargin: 8
+                                            anchors.rightMargin: 8
+                                            text: Math.round(pickedColor.b * 255).toString()
+                                            font.pixelSize: 13
+                                            font.family: "Consolas"
+                                            color: "#333"
+                                            verticalAlignment: Text.AlignVCenter
+                                            horizontalAlignment: Text.AlignHCenter
+                                        }
+                                    }
+                                }
+                                
+                                Item { Layout.fillWidth: true }
+                                
+                                Button {
+                                    text: I18n.t("copy")
+                                    Layout.preferredWidth: 65
+                                    Layout.preferredHeight: 36
+                                    onClicked: {
+                                        var rgbText = "rgb(" + Math.round(pickedColor.r * 255) + ", " + 
+                                                      Math.round(pickedColor.g * 255) + ", " + 
+                                                      Math.round(pickedColor.b * 255) + ")"
+                                        copyToClipboard(rgbText)
+                                        text = I18n.t("copied")
+                                        copyTimer2.start()
+                                    }
+                                    background: Rectangle {
+                                        color: parent.hovered ? "#f0f0f0" : "#e8e8e8"
+                                        radius: 4
+                                        border.color: "#ccc"
+                                        border.width: 1
+                                    }
+                                    contentItem: Text {
+                                        text: parent.text
+                                        font.pixelSize: 12
+                                        color: "#333"
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+                                    Timer {
+                                        id: copyTimer2
+                                        interval: 1500
+                                        onTriggered: parent.text = I18n.t("copy")
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -275,7 +509,7 @@ Window {
         
         // 直接使用光标位置获取颜色（更可靠）
         var color = colorPicker.getColorAtCursor()
-        if (color && color.isValid()) {
+        if (color && color.toString() !== "invalid") {
             pickedColor = color
         }
     }
@@ -302,8 +536,6 @@ Window {
         pickerOverlay.screen = screen
         
         // 使用 Screen 的几何属性
-        // 在 QML 中，Screen.geometry 返回 QRect，可以直接访问其属性
-        // 使用 Number() 转换确保是数字类型，避免 undefined
         var geom = screen.geometry
         if (geom) {
             pickerOverlay.x = Number(geom.x) || 0
@@ -339,222 +571,5 @@ Window {
         // 显示主窗口
         colorPickerWindow.show()
         colorPickerWindow.requestActivate()
-    }
-    
-    // 单值颜色项组件
-    component ColorItem: Rectangle {
-        property string label: ""
-        property string value: ""
-        property bool readOnly: false
-        
-        Layout.fillWidth: true
-        height: 85
-        color: "white"
-        border.color: "#e0e0e0"
-        border.width: 1
-        radius: 6
-        
-        ColumnLayout {
-            anchors.fill: parent
-            anchors.margins: 15
-            spacing: 8
-            
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 10
-                
-                Text {
-                    text: label
-                    font.pixelSize: 13
-                    font.bold: true
-                    color: "#333"
-                    Layout.preferredWidth: 140
-                }
-                
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: 32
-                    color: "#f9f9f9"
-                    border.color: "#d0d0d0"
-                    border.width: 1
-                    radius: 4
-                    
-                    Text {
-                        anchors.fill: parent
-                        anchors.leftMargin: 10
-                        anchors.rightMargin: 10
-                        text: value
-                        font.pixelSize: 13
-                        font.family: "Consolas, Microsoft YaHei"
-                        color: "#333"
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                }
-                
-                Button {
-                    text: I18n.t("copy") || "复制"
-                    width: 60
-                    height: 32
-                    onClicked: {
-                        copyToClipboard(value)
-                        text = I18n.t("copied") || "已复制"
-                        copyResetTimer.start()
-                    }
-                    background: Rectangle {
-                        color: parent.hovered ? "#f0f0f0" : "#e8e8e8"
-                        radius: 4
-                        border.color: "#ccc"
-                        border.width: 1
-                    }
-                    contentItem: Text {
-                        text: parent.text
-                        font.pixelSize: 12
-                        color: "#333"
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    
-                    Timer {
-                        id: copyResetTimer
-                        interval: 1500
-                        onTriggered: parent.text = I18n.t("copy") || "复制"
-                    }
-                }
-            }
-        }
-    }
-    
-    // RGB 颜色项组件
-    component ColorRGBItem: Rectangle {
-        property string label: ""
-        property int rValue: 0
-        property int gValue: 0
-        property int bValue: 0
-        property bool readOnly: false
-        
-        Layout.fillWidth: true
-        height: 100
-        color: "white"
-        border.color: "#e0e0e0"
-        border.width: 1
-        radius: 6
-        
-        ColumnLayout {
-            anchors.fill: parent
-            anchors.margins: 15
-            spacing: 8
-            
-            Text {
-                text: label
-                font.pixelSize: 13
-                font.bold: true
-                color: "#333"
-            }
-            
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 10
-                
-                RowLayout {
-                    spacing: 5
-                    Text { text: "R:"; font.pixelSize: 12; color: "#e74c3c"; font.bold: true; width: 20 }
-                    Rectangle {
-                        width: 60
-                        height: 32
-                        color: "#f9f9f9"
-                        border.color: "#d0d0d0"
-                        border.width: 1
-                        radius: 4
-                        Text {
-                            anchors.fill: parent
-                            anchors.leftMargin: 8
-                            anchors.rightMargin: 8
-                            text: rValue.toString()
-                            font.pixelSize: 13
-                            font.family: "Consolas"
-                            color: "#333"
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                    }
-                }
-                
-                RowLayout {
-                    spacing: 5
-                    Text { text: "G:"; font.pixelSize: 12; color: "#27ae60"; font.bold: true; width: 20 }
-                    Rectangle {
-                        width: 60
-                        height: 32
-                        color: "#f9f9f9"
-                        border.color: "#d0d0d0"
-                        border.width: 1
-                        radius: 4
-                        Text {
-                            anchors.fill: parent
-                            anchors.leftMargin: 8
-                            anchors.rightMargin: 8
-                            text: gValue.toString()
-                            font.pixelSize: 13
-                            font.family: "Consolas"
-                            color: "#333"
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                    }
-                }
-                
-                RowLayout {
-                    spacing: 5
-                    Text { text: "B:"; font.pixelSize: 12; color: "#3498db"; font.bold: true; width: 20 }
-                    Rectangle {
-                        width: 60
-                        height: 32
-                        color: "#f9f9f9"
-                        border.color: "#d0d0d0"
-                        border.width: 1
-                        radius: 4
-                        Text {
-                            anchors.fill: parent
-                            anchors.leftMargin: 8
-                            anchors.rightMargin: 8
-                            text: bValue.toString()
-                            font.pixelSize: 13
-                            font.family: "Consolas"
-                            color: "#333"
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                    }
-                }
-                
-                Item { Layout.fillWidth: true }
-                
-                Button {
-                    text: I18n.t("copy") || "复制"
-                    width: 60
-                    height: 32
-                    onClicked: {
-                        copyToClipboard("rgb(" + rValue + ", " + gValue + ", " + bValue + ")")
-                        text = I18n.t("copied") || "已复制"
-                        copyTimer.start()
-                    }
-                    background: Rectangle {
-                        color: parent.hovered ? "#f0f0f0" : "#e8e8e8"
-                        radius: 4
-                        border.color: "#ccc"
-                        border.width: 1
-                    }
-                    contentItem: Text {
-                        text: parent.text
-                        font.pixelSize: 12
-                        color: "#333"
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    Timer {
-                        id: copyTimer
-                        interval: 1500
-                        onTriggered: parent.text = I18n.t("copy") || "复制"
-                    }
-                }
-            }
-        }
     }
 }

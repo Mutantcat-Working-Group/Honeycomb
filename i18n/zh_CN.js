@@ -308,6 +308,8 @@ function getZhLang() {
         colorRGBFunc: "RGB 函数",
         colorHSLFunc: "HSL 函数",
         colorHSVFunc: "HSV 函数",
+        startPicking: "开始取色",
+        stopPicking: "停止取色",
         
         // 中文转Unicode工具
         chineseText: "中文文本",
