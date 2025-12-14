@@ -1,5 +1,5 @@
 #include <QIcon>
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include <QtQml>
@@ -11,10 +11,11 @@
 #include "src/QRCodeGenerator.h"
 #include "src/JsonYamlConverter.h"
 #include "src/ColorPicker.h"
+#include "src/ColorSelector.h"
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
     
     // 设置应用程序图标
     app.setWindowIcon(QIcon(":/qt/qml/Honeycomb/logo.png"));
@@ -34,6 +35,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<QRCodeGenerator>("Honeycomb", 1, 0, "QRCodeGenerator");
     qmlRegisterType<JsonYamlConverter>("Honeycomb", 1, 0, "JsonYamlConverter");
     qmlRegisterType<ColorPicker>("Honeycomb", 1, 0, "ColorPicker");
+    qmlRegisterType<ColorSelector>("Honeycomb", 1, 0, "ColorSelector");
 
     QQmlApplicationEngine engine;
     

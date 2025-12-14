@@ -5,7 +5,7 @@ project(Honeycomb VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
+find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 Widgets)
 find_package(yaml-cpp REQUIRED)
 find_package(LibreSSL REQUIRED)
 find_package(jsoncpp REQUIRED)
@@ -48,6 +48,7 @@ qt_add_qml_module(appHoneycomb
         windows/JsonFormatWindow.qml
         windows/JsonYamlWindow.qml
         windows/ColorPickerWindow.qml
+        windows/ColorSelectorWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
@@ -71,6 +72,8 @@ qt_add_qml_module(appHoneycomb
         src/JsonYamlConverter.cpp
         src/ColorPicker.h
         src/ColorPicker.cpp
+        src/ColorSelector.h
+        src/ColorSelector.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -88,6 +91,7 @@ target_link_libraries(appHoneycomb
     PRIVATE
         Qt6::Quick
         Qt6::QuickControls2
+        Qt6::Widgets
         yaml-cpp::yaml-cpp
         JsonCpp::JsonCpp
         libressl::libressl

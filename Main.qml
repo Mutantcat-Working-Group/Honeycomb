@@ -42,7 +42,8 @@ ApplicationWindow {
         "大小写转换": "qrc:/qt/qml/Honeycomb/windows/CaseConvertWindow.qml",
         "JSON格式化": "qrc:/qt/qml/Honeycomb/windows/JsonFormatWindow.qml",
         "JSON转YAML": "qrc:/qt/qml/Honeycomb/windows/JsonYamlWindow.qml",
-        "屏幕取色器": "qrc:/qt/qml/Honeycomb/windows/ColorPickerWindow.qml"
+        "屏幕取色器": "qrc:/qt/qml/Honeycomb/windows/ColorPickerWindow.qml",
+        "颜色选择器": "qrc:/qt/qml/Honeycomb/windows/ColorSelectorWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
