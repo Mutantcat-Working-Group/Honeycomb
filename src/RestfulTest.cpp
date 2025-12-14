@@ -1,6 +1,8 @@
 #include "RestfulTest.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonParseError>
 #include <QHttpMultiPart>
 #include <QDateTime>
 #include <QDebug>
@@ -140,13 +142,18 @@ void RestfulTest::sendRequest()
     // 解析请求头
     parseHeaders(m_headers, request);
 
-    // 设置内容类型
+    // 处理请求体
+    QByteArray requestData;
     if (!m_body.isEmpty()) {
         request.setHeader(QNetworkRequest::ContentTypeHeader, m_contentType);
+        
+        // 如果是表单格式且内容看起来像JSON，尝试转换
+        if (m_contentType == "application/x-www-form-urlencoded" && m_body.trimmed().startsWith("{")) {
+            requestData = convertJsonToForm(m_body);
+        } else {
+            requestData = m_body.toUtf8();
+        }
     }
-
-    // 发送请求
-    QByteArray requestData = m_body.toUtf8();
     
     if (m_method == "GET") {
         m_currentReply = m_networkManager->get(request);
@@ -271,4 +278,66 @@ QString RestfulTest::formatHeaders(const QList<QPair<QByteArray, QByteArray>> &h
     }
     
     return result.trimmed();
+}
+
+QByteArray RestfulTest::convertJsonToForm(const QString &jsonString)
+{
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson(jsonString.toUtf8(), &error);
+    
+    if (error.error != QJsonParseError::NoError) {
+        // JSON解析失败，返回原始内容
+        return jsonString.toUtf8();
+    }
+    
+    if (!doc.isObject()) {
+        // 不是JSON对象，返回原始内容
+        return jsonString.toUtf8();
+    }
+    
+    QJsonObject jsonObject = doc.object();
+    QStringList formParts;
+    
+    for (auto it = jsonObject.begin(); it != jsonObject.end(); ++it) {
+        QString key = it.key();
+        QJsonValue value = it.value();
+        
+        QString valueStr;
+        if (value.isString()) {
+            valueStr = value.toString();
+        } else if (value.isDouble()) {
+            valueStr = QString::number(value.toDouble());
+        } else if (value.isBool()) {
+            valueStr = value.toBool() ? "true" : "false";
+        } else if (value.isArray()) {
+            QJsonArray array = value.toArray();
+            QStringList arrayValues;
+            for (const QJsonValue &arrayValue : array) {
+                if (arrayValue.isString()) {
+                    arrayValues.append(arrayValue.toString());
+                } else if (arrayValue.isDouble()) {
+                    arrayValues.append(QString::number(arrayValue.toDouble()));
+                } else if (arrayValue.isBool()) {
+                    arrayValues.append(arrayValue.toBool() ? "true" : "false");
+                } else if (arrayValue.isObject()) {
+                    arrayValues.append(QString(QJsonDocument(arrayValue.toObject()).toJson(QJsonDocument::Compact)));
+                } else if (arrayValue.isArray()) {
+                    arrayValues.append(QString(QJsonDocument(arrayValue.toArray()).toJson(QJsonDocument::Compact)));
+                } else {
+                    arrayValues.append(arrayValue.toString());
+                }
+            }
+            valueStr = arrayValues.join(",");
+        } else if (value.isObject()) {
+            valueStr = QString(QJsonDocument(value.toObject()).toJson(QJsonDocument::Compact));
+        } else {
+            // 对于其他类型，直接转换为字符串
+            valueStr = value.toString();
+        }
+        
+        // URL编码
+        formParts.append(QString("%1=%2").arg(key, valueStr));
+    }
+    
+    return formParts.join("&").toUtf8();
 }

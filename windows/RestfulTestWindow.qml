@@ -7,7 +7,7 @@ import "../i18n/i18n.js" as I18n
 Window {
     id: restfulTestWindow
     width: 900
-    height: 700
+    height: 750
     title: I18n.t("toolRestfulTest")
     flags: Qt.Window
     modality: Qt.NonModal
@@ -139,7 +139,7 @@ Window {
                         
                         ComboBox {
                             id: contentTypeComboBox
-                            Layout.preferredWidth: 250
+                            Layout.preferredWidth: 300
                             model: [
                                 { text: "application/json", value: "application/json" },
                                 { text: "application/x-www-form-urlencoded", value: "application/x-www-form-urlencoded" },
@@ -177,25 +177,22 @@ Window {
                                 opacity: parent.enabled ? 1.0 : 0.5
                             }
                             
-                            contentItem: Item {
-                                Row {
-                                    spacing: 5
-                                    anchors.centerIn: parent
-                                    
-                                    Text {
-                                        text: parent.parent.parent.text
-                                        color: "white"
-                                        font.pixelSize: 14
-                                        anchors.verticalCenter: parent.verticalCenter
-                                    }
-                                    
-                                    BusyIndicator {
-                                        running: restfulTest.isLoading
-                                        visible: restfulTest.isLoading
-                                        implicitWidth: 16
-                                        implicitHeight: 16
-                                        anchors.verticalCenter: parent.verticalCenter
-                                    }
+                            contentItem: Text {
+                                text: parent.text
+                                color: "white"
+                                font.pixelSize: 14
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                
+                                // 添加加载指示器覆盖
+                                BusyIndicator {
+                                    anchors.right: parent.right
+                                    anchors.rightMargin: 10
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    running: restfulTest.isLoading
+                                    visible: restfulTest.isLoading
+                                    implicitWidth: 16
+                                    implicitHeight: 16
                                 }
                             }
                             

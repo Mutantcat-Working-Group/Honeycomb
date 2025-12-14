@@ -66,6 +66,7 @@ private:
     void parseHeaders(const QString &headersText, QNetworkRequest &request);
     QString formatHeaders(const QList<QPair<QByteArray, QByteArray>> &headersList);
     void appendLog(const QString &message, bool isRequest = false);
+    QByteArray convertJsonToForm(const QString &jsonString);
 
     QNetworkAccessManager *m_networkManager;
     QNetworkReply *m_currentReply;
