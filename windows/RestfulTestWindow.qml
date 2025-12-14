@@ -139,7 +139,7 @@ Window {
                         
                         ComboBox {
                             id: contentTypeComboBox
-                            Layout.preferredWidth: 200
+                            Layout.preferredWidth: 250
                             model: [
                                 { text: "application/json", value: "application/json" },
                                 { text: "application/x-www-form-urlencoded", value: "application/x-www-form-urlencoded" },
@@ -177,23 +177,25 @@ Window {
                                 opacity: parent.enabled ? 1.0 : 0.5
                             }
                             
-                            contentItem: Row {
-                                spacing: 5
-                                anchors.centerIn: parent
-                                
-                                Text {
-                                    text: parent.parent.text
-                                    color: "white"
-                                    font.pixelSize: 14
-                                    anchors.verticalCenter: parent.verticalCenter
-                                }
-                                
-                                BusyIndicator {
-                                    running: restfulTest.isLoading
-                                    visible: restfulTest.isLoading
-                                    implicitWidth: 16
-                                    implicitHeight: 16
-                                    anchors.verticalCenter: parent.verticalCenter
+                            contentItem: Item {
+                                Row {
+                                    spacing: 5
+                                    anchors.centerIn: parent
+                                    
+                                    Text {
+                                        text: parent.parent.parent.text
+                                        color: "white"
+                                        font.pixelSize: 14
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                    
+                                    BusyIndicator {
+                                        running: restfulTest.isLoading
+                                        visible: restfulTest.isLoading
+                                        implicitWidth: 16
+                                        implicitHeight: 16
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
                                 }
                             }
                             

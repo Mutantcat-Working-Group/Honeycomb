@@ -172,8 +172,7 @@ void RestfulTest::sendRequest()
 
     // 连接信号
     connect(m_currentReply, &QNetworkReply::finished, this, &RestfulTest::onRequestFinished);
-    connect(m_currentReply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
-            this, &RestfulTest::onRequestError);
+    connect(m_currentReply, &QNetworkReply::errorOccurred, this, &RestfulTest::onRequestError);
 }
 
 void RestfulTest::clearResponse()
@@ -218,10 +217,8 @@ void RestfulTest::onRequestFinished()
     emit isLoadingChanged();
 }
 
-void RestfulTest::onRequestError(QNetworkReply::NetworkError error)
+void RestfulTest::onRequestError()
 {
-    Q_UNUSED(error)
-    
     if (!m_currentReply) {
         return;
     }

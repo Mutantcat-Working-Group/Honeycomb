@@ -60,7 +60,7 @@ signals:
 
 private slots:
     void onRequestFinished();
-    void onRequestError(QNetworkReply::NetworkError error);
+    void onRequestError();
 
 private:
     void parseHeaders(const QString &headersText, QNetworkRequest &request);
