@@ -54,6 +54,8 @@ qt_add_qml_module(appHoneycomb
         windows/UserAgentWindow.qml
         windows/GoCrossWindow.qml
         windows/HtaccessNginxWindow.qml
+        windows/ManifestWindow.qml
+        windows/HarmonyPermissionWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js

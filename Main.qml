@@ -48,7 +48,9 @@ ApplicationWindow {
         "回车转br标签": "qrc:/qt/qml/Honeycomb/windows/BrTagWindow.qml",
         "常用浏览器UA": "qrc:/qt/qml/Honeycomb/windows/UserAgentWindow.qml",
         "Go交叉编译": "qrc:/qt/qml/Honeycomb/windows/GoCrossWindow.qml",
-        "htaccess转nginx": "qrc:/qt/qml/Honeycomb/windows/HtaccessNginxWindow.qml"
+        "htaccess转nginx": "qrc:/qt/qml/Honeycomb/windows/HtaccessNginxWindow.qml",
+        "Android权限": "qrc:/qt/qml/Honeycomb/windows/ManifestWindow.qml",
+        "Harmony权限": "qrc:/qt/qml/Honeycomb/windows/HarmonyPermissionWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
@@ -134,7 +136,8 @@ ApplicationWindow {
             {title: I18n.t("toolUserAgent"), subtitle: I18n.t("toolUserAgentDesc"), key: "常用浏览器UA"},
             {title: I18n.t("toolGoCross"), subtitle: I18n.t("toolGoCrossDesc"), key: "Go交叉编译"},
             {title: I18n.t("toolHtaccess"), subtitle: I18n.t("toolHtaccessDesc"), key: "htaccess转nginx"},
-            {title: I18n.t("toolManifest"), subtitle: I18n.t("toolManifestDesc"), key: "Manifest权限大全"},
+            {title: I18n.t("toolManifest"), subtitle: I18n.t("toolManifestDesc"), key: "Android权限"},
+            {title: I18n.t("toolHarmonyPermission"), subtitle: I18n.t("toolHarmonyPermissionDesc"), key: "Harmony权限"},
             {title: I18n.t("toolHttpStatus"), subtitle: I18n.t("toolHttpStatusDesc"), key: "HTTP状态码"},
             {title: I18n.t("toolContentType"), subtitle: I18n.t("toolContentTypeDesc"), key: "Content-Type"},
             {title: I18n.t("toolHtmlChar"), subtitle: I18n.t("toolHtmlCharDesc"), key: "HTML特殊字符"}
