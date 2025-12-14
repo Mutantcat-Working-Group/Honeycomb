@@ -613,6 +613,10 @@ function getZhLang() {
         linkLocal: "链路本地",
         uniqueLocal: "唯一本地",
         fullFormat: "完整格式",
-        compressedFormat: "压缩格式"
+        compressedFormat: "压缩格式",
+        
+        // UUID工具
+        version: "版本",
+        defaultFormat: "默认"
     };
 }

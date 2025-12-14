@@ -67,6 +67,7 @@ qt_add_qml_module(appHoneycomb
         windows/RandomMacWindow.qml
         windows/RandomIpv4Window.qml
         windows/RandomIpv6Window.qml
+        windows/UuidWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
@@ -106,6 +107,8 @@ qt_add_qml_module(appHoneycomb
         src/RandomIpv4Generator.cpp
         src/RandomIpv6Generator.h
         src/RandomIpv6Generator.cpp
+        src/UuidGenerator.h
+        src/UuidGenerator.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

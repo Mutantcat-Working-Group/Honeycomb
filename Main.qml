@@ -61,7 +61,8 @@ ApplicationWindow {
         "密码强度分析": "qrc:/qt/qml/Honeycomb/windows/PasswordStrengthWindow.qml",
         "随机MAC地址": "qrc:/qt/qml/Honeycomb/windows/RandomMacWindow.qml",
         "随机IPv4地址": "qrc:/qt/qml/Honeycomb/windows/RandomIpv4Window.qml",
-        "随机IPv6地址": "qrc:/qt/qml/Honeycomb/windows/RandomIpv6Window.qml"
+        "随机IPv6地址": "qrc:/qt/qml/Honeycomb/windows/RandomIpv6Window.qml",
+        "生成UUID": "qrc:/qt/qml/Honeycomb/windows/UuidWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收

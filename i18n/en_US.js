@@ -613,6 +613,10 @@ function getEnLang() {
         linkLocal: "Link-Local",
         uniqueLocal: "Unique-Local",
         fullFormat: "Full Format",
-        compressedFormat: "Compressed Format"
+        compressedFormat: "Compressed Format",
+        
+        // UUID tool
+        version: "Version",
+        defaultFormat: "Default"
     };
 }

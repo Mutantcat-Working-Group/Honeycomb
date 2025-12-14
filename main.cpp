@@ -19,6 +19,7 @@
 #include "src/RandomMacGenerator.h"
 #include "src/RandomIpv4Generator.h"
 #include "src/RandomIpv6Generator.h"
+#include "src/UuidGenerator.h"
 
 int main(int argc, char *argv[])
 {
@@ -50,6 +51,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<RandomMacGenerator>("Honeycomb", 1, 0, "RandomMacGenerator");
     qmlRegisterType<RandomIpv4Generator>("Honeycomb", 1, 0, "RandomIpv4Generator");
     qmlRegisterType<RandomIpv6Generator>("Honeycomb", 1, 0, "RandomIpv6Generator");
+    qmlRegisterType<UuidGenerator>("Honeycomb", 1, 0, "UuidGenerator");
 
     QQmlApplicationEngine engine;
     
