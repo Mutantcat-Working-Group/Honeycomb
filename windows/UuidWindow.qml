@@ -108,7 +108,7 @@ Window {
                     
                     ComboBox {
                         id: versionComboBox
-                        Layout.preferredWidth: 150
+                        Layout.preferredWidth: 200
                         model: [
                             { text: "Version 1", value: "1" },
                             { text: "Version 4", value: "4" }
@@ -141,7 +141,7 @@ Window {
                     
                     ComboBox {
                         id: formatComboBox
-                        Layout.preferredWidth: 150
+                        Layout.preferredWidth: 200
                         model: [
                             { text: "aa-bb-cc (小写)", value: "lowercase" },
                             { text: "AA-BB-CC (大写)", value: "uppercase" }
