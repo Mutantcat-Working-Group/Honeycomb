@@ -129,8 +129,8 @@ function getZhLang() {
         toolUuidDesc: "生成唯一标识符",
         
         // 网络工具分类
-        toolWebsocket: "WebSocket测试",
-        toolWebsocketDesc: "WebSocket测试",
+        toolWebSocketTest: "WebSocket测试",
+        toolWebSocketTestDesc: "WebSocket连接测试工具",
         toolRestful: "RESTful测试",
         toolRestfulDesc: "API接口测试",
         toolMqttSub: "MQTT监听",
@@ -617,6 +617,19 @@ function getZhLang() {
         
         // UUID工具
         version: "版本",
-        defaultFormat: "默认"
+        defaultFormat: "默认",
+        
+        // WebSocket测试工具
+        serverUrl: "服务器URL",
+        enterServerUrl: "请输入WebSocket服务器地址...",
+        connectionStatus: "连接状态",
+        connectBtn: "连接",
+        disconnectBtn: "断开",
+        sendMessage: "发送消息",
+        enterMessage: "请输入要发送的消息...",
+        sendBtn: "发送",
+        communicationLog: "通信日志",
+        clearLogBtn: "清空日志",
+        noLogMessages: "暂无通信日志"
     };
 }

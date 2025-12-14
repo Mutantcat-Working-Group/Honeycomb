@@ -21,7 +21,7 @@ Window {
     
     Rectangle {
         anchors.fill: parent
-        color: "#ffffff"
+        color: "#f9f9f9"
         
         ColumnLayout {
             anchors.fill: parent

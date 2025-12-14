@@ -129,8 +129,8 @@ function getEnLang() {
         toolUuidDesc: "Generate unique identifier",
         
         // Network tools
-        toolWebsocket: "WebSocket Test",
-        toolWebsocketDesc: "WebSocket testing",
+        toolWebSocketTest: "WebSocket Test",
+        toolWebSocketTestDesc: "WebSocket connection testing tool",
         toolRestful: "RESTful Test",
         toolRestfulDesc: "API interface testing",
         toolMqttSub: "MQTT Subscribe",
@@ -617,6 +617,19 @@ function getEnLang() {
         
         // UUID tool
         version: "Version",
-        defaultFormat: "Default"
+        defaultFormat: "Default",
+        
+        // WebSocket Test tool
+        serverUrl: "Server URL",
+        enterServerUrl: "Enter WebSocket server address...",
+        connectionStatus: "Connection Status",
+        connectBtn: "Connect",
+        disconnectBtn: "Disconnect",
+        sendMessage: "Send Message",
+        enterMessage: "Enter message to send...",
+        sendBtn: "Send",
+        communicationLog: "Communication Log",
+        clearLogBtn: "Clear Log",
+        noLogMessages: "No log messages"
     };
 }

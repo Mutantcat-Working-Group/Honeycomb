@@ -20,6 +20,7 @@
 #include "src/RandomIpv4Generator.h"
 #include "src/RandomIpv6Generator.h"
 #include "src/UuidGenerator.h"
+#include "src/WebSocketTest.h"
 
 int main(int argc, char *argv[])
 {
@@ -52,6 +53,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<RandomIpv4Generator>("Honeycomb", 1, 0, "RandomIpv4Generator");
     qmlRegisterType<RandomIpv6Generator>("Honeycomb", 1, 0, "RandomIpv6Generator");
     qmlRegisterType<UuidGenerator>("Honeycomb", 1, 0, "UuidGenerator");
+    qmlRegisterType<WebSocketTest>("Honeycomb", 1, 0, "WebSocketTest");
 
     QQmlApplicationEngine engine;
     

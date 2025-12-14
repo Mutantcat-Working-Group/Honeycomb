@@ -5,7 +5,7 @@ project(Honeycomb VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 Widgets WebSockets)
 find_package(yaml-cpp REQUIRED)
 find_package(jsoncpp REQUIRED)
 
@@ -67,6 +67,7 @@ qt_add_qml_module(appHoneycomb
         windows/RandomIpv4Window.qml
         windows/RandomIpv6Window.qml
         windows/UuidWindow.qml
+        windows/WebSocketTestWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
@@ -108,6 +109,8 @@ qt_add_qml_module(appHoneycomb
         src/RandomIpv6Generator.cpp
         src/UuidGenerator.h
         src/UuidGenerator.cpp
+        src/WebSocketTest.h
+        src/WebSocketTest.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -126,6 +129,7 @@ target_link_libraries(appHoneycomb
         Qt6::Quick
         Qt6::QuickControls2
         Qt6::Widgets
+        Qt6::WebSockets
         yaml-cpp::yaml-cpp
         JsonCpp::JsonCpp
 )
