@@ -16,6 +16,7 @@
 #include "src/SHA1Generator.h"
 #include "src/SHA256Generator.h"
 #include "src/PasswordStrengthGenerator.h"
+#include "src/RandomMacGenerator.h"
 
 int main(int argc, char *argv[])
 {
@@ -44,6 +45,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<SHA1Generator>("Honeycomb", 1, 0, "SHA1Generator");
     qmlRegisterType<SHA256Generator>("Honeycomb", 1, 0, "SHA256Generator");
     qmlRegisterType<PasswordStrengthGenerator>("Honeycomb", 1, 0, "PasswordStrengthGenerator");
+    qmlRegisterType<RandomMacGenerator>("Honeycomb", 1, 0, "RandomMacGenerator");
 
     QQmlApplicationEngine engine;
     

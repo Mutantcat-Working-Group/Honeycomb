@@ -584,6 +584,21 @@ function getEnLang() {
         containsLowercase: "Contains lowercase",
         containsUppercase: "Contains uppercase",
         containsDigits: "Contains digits",
-        containsSpecialChars: "Contains special characters (!@#$%^&* etc.)"
+        containsSpecialChars: "Contains special characters (!@#$%^&* etc.)",
+        
+        // Random MAC Address tool
+        generateCount: "Generate Count",
+        vendor: "Vendor",
+        format: "Format",
+        caseType: "Case",
+        random: "Random",
+        vendor1: "Vendor 1",
+        vendor2: "Vendor 2",
+        vendor3: "Vendor 3",
+        colonFormat: "Colon separated (00:11:22)",
+        hyphenFormat: "Hyphen separated (00-11-22)",
+        noFormat: "No separator (001122)",
+        lowercase: "Lowercase (aa:bb:cc)",
+        uppercase: "Uppercase (AA:BB:CC)"
     };
 }

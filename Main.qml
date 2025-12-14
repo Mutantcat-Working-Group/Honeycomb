@@ -58,7 +58,8 @@ ApplicationWindow {
         "MD5加密": "qrc:/qt/qml/Honeycomb/windows/MD5Window.qml",
         "SHA1加密": "qrc:/qt/qml/Honeycomb/windows/SHA1Window.qml",
         "SHA256加密": "qrc:/qt/qml/Honeycomb/windows/SHA256Window.qml",
-        "密码强度分析": "qrc:/qt/qml/Honeycomb/windows/PasswordStrengthWindow.qml"
+        "密码强度分析": "qrc:/qt/qml/Honeycomb/windows/PasswordStrengthWindow.qml",
+        "随机MAC地址": "qrc:/qt/qml/Honeycomb/windows/RandomMacWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收

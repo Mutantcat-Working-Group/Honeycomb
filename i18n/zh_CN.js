@@ -584,6 +584,21 @@ function getZhLang() {
         containsLowercase: "包含小写字母",
         containsUppercase: "包含大写字母",
         containsDigits: "包含数字",
-        containsSpecialChars: "包含特殊字符 (!@#$%^&*等)"
+        containsSpecialChars: "包含特殊字符 (!@#$%^&*等)",
+        
+        // 随机MAC地址工具
+        generateCount: "生成数量",
+        vendor: "厂商",
+        format: "格式",
+        caseType: "大小写",
+        random: "随机",
+        vendor1: "厂商1",
+        vendor2: "厂商2",
+        vendor3: "厂商3",
+        colonFormat: "冒号分隔 (00:11:22)",
+        hyphenFormat: "连字符分隔 (00-11-22)",
+        noFormat: "无分隔 (001122)",
+        lowercase: "小写 (aa:bb:cc)",
+        uppercase: "大写 (AA:BB:CC)"
     };
 }
