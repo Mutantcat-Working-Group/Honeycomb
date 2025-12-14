@@ -571,6 +571,19 @@ function getZhLang() {
         resultLabel: "结果",
         autoGenerate: "自动生成",
         uppercase: "大写输出",
-        enterTextToGenerate: "请输入文本以生成MD5哈希值"
+        enterTextToGenerate: "请输入文本以生成MD5哈希值",
+        
+        // 密码强度分析工具
+        inputPassword: "输入密码",
+        enterPasswordHere: "请输入要分析的密码...",
+        showPassword: "显示密码",
+        analyzeBtn: "分析",
+        strengthScore: "强度得分",
+        passwordFeatures: "密码特征",
+        length: "长度",
+        containsLowercase: "包含小写字母",
+        containsUppercase: "包含大写字母",
+        containsDigits: "包含数字",
+        containsSpecialChars: "包含特殊字符 (!@#$%^&*等)"
     };
 }

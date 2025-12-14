@@ -571,6 +571,19 @@ function getEnLang() {
         resultLabel: "Result",
         autoGenerate: "Auto Generate",
         uppercase: "Uppercase Output",
-        enterTextToGenerate: "Enter text to generate MD5 hash"
+        enterTextToGenerate: "Enter text to generate MD5 hash",
+        
+        // Password Strength tool
+        inputPassword: "Input Password",
+        enterPasswordHere: "Enter password to analyze...",
+        showPassword: "Show Password",
+        analyzeBtn: "Analyze",
+        strengthScore: "Strength Score",
+        passwordFeatures: "Password Features",
+        length: "Length",
+        containsLowercase: "Contains lowercase",
+        containsUppercase: "Contains uppercase",
+        containsDigits: "Contains digits",
+        containsSpecialChars: "Contains special characters (!@#$%^&* etc.)"
     };
 }

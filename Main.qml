@@ -55,7 +55,10 @@ ApplicationWindow {
         "Content-Type": "qrc:/qt/qml/Honeycomb/windows/ContentTypeWindow.qml",
         "HTML特殊字符": "qrc:/qt/qml/Honeycomb/windows/HtmlCharWindow.qml",
         "Windows加密": "qrc:/qt/qml/Honeycomb/windows/WinEncryptWindow.qml",
-        "MD5加密": "qrc:/qt/qml/Honeycomb/windows/MD5Window.qml"
+        "MD5加密": "qrc:/qt/qml/Honeycomb/windows/MD5Window.qml",
+        "SHA1加密": "qrc:/qt/qml/Honeycomb/windows/SHA1Window.qml",
+        "SHA256加密": "qrc:/qt/qml/Honeycomb/windows/SHA256Window.qml",
+        "密码强度分析": "qrc:/qt/qml/Honeycomb/windows/PasswordStrengthWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收

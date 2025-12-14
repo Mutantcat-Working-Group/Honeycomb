@@ -13,6 +13,9 @@
 #include "src/ColorPicker.h"
 #include "src/ColorSelector.h"
 #include "src/MD5Generator.h"
+#include "src/SHA1Generator.h"
+#include "src/SHA256Generator.h"
+#include "src/PasswordStrengthGenerator.h"
 
 int main(int argc, char *argv[])
 {
@@ -38,6 +41,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<ColorPicker>("Honeycomb", 1, 0, "ColorPicker");
     qmlRegisterType<ColorSelector>("Honeycomb", 1, 0, "ColorSelector");
     qmlRegisterType<MD5Generator>("Honeycomb", 1, 0, "MD5Generator");
+    qmlRegisterType<SHA1Generator>("Honeycomb", 1, 0, "SHA1Generator");
+    qmlRegisterType<SHA256Generator>("Honeycomb", 1, 0, "SHA256Generator");
+    qmlRegisterType<PasswordStrengthGenerator>("Honeycomb", 1, 0, "PasswordStrengthGenerator");
 
     QQmlApplicationEngine engine;
     

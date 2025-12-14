@@ -1,6 +1,5 @@
 [requires]
 yaml-cpp/0.8.0
-libressl/3.9.1
 jsoncpp/1.9.6
 
 [generators]

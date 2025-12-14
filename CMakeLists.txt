@@ -61,6 +61,9 @@ qt_add_qml_module(appHoneycomb
         windows/HtmlCharWindow.qml
         windows/WinEncryptWindow.qml
         windows/MD5Window.qml
+        windows/SHA1Window.qml
+        windows/SHA256Window.qml
+        windows/PasswordStrengthWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
@@ -88,6 +91,12 @@ qt_add_qml_module(appHoneycomb
         src/ColorSelector.cpp
         src/MD5Generator.h
         src/MD5Generator.cpp
+        src/SHA1Generator.h
+        src/SHA1Generator.cpp
+        src/SHA256Generator.h
+        src/SHA256Generator.cpp
+        src/PasswordStrengthGenerator.h
+        src/PasswordStrengthGenerator.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
