@@ -50,7 +50,8 @@ ApplicationWindow {
         "Go交叉编译": "qrc:/qt/qml/Honeycomb/windows/GoCrossWindow.qml",
         "htaccess转nginx": "qrc:/qt/qml/Honeycomb/windows/HtaccessNginxWindow.qml",
         "Android权限": "qrc:/qt/qml/Honeycomb/windows/ManifestWindow.qml",
-        "Harmony权限": "qrc:/qt/qml/Honeycomb/windows/HarmonyPermissionWindow.qml"
+        "Harmony权限": "qrc:/qt/qml/Honeycomb/windows/HarmonyPermissionWindow.qml",
+        "HTTP状态码": "qrc:/qt/qml/Honeycomb/windows/HttpStatusWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
