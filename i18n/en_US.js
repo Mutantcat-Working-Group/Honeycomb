@@ -301,6 +301,7 @@ function getEnLang() {
         browserName: "Browser Name",
         userAgent: "User-Agent",
         operation: "Operation",
+        compileCommand: "Compile Command",
         
         // Color Converter tool
         randomColor: "Random Color",

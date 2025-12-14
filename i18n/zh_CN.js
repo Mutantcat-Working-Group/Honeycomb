@@ -301,6 +301,7 @@ function getZhLang() {
         browserName: "浏览器名称",
         userAgent: "User-Agent",
         operation: "操作",
+        compileCommand: "编译命令",
         
         // 颜色值转换工具
         randomColor: "随机颜色",
