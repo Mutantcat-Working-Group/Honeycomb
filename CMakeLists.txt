@@ -59,6 +59,7 @@ qt_add_qml_module(appHoneycomb
         windows/HttpStatusWindow.qml
         windows/ContentTypeWindow.qml
         windows/HtmlCharWindow.qml
+        windows/WinEncryptWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js

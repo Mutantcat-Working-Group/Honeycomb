@@ -552,6 +552,15 @@ function getZhLang() {
         htmlEncodedText: "HTML编码",
         htmlOriginalPlaceholder: "在此输入要编码的文本...",
         htmlEncodedPlaceholder: "在此输入要解码的HTML文本...",
-        htmlCharTip: "支持HTML实体编码、数字实体编码(&#123;、&#x1A;)，用于防止XSS攻击和确保HTML正确显示"
+        htmlCharTip: "支持HTML实体编码、数字实体编码(&#123;、&#x1A;)，用于防止XSS攻击和确保HTML正确显示",
+        
+        // Windows加密工具
+        winEncryptFilePath: "文件路径",
+        winEncryptFilePlaceholder: "请输入文件完整路径...",
+        winEncryptAlgorithm: "哈希算法",
+        winEncryptPowerShell: "PowerShell 命令",
+        winEncryptCmd: "CMD 命令",
+        winEncryptEnterFile: "请先输入文件路径",
+        winEncryptTip: "提示：PowerShell支持所有算法，CMD在某些Windows版本中可能不支持SHA384和SHA512"
     };
 }

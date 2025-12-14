@@ -552,6 +552,15 @@ function getEnLang() {
         htmlEncodedText: "HTML Encoded",
         htmlOriginalPlaceholder: "Enter text to encode here...",
         htmlEncodedPlaceholder: "Enter HTML text to decode here...",
-        htmlCharTip: "Supports HTML entity encoding, numeric entity encoding (&#123;, &#x1A;), used for XSS prevention and proper HTML display"
+        htmlCharTip: "Supports HTML entity encoding, numeric entity encoding (&#123;, &#x1A;), used for XSS prevention and proper HTML display",
+        
+        // Windows Encrypt tool
+        winEncryptFilePath: "File Path",
+        winEncryptFilePlaceholder: "Enter full file path...",
+        winEncryptAlgorithm: "Hash Algorithm",
+        winEncryptPowerShell: "PowerShell Command",
+        winEncryptCmd: "CMD Command",
+        winEncryptEnterFile: "Please enter file path first",
+        winEncryptTip: "Tip: PowerShell supports all algorithms, CMD may not support SHA384 and SHA512 in some Windows versions"
     };
 }
