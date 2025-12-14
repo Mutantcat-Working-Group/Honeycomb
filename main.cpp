@@ -12,6 +12,7 @@
 #include "src/JsonYamlConverter.h"
 #include "src/ColorPicker.h"
 #include "src/ColorSelector.h"
+#include "src/MD5Generator.h"
 
 int main(int argc, char *argv[])
 {
@@ -36,6 +37,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<JsonYamlConverter>("Honeycomb", 1, 0, "JsonYamlConverter");
     qmlRegisterType<ColorPicker>("Honeycomb", 1, 0, "ColorPicker");
     qmlRegisterType<ColorSelector>("Honeycomb", 1, 0, "ColorSelector");
+    qmlRegisterType<MD5Generator>("Honeycomb", 1, 0, "MD5Generator");
 
     QQmlApplicationEngine engine;
     

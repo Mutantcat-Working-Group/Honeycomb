@@ -54,7 +54,8 @@ ApplicationWindow {
         "HTTP状态码": "qrc:/qt/qml/Honeycomb/windows/HttpStatusWindow.qml",
         "Content-Type": "qrc:/qt/qml/Honeycomb/windows/ContentTypeWindow.qml",
         "HTML特殊字符": "qrc:/qt/qml/Honeycomb/windows/HtmlCharWindow.qml",
-        "Windows加密": "qrc:/qt/qml/Honeycomb/windows/WinEncryptWindow.qml"
+        "Windows加密": "qrc:/qt/qml/Honeycomb/windows/WinEncryptWindow.qml",
+        "MD5加密": "qrc:/qt/qml/Honeycomb/windows/MD5Window.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收

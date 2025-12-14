@@ -561,6 +561,16 @@ function getZhLang() {
         winEncryptPowerShell: "PowerShell 命令",
         winEncryptCmd: "CMD 命令",
         winEncryptEnterFile: "请先输入文件路径",
-        winEncryptTip: "提示：PowerShell支持所有算法，CMD在某些Windows版本中可能不支持SHA384和SHA512"
+        winEncryptTip: "提示：PowerShell支持所有算法，CMD在某些Windows版本中可能不支持SHA384和SHA512",
+        
+        // MD5加密工具
+        encrypt: "加密",
+        encryptDesc: "加密解密相关功能",
+        inputText: "输入文本",
+        enterTextHere: "请输入要加密的文本...",
+        resultLabel: "结果",
+        autoGenerate: "自动生成",
+        uppercase: "大写输出",
+        enterTextToGenerate: "请输入文本以生成MD5哈希值"
     };
 }

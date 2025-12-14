@@ -60,6 +60,7 @@ qt_add_qml_module(appHoneycomb
         windows/ContentTypeWindow.qml
         windows/HtmlCharWindow.qml
         windows/WinEncryptWindow.qml
+        windows/MD5Window.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
@@ -85,6 +86,8 @@ qt_add_qml_module(appHoneycomb
         src/ColorPicker.cpp
         src/ColorSelector.h
         src/ColorSelector.cpp
+        src/MD5Generator.h
+        src/MD5Generator.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

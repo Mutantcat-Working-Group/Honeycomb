@@ -561,6 +561,16 @@ function getEnLang() {
         winEncryptPowerShell: "PowerShell Command",
         winEncryptCmd: "CMD Command",
         winEncryptEnterFile: "Please enter file path first",
-        winEncryptTip: "Tip: PowerShell supports all algorithms, CMD may not support SHA384 and SHA512 in some Windows versions"
+        winEncryptTip: "Tip: PowerShell supports all algorithms, CMD may not support SHA384 and SHA512 in some Windows versions",
+        
+        // MD5 Encrypt tool
+        encrypt: "Encrypt",
+        encryptDesc: "Encryption and decryption functions",
+        inputText: "Input Text",
+        enterTextHere: "Enter text to encrypt...",
+        resultLabel: "Result",
+        autoGenerate: "Auto Generate",
+        uppercase: "Uppercase Output",
+        enterTextToGenerate: "Enter text to generate MD5 hash"
     };
 }
