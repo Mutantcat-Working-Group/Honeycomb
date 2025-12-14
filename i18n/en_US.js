@@ -599,6 +599,20 @@ function getEnLang() {
         hyphenFormat: "Hyphen separated (00-11-22)",
         noFormat: "No separator (001122)",
         lowercase: "Lowercase (aa:bb:cc)",
-        uppercase: "Uppercase (AA:BB:CC)"
+        uppercase: "Uppercase (AA:BB:CC)",
+        
+        // Random IPv4 Address tool
+        ipType: "IP Type",
+        privateIp: "Private IP",
+        publicIp: "Public IP",
+        loopbackIp: "Loopback IP",
+        multicastIp: "Multicast IP",
+        
+        // Random IPv6 Address tool
+        globalUnicast: "Global Unicast",
+        linkLocal: "Link-Local",
+        uniqueLocal: "Unique-Local",
+        fullFormat: "Full Format",
+        compressedFormat: "Compressed Format"
     };
 }

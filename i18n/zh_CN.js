@@ -599,6 +599,20 @@ function getZhLang() {
         hyphenFormat: "连字符分隔 (00-11-22)",
         noFormat: "无分隔 (001122)",
         lowercase: "小写 (aa:bb:cc)",
-        uppercase: "大写 (AA:BB:CC)"
+        uppercase: "大写 (AA:BB:CC)",
+        
+        // 随机IPv4地址工具
+        ipType: "IP类型",
+        privateIp: "私有IP",
+        publicIp: "公共IP",
+        loopbackIp: "回环IP",
+        multicastIp: "多播IP",
+        
+        // 随机IPv6地址工具
+        globalUnicast: "全局单播",
+        linkLocal: "链路本地",
+        uniqueLocal: "唯一本地",
+        fullFormat: "完整格式",
+        compressedFormat: "压缩格式"
     };
 }
