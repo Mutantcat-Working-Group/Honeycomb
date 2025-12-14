@@ -540,6 +540,18 @@ function getEnLang() {
         httpStatus507: "Insufficient Storage, server is unable to store the representation needed",
         httpStatus508: "Loop Detected, infinite loop was detected while processing request",
         httpStatus510: "Not Extended, server needs further extensions to complete request",
-        httpStatus511: "Network Authentication Required, client needs to authenticate to gain network access"
+        httpStatus511: "Network Authentication Required, client needs to authenticate to gain network access",
+        
+        // Content-Type tool
+        contentTypeMime: "MIME Type",
+        contentTypeDesc: "Description",
+        contentTypeExt: "File Extensions",
+        
+        // HTML Entities tool
+        htmlOriginalText: "Original Text",
+        htmlEncodedText: "HTML Encoded",
+        htmlOriginalPlaceholder: "Enter text to encode here...",
+        htmlEncodedPlaceholder: "Enter HTML text to decode here...",
+        htmlCharTip: "Supports HTML entity encoding, numeric entity encoding (&#123;, &#x1A;), used for XSS prevention and proper HTML display"
     };
 }

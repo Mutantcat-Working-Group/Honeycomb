@@ -51,7 +51,9 @@ ApplicationWindow {
         "htaccess转nginx": "qrc:/qt/qml/Honeycomb/windows/HtaccessNginxWindow.qml",
         "Android权限": "qrc:/qt/qml/Honeycomb/windows/ManifestWindow.qml",
         "Harmony权限": "qrc:/qt/qml/Honeycomb/windows/HarmonyPermissionWindow.qml",
-        "HTTP状态码": "qrc:/qt/qml/Honeycomb/windows/HttpStatusWindow.qml"
+        "HTTP状态码": "qrc:/qt/qml/Honeycomb/windows/HttpStatusWindow.qml",
+        "Content-Type": "qrc:/qt/qml/Honeycomb/windows/ContentTypeWindow.qml",
+        "HTML特殊字符": "qrc:/qt/qml/Honeycomb/windows/HtmlCharWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收

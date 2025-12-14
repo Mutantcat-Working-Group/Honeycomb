@@ -540,6 +540,18 @@ function getZhLang() {
         httpStatus507: "存储不足，服务器无法存储完成请求所需的内容",
         httpStatus508: "检测到循环，在处理请求时检测到无限循环",
         httpStatus510: "未扩展，服务器需要对请求进行扩展",
-        httpStatus511: "需要网络认证，客户端需要进行网络认证才能访问"
+        httpStatus511: "需要网络认证，客户端需要进行网络认证才能访问",
+        
+        // Content-Type工具
+        contentTypeMime: "MIME类型",
+        contentTypeDesc: "描述",
+        contentTypeExt: "文件扩展名",
+        
+        // HTML特殊字符工具
+        htmlOriginalText: "原始文本",
+        htmlEncodedText: "HTML编码",
+        htmlOriginalPlaceholder: "在此输入要编码的文本...",
+        htmlEncodedPlaceholder: "在此输入要解码的HTML文本...",
+        htmlCharTip: "支持HTML实体编码、数字实体编码(&#123;、&#x1A;)，用于防止XSS攻击和确保HTML正确显示"
     };
 }

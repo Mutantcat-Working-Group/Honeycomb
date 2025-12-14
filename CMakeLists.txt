@@ -57,6 +57,8 @@ qt_add_qml_module(appHoneycomb
         windows/ManifestWindow.qml
         windows/HarmonyPermissionWindow.qml
         windows/HttpStatusWindow.qml
+        windows/ContentTypeWindow.qml
+        windows/HtmlCharWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
