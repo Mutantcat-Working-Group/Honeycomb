@@ -63,7 +63,8 @@ ApplicationWindow {
         "随机IPv4地址": "qrc:/qt/qml/Honeycomb/windows/RandomIpv4Window.qml",
         "随机IPv6地址": "qrc:/qt/qml/Honeycomb/windows/RandomIpv6Window.qml",
         "生成UUID": "qrc:/qt/qml/Honeycomb/windows/UuidWindow.qml",
-        "WebSocket测试": "qrc:/qt/qml/Honeycomb/windows/WebSocketTestWindow.qml"
+        "WebSocket测试": "qrc:/qt/qml/Honeycomb/windows/WebSocketTestWindow.qml",
+        "RESTful测试": "qrc:/qt/qml/Honeycomb/windows/RestfulTestWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
@@ -173,7 +174,7 @@ ApplicationWindow {
         ],
         6: [ // 网络工具
             {title: I18n.t("toolWebSocketTest"), subtitle: I18n.t("toolWebSocketTestDesc"), key: "WebSocket测试"},
-            {title: I18n.t("toolRestful"), subtitle: I18n.t("toolRestfulDesc"), key: "RESTful测试"},
+            {title: I18n.t("toolRestfulTest"), subtitle: I18n.t("toolRestfulTestDesc"), key: "RESTful测试"},
             {title: I18n.t("toolMqttSub"), subtitle: I18n.t("toolMqttSubDesc"), key: "MQTT监听"},
             {title: I18n.t("toolMqttPub"), subtitle: I18n.t("toolMqttPubDesc"), key: "MQTT广播"},
             {title: I18n.t("toolSubnet"), subtitle: I18n.t("toolSubnetDesc"), key: "子网掩码计算器"},

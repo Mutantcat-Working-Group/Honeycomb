@@ -131,8 +131,8 @@ function getZhLang() {
         // 网络工具分类
         toolWebSocketTest: "WebSocket测试",
         toolWebSocketTestDesc: "WebSocket连接测试工具",
-        toolRestful: "RESTful测试",
-        toolRestfulDesc: "API接口测试",
+        toolRestfulTest: "RESTful测试",
+        toolRestfulTestDesc: "HTTP API接口测试工具",
         toolMqttSub: "MQTT监听",
         toolMqttSubDesc: "MQTT订阅监听",
         toolMqttPub: "MQTT广播",
@@ -630,6 +630,22 @@ function getZhLang() {
         sendBtn: "发送",
         communicationLog: "通信日志",
         clearLogBtn: "清空日志",
-        noLogMessages: "暂无通信日志"
+        noLogMessages: "暂无通信日志",
+        
+        // RESTful测试工具
+        httpMethod: "HTTP方法",
+        requestUrl: "请求URL",
+        enterRequestUrl: "请输入请求URL...",
+        contentType: "内容类型",
+        sendRequest: "发送请求",
+        requestHeaders: "请求头 (每行一个，格式: Key: Value):",
+        requestBody: "请求体",
+        enterRequestBody: "请输入请求体内容...",
+        responseStatus: "响应状态",
+        clearResponse: "清空响应",
+        responseBody: "响应体",
+        responseHeaders: "响应头",
+        noResponse: "暂无响应数据",
+        noHeaders: "暂无响应头"
     };
 }

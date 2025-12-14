@@ -131,8 +131,8 @@ function getEnLang() {
         // Network tools
         toolWebSocketTest: "WebSocket Test",
         toolWebSocketTestDesc: "WebSocket connection testing tool",
-        toolRestful: "RESTful Test",
-        toolRestfulDesc: "API interface testing",
+        toolRestfulTest: "RESTful Test",
+        toolRestfulTestDesc: "HTTP API interface testing tool",
         toolMqttSub: "MQTT Subscribe",
         toolMqttSubDesc: "MQTT subscription listen",
         toolMqttPub: "MQTT Publish",
@@ -630,6 +630,22 @@ function getEnLang() {
         sendBtn: "Send",
         communicationLog: "Communication Log",
         clearLogBtn: "Clear Log",
-        noLogMessages: "No log messages"
+        noLogMessages: "No log messages",
+        
+        // RESTful Test tool
+        httpMethod: "HTTP Method",
+        requestUrl: "Request URL",
+        enterRequestUrl: "Enter request URL...",
+        contentType: "Content Type",
+        sendRequest: "Send Request",
+        requestHeaders: "Request Headers (one per line, format: Key: Value):",
+        requestBody: "Request Body",
+        enterRequestBody: "Enter request body content...",
+        responseStatus: "Response Status",
+        clearResponse: "Clear Response",
+        responseBody: "Response Body",
+        responseHeaders: "Response Headers",
+        noResponse: "No response data",
+        noHeaders: "No response headers"
     };
 }

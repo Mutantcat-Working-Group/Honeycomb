@@ -53,7 +53,7 @@ Window {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 120
-                color: "#f9f9f9"
+                color: "white"
                 border.color: "#e0e0e0"
                 border.width: 1
                 radius: 6
@@ -176,7 +176,7 @@ Window {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 90
-                color: "#f9f9f9"
+                color: "white"
                 border.color: "#e0e0e0"
                 border.width: 1
                 radius: 6
@@ -253,7 +253,7 @@ Window {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                color: "#f9f9f9"
+                color: "white"
                 border.color: "#e0e0e0"
                 border.width: 1
                 radius: 6
