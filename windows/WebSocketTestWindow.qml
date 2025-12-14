@@ -83,7 +83,7 @@ Window {
                             font.pixelSize: 14
                             
                             background: Rectangle {
-                                color: "#f9f9f9"
+                                color: "white"
                                 border.color: urlInput.focus ? "#1976d2" : "#e0e0e0"
                                 border.width: urlInput.focus ? 2 : 1
                                 radius: 4
@@ -204,7 +204,7 @@ Window {
                             enabled: webSocket.isConnected
                             
                             background: Rectangle {
-                                color: "#f9f9f9"
+                                color: "white"
                                 border.color: messageInput.focus ? "#1976d2" : "#e0e0e0"
                                 border.width: messageInput.focus ? 2 : 1
                                 radius: 4

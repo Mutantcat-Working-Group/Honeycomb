@@ -78,7 +78,7 @@ Window {
                         horizontalAlignment: TextInput.AlignCenter
                         
                         background: Rectangle {
-                            color: "#f9f9f9"
+                            color: "white"
                             border.color: countInput.focus ? "#1976d2" : "#e0e0e0"
                             border.width: countInput.focus ? 2 : 1
                             radius: 4
@@ -120,7 +120,7 @@ Window {
                         valueRole: "value"
                         
                         background: Rectangle {
-                            color: "#f9f9f9"
+                            color: "white"
                             border.color: ipTypeComboBox.focus ? "#1976d2" : "#e0e0e0"
                             border.width: ipTypeComboBox.focus ? 2 : 1
                             radius: 4
@@ -153,7 +153,7 @@ Window {
                         valueRole: "value"
                         
                         background: Rectangle {
-                            color: "#f9f9f9"
+                            color: "white"
                             border.color: formatComboBox.focus ? "#1976d2" : "#e0e0e0"
                             border.width: formatComboBox.focus ? 2 : 1
                             radius: 4
@@ -226,7 +226,7 @@ Window {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                color: "#f9f9f9"
+                color: "white"
                 border.color: "#e0e0e0"
                 border.width: 1
                 radius: 6
