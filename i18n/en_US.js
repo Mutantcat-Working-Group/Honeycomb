@@ -302,6 +302,8 @@ function getEnLang() {
         userAgent: "User-Agent",
         operation: "Operation",
         compileCommand: "Compile Command",
+        htaccessTip: "Note: Conversion result is for reference only, please review and test the configuration",
+        loadExample: "Load Example",
         
         // Color Converter tool
         randomColor: "Random Color",

@@ -302,6 +302,8 @@ function getZhLang() {
         userAgent: "User-Agent",
         operation: "操作",
         compileCommand: "编译命令",
+        htaccessTip: "提示：转换结果仅供参考，请仔细检查并测试配置",
+        loadExample: "加载示例",
         
         // 颜色值转换工具
         randomColor: "随机颜色",

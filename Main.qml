@@ -47,7 +47,8 @@ ApplicationWindow {
         "常用HTML颜色": "qrc:/qt/qml/Honeycomb/windows/HtmlColorWindow.qml",
         "回车转br标签": "qrc:/qt/qml/Honeycomb/windows/BrTagWindow.qml",
         "常用浏览器UA": "qrc:/qt/qml/Honeycomb/windows/UserAgentWindow.qml",
-        "Go交叉编译": "qrc:/qt/qml/Honeycomb/windows/GoCrossWindow.qml"
+        "Go交叉编译": "qrc:/qt/qml/Honeycomb/windows/GoCrossWindow.qml",
+        "htaccess转nginx": "qrc:/qt/qml/Honeycomb/windows/HtaccessNginxWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收

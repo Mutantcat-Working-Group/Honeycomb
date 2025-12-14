@@ -53,6 +53,7 @@ qt_add_qml_module(appHoneycomb
         windows/BrTagWindow.qml
         windows/UserAgentWindow.qml
         windows/GoCrossWindow.qml
+        windows/HtaccessNginxWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
