@@ -232,6 +232,8 @@ function getEnLang() {
         trimExtraNewlines: "Extra Newlines",
         trimEmptyLines: "Empty Lines",
         newlineCount: "Newlines",
+        newlineToBr: "Newline to BR",
+        brToNewline: "BR to Newline",
         
         // Trim All tool
         trimAllWhitespace: "Remove All",
@@ -296,6 +298,9 @@ function getEnLang() {
         copy: "Copy",
         copied: "Copied",
         example: "Example",
+        browserName: "Browser Name",
+        userAgent: "User-Agent",
+        operation: "Operation",
         
         // Color Converter tool
         randomColor: "Random Color",

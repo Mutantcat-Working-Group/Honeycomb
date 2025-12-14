@@ -232,6 +232,8 @@ function getZhLang() {
         trimExtraNewlines: "多余回车",
         trimEmptyLines: "去除空行",
         newlineCount: "回车数量",
+        newlineToBr: "回车转br",
+        brToNewline: "br转回车",
         
         // 去除空格回车工具
         trimAllWhitespace: "全部去除",
@@ -296,6 +298,9 @@ function getZhLang() {
         copy: "复制",
         copied: "已复制",
         example: "示例",
+        browserName: "浏览器名称",
+        userAgent: "User-Agent",
+        operation: "操作",
         
         // 颜色值转换工具
         randomColor: "随机颜色",

@@ -44,7 +44,9 @@ ApplicationWindow {
         "JSON转YAML": "qrc:/qt/qml/Honeycomb/windows/JsonYamlWindow.qml",
         "屏幕取色器": "qrc:/qt/qml/Honeycomb/windows/ColorPickerWindow.qml",
         "颜色选择器": "qrc:/qt/qml/Honeycomb/windows/ColorSelectorWindow.qml",
-        "常用HTML颜色": "qrc:/qt/qml/Honeycomb/windows/HtmlColorWindow.qml"
+        "常用HTML颜色": "qrc:/qt/qml/Honeycomb/windows/HtmlColorWindow.qml",
+        "回车转br标签": "qrc:/qt/qml/Honeycomb/windows/BrTagWindow.qml",
+        "常用浏览器UA": "qrc:/qt/qml/Honeycomb/windows/UserAgentWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
