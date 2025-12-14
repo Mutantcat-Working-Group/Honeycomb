@@ -49,6 +49,7 @@ qt_add_qml_module(appHoneycomb
         windows/JsonYamlWindow.qml
         windows/ColorPickerWindow.qml
         windows/ColorSelectorWindow.qml
+        windows/HtmlColorWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
