@@ -398,46 +398,52 @@ Window {
                             color: "#666666"
                         }
                         
-                        TextField {
-                            id: searchField
+                        RowLayout {
                             Layout.fillWidth: true
-                            placeholderText: "输入指令名称或描述..."
+                            spacing: 10
                             
-                            onTextChanged: {
-                                searchText = text
-                                filterInstructions()
+                            TextField {
+                                id: searchField
+                                Layout.fillWidth: true
+                                placeholderText: "输入指令名称或描述..."
+                                
+                                onTextChanged: {
+                                    searchText = text
+                                    filterInstructions()
+                                }
+                                
+                                background: Rectangle {
+                                    color: "#ffffff"
+                                    border.color: searchField.activeFocus ? "#2196F3" : "#cccccc"
+                                    border.width: searchField.activeFocus ? 2 : 1
+                                    radius: 4
+                                }
                             }
                             
-                            background: Rectangle {
-                                color: "#ffffff"
-                                border.color: searchField.activeFocus ? "#2196F3" : "#cccccc"
-                                border.width: searchField.activeFocus ? 2 : 1
-                                radius: 4
+                            Button {
+                                text: "清除"
+                                Layout.preferredWidth: 60
+                                Layout.preferredHeight: 28
+                                
+                                onClicked: {
+                                    archCombo.currentIndex = 0
+                                    categoryCombo.currentIndex = 0
+                                    searchField.text = ""
+                                }
+                                
+                                background: Rectangle {
+                                    color: parent.pressed ? "#1976D2" : (parent.hovered ? "#42A5F5" : "#2196F3")
+                                    radius: 4
+                                }
+                                
+                                contentItem: Text {
+                                    text: parent.text
+                                    font.pixelSize: 12
+                                    color: "#ffffff"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
                             }
-                        }
-                    }
-                    
-                    Button {
-                        text: "清除筛选"
-                        Layout.preferredHeight: 35
-                        
-                        onClicked: {
-                            archCombo.currentIndex = 0
-                            categoryCombo.currentIndex = 0
-                            searchField.text = ""
-                        }
-                        
-                        background: Rectangle {
-                            color: parent.pressed ? "#1976D2" : (parent.hovered ? "#42A5F5" : "#2196F3")
-                            radius: 4
-                        }
-                        
-                        contentItem: Text {
-                            text: parent.text
-                            font.pixelSize: 13
-                            color: "#ffffff"
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
                         }
                     }
                 }
