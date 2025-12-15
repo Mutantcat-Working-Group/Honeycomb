@@ -8,6 +8,8 @@ set(CMAKE_AUTORCC ON)
 find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 Widgets WebSockets)
 find_package(yaml-cpp REQUIRED)
 find_package(jsoncpp REQUIRED)
+find_package(PahoMqttCpp REQUIRED)
+
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -135,6 +137,7 @@ target_link_libraries(appHoneycomb
         Qt6::WebSockets
         yaml-cpp::yaml-cpp
         JsonCpp::JsonCpp
+        PahoMqttCpp::paho-mqttpp3-static
 )
 
 include(GNUInstallDirs)

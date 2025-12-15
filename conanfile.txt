@@ -1,6 +1,7 @@
 [requires]
 yaml-cpp/0.8.0
 jsoncpp/1.9.6
+paho-mqtt-cpp/1.5.3
 
 [generators]
 CMakeDeps
