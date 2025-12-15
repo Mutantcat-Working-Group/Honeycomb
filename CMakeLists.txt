@@ -78,6 +78,8 @@ qt_add_qml_module(appHoneycomb
         windows/RegisterRangeWindow.qml
         windows/ResistorCalculatorWindow.qml
         windows/RISCVInstructionWindow.qml
+        windows/RegisterRefWindow.qml
+        windows/AsmRefWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
