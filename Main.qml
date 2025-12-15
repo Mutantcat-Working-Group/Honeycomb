@@ -70,7 +70,8 @@ ApplicationWindow {
         "子网掩码计算器": "qrc:/qt/qml/Honeycomb/windows/SubnetCalculatorWindow.qml",
         "RTSP预览": "qrc:/qt/qml/Honeycomb/windows/RTSPViewerWindow.qml",
         "寄存器寻址范围": "qrc:/qt/qml/Honeycomb/windows/RegisterRangeWindow.qml",
-        "电阻阻值计算": "qrc:/qt/qml/Honeycomb/windows/ResistorCalculatorWindow.qml"
+        "电阻阻值计算": "qrc:/qt/qml/Honeycomb/windows/ResistorCalculatorWindow.qml",
+        "RISC-V指令集模块": "qrc:/qt/qml/Honeycomb/windows/RISCVInstructionWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
