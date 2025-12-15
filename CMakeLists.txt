@@ -75,6 +75,7 @@ qt_add_qml_module(appHoneycomb
         windows/MQTTPublisherWindow.qml
         windows/SubnetCalculatorWindow.qml
         windows/RTSPViewerWindow.qml
+        windows/RegisterRangeWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js

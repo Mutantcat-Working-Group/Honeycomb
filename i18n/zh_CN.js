@@ -684,6 +684,12 @@ function getZhLang() {
         stopPreview: "停止预览",
         noVideoStream: "暂无视频流\n点击「开始预览」连接RTSP",
         resolution: "分辨率",
-        bufferProgress: "缓冲"
+        bufferProgress: "缓冲",
+        
+        // 寄存器寻址范围
+        toolRegisterRange: "寄存器寻址范围",
+        toolRegisterRangeDesc: "不同位数通用寄存器的寻址范围和最大值",
+        registerInfo: "寄存器信息",
+        tips: "提示"
     };
 }

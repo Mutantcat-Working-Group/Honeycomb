@@ -684,6 +684,12 @@ function getEnLang() {
         stopPreview: "Stop Preview",
         noVideoStream: "No video stream\nClick 'Start Preview' to connect",
         resolution: "Resolution",
-        bufferProgress: "Buffer"
+        bufferProgress: "Buffer",
+        
+        // Register Range
+        toolRegisterRange: "Register Address Range",
+        toolRegisterRangeDesc: "Address range and max values for different bit-width registers",
+        registerInfo: "Register Information",
+        tips: "Tips"
     };
 }

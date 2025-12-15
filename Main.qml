@@ -68,7 +68,8 @@ ApplicationWindow {
         "MQTT监听": "qrc:/qt/qml/Honeycomb/windows/MQTTListenerWindow.qml",
         "MQTT广播": "qrc:/qt/qml/Honeycomb/windows/MQTTPublisherWindow.qml",
         "子网掩码计算器": "qrc:/qt/qml/Honeycomb/windows/SubnetCalculatorWindow.qml",
-        "RTSP预览": "qrc:/qt/qml/Honeycomb/windows/RTSPViewerWindow.qml"
+        "RTSP预览": "qrc:/qt/qml/Honeycomb/windows/RTSPViewerWindow.qml",
+        "寄存器寻址范围": "qrc:/qt/qml/Honeycomb/windows/RegisterRangeWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
