@@ -10,18 +10,27 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        include:
+          - os: windows-latest
+            qtarch: win64_msvc2019_64
+            qtpack: msvc2019_64
+          - os: ubuntu-latest
+            qtarch: gcc_64
+            qtpack: gcc_64
+          - os: macos-latest
+            qtarch: clang_64
+            qtpack: clang_64
     runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v4
 
-    # ① 装 Qt
+    # ① 装 Qt + 对应工具链
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.10.1'
-        arch:  'win64_mingw_11.2.0'
+        arch:  ${{ matrix.os == 'windows-latest' && 'win64_mingw' || 'gcc_64' }}
         tools: 'tools_mingw90'   # Windows 需要配套 MinGW
         cache: true              # 二次构建加速
 
@@ -31,34 +40,33 @@ jobs:
         cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
         cmake --build build --config Release
 
-    # ③ 打包
+    # ③ Conan 三方库导出（全平台）
+    - name: Install 3rd-party via Conan
+      run: |
+        conan install . --deployer=full_deploy -s build_type=Release --build=missing
+
+    # ④ 打包
     - name: Deploy (Windows)
       if: matrix.os == 'windows-latest'
+      shell: cmd
       run: |
         mkdir app
-        copy build/Release/appHoneycomb.exe app/
-        windeployqt app/appHoneycomb.exe --qmldir ${{env.Qt6_DIR}}/qml --release
-        # 再把 Conan 三方 dll 拷进来（见下方④）
-        7z a Honeycomb-win.zip app/
+        copy build\appHoneycomb.exe app\
+        windeployqt app\appHoneycomb.exe --qmldir %Qt6_DIR%\qml --release
+        xcopy /y full_deploy\host\*\Release\*\bin\*.dll app\
+        7z a Honeycomb-win.zip app\
 
-    # - name: Bundle (Linux)
-    #   if: matrix.os == 'ubuntu-latest'
-    #   run: |
-    #     linuxdeployqt build/appHoneycomb -qmldir ${{env.Qt6_DIR}}/qml -appimage
-    #     mv *.AppImage Honeycomb-linux.AppImage
-
-    # - name: Bundle (macOS)
-    #   if: matrix.os == 'macos-latest'
-    #   run: |
-    #     macdeployqt build/appHoneycomb.app -qmldir ${{env.Qt6_DIR}}/qml -dmg
-    #     mv *.dmg Honeycomb-mac.dmg
-
-    # ④ 把 Conan 依赖 DLL 也拷进去（Windows 例）
-    - name: Copy 3rd-party DLLs (Windows)
-      if: matrix.os == 'windows-latest'
+    - name: Bundle (Linux)
+      if: matrix.os == 'ubuntu-latest'
       run: |
-        conan install . --output-folder=build/conan -s build_type=Release --build=missing
-        xcopy /y build\conan\bin\*.dll app\
+        linuxdeployqt build/appHoneycomb -qmldir ${{env.Qt6_DIR}}/qml -appimage
+        mv *.AppImage Honeycomb-linux.AppImage
+
+    - name: Bundle (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        macdeployqt build/appHoneycomb.app -qmldir ${{env.Qt6_DIR}}/qml -dmg
+        mv *.dmg Honeycomb-mac.dmg
 
     # ⑤ 上传成品
     - name: Upload artifact
