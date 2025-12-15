@@ -665,6 +665,14 @@ function getZhLang() {
         publishLog: "发布日志",
         publishBtn: "发布",
         retainedMessage: "保留消息",
-        noPublishLog: "暂无发布日志"
+        noPublishLog: "暂无发布日志",
+        
+        // 子网掩码计算器
+        toolSubnetCalculator: "子网掩码计算器",
+        toolSubnetCalculatorDesc: "计算IP地址的网络信息和主机范围",
+        inputSettings: "输入设置",
+        calculationResult: "计算结果",
+        calculateBtn: "计算",
+        clickCalculateToStart: "点击「计算」按钮开始"
     };
 }

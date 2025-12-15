@@ -665,6 +665,14 @@ function getEnLang() {
         publishLog: "Publish Log",
         publishBtn: "Publish",
         retainedMessage: "Retained Message",
-        noPublishLog: "No publish log"
+        noPublishLog: "No publish log",
+        
+        // Subnet Calculator
+        toolSubnetCalculator: "Subnet Calculator",
+        toolSubnetCalculatorDesc: "Calculate network information and host range",
+        inputSettings: "Input Settings",
+        calculationResult: "Calculation Result",
+        calculateBtn: "Calculate",
+        clickCalculateToStart: "Click 'Calculate' to start"
     };
 }

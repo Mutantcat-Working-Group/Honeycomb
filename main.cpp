@@ -24,6 +24,7 @@
 #include "src/RestfulTest.h"
 #include "src/MQTTListener.h"
 #include "src/MQTTPublisher.h"
+#include "src/SubnetCalculator.h"
 
 int main(int argc, char *argv[])
 {
@@ -60,6 +61,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<RestfulTest>("Honeycomb", 1, 0, "RestfulTest");
     qmlRegisterType<MQTTListener>("Honeycomb", 1, 0, "MQTTListener");
     qmlRegisterType<MQTTPublisher>("Honeycomb", 1, 0, "MQTTPublisher");
+    qmlRegisterType<SubnetCalculator>("Honeycomb", 1, 0, "SubnetCalculator");
 
     QQmlApplicationEngine engine;
     
