@@ -1,4 +1,4 @@
-name: Pack Qt Quick App
+name: Pack Qt Quick App (Windows-MinGW 6.10.1)
 
 on:
   push:
@@ -8,31 +8,18 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        include:
-          - os: windows-latest
-            qtarch: win64_msvc2019_64
-            qtpack: msvc2019_64
-          - os: ubuntu-latest
-            qtarch: gcc_64
-            qtpack: gcc_64
-          - os: macos-latest
-            qtarch: clang_64
-            qtpack: clang_64
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v4
 
-    # ① 装 Qt + 对应工具链
+    # ① 装 Qt 6.10.1 MinGW 11.2.0
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.10.1'
-        arch:  ${{ matrix.os == 'windows-latest' && 'win64_mingw' || 'gcc_64' }}
-        tools: 'tools_mingw90'   # Windows 需要配套 MinGW
-        cache: true              # 二次构建加速
+        arch: 'win64_mingw_11.2.0'
+        cache: true
 
     # ② 生成 & 编译
     - name: Configure & Build
@@ -40,15 +27,13 @@ jobs:
         cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
         cmake --build build --config Release
 
-    # ③ Conan 三方库导出（全平台）
-    - name: Install 3rd-party via Conan
+    # ③ Conan 三方库 → full_deploy 导出
+    - name: Install 3rd-party (Conan)
       run: |
         conan install . --deployer=full_deploy -s build_type=Release --build=missing
 
-    # ④ 打包
-    - name: Deploy (Windows)
-      if: matrix.os == 'windows-latest'
-      shell: cmd
+    # ④ 打包：exe + Qt 运行时 + QML 插件 + 三方 DLL
+    - name: Deploy
       run: |
         mkdir app
         copy build\appHoneycomb.exe app\
@@ -56,21 +41,9 @@ jobs:
         xcopy /y full_deploy\host\*\Release\*\bin\*.dll app\
         7z a Honeycomb-win.zip app\
 
-    - name: Bundle (Linux)
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        linuxdeployqt build/appHoneycomb -qmldir ${{env.Qt6_DIR}}/qml -appimage
-        mv *.AppImage Honeycomb-linux.AppImage
-
-    - name: Bundle (macOS)
-      if: matrix.os == 'macos-latest'
-      run: |
-        macdeployqt build/appHoneycomb.app -qmldir ${{env.Qt6_DIR}}/qml -dmg
-        mv *.dmg Honeycomb-mac.dmg
-
     # ⑤ 上传成品
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Honeycomb-${{ matrix.os }}
-        path: Honeycomb-*.*
+        name: Honeycomb-win-6.10.1
+        path: Honeycomb-win.zip
