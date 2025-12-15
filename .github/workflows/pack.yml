@@ -1,4 +1,4 @@
-name: Pack Qt Quick App (Windows 6.10.1 在线安装器)
+name: Pack Qt Quick App (Windows 6.10.1 Online)
 
 on:
   push:
@@ -14,17 +14,15 @@ jobs:
     - uses: actions/checkout@v4
 
     # ① 用在线安装器拉 Qt 6.10.1 + MinGW 11.2.0
-    #    额外参数说明：
-    #    -m qt.tools.win64_mingw1120  → 同时装配套 MinGW 11.2.0
-    #    -m qt.qt6.6101.win64_mingw1120.qtbase 等模块按需追加
-    - name: Install Qt 6.10.1 (online installer)
+    #    archives 按需增减，最少需要 qtbase + qtdeclarative + qtquickcontrols2
+    - name: Install Qt 6.10.1 (online installer channel)
       uses: jurplel/install-qt-action@v4
       with:
-        version: '6.10.1'
-        arch: 'win64_mingw_11.2.0'
-        tools: 'tools_ifw,qt.tools.win64_mingw1120'
+        version:      '6.10.1'
+        arch:         'win64_mingw_11.2.0'
+        tools:        'tools_mingw90,qt.tools.win64_mingw1120'   # 同时装 MinGW 11.2.0
         install-deps: 'true'
-        cache: true
+        cache:        true
         aqt: 'install-qt windows desktop 6.10.1 win64_mingw_11.2.0 --archives qtbase qtdeclarative qttools qtsvg qtquickcontrols2 qtquicktimeline'
 
     # ② 生成 & 编译
