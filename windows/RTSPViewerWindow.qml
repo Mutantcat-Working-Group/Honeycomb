@@ -8,7 +8,7 @@ import "../i18n/i18n.js" as I18n
 Window {
     id: rtspViewerWindow
     width: 900
-    height: 700
+    height: 720
     title: I18n.t("toolRTSPViewer") || "RTSP预览"
     flags: Qt.Window
     modality: Qt.NonModal
@@ -143,26 +143,6 @@ Window {
                         
                         Item { Layout.fillWidth: true }
                         
-                        Text {
-                            text: rtspViewer.statusMessage
-                            font.pixelSize: 13
-                            color: mediaPlayer.playbackState === MediaPlayer.PlayingState ? "#27ae60" : "#666666"
-                            font.bold: mediaPlayer.playbackState === MediaPlayer.PlayingState
-                        }
-                        
-                        Rectangle {
-                            width: 10
-                            height: 10
-                            radius: 5
-                            color: mediaPlayer.playbackState === MediaPlayer.PlayingState ? "#27ae60" : "#e74c3c"
-                        }
-                    }
-                    
-                    RowLayout {
-                        Layout.fillWidth: true
-                        
-                        Item { Layout.fillWidth: true }
-                        
                         Button {
                             text: I18n.t("startPreview") || "开始预览"
                             Layout.preferredWidth: 100
@@ -248,11 +228,31 @@ Window {
                     anchors.margins: 15
                     spacing: 10
                     
-                    Text {
-                        text: I18n.t("videoPreview") || "视频预览"
-                        font.pixelSize: 16
-                        font.bold: true
-                        color: "#333333"
+                    RowLayout {
+                        Layout.fillWidth: true
+                        
+                        Text {
+                            text: I18n.t("videoPreview") || "视频预览"
+                            font.pixelSize: 16
+                            font.bold: true
+                            color: "#333333"
+                        }
+                        
+                        Item { Layout.fillWidth: true }
+                        
+                        Text {
+                            text: rtspViewer.statusMessage
+                            font.pixelSize: 13
+                            color: mediaPlayer.playbackState === MediaPlayer.PlayingState ? "#27ae60" : "#666666"
+                            font.bold: mediaPlayer.playbackState === MediaPlayer.PlayingState
+                        }
+                        
+                        Rectangle {
+                            width: 10
+                            height: 10
+                            radius: 5
+                            color: mediaPlayer.playbackState === MediaPlayer.PlayingState ? "#27ae60" : "#e74c3c"
+                        }
                     }
                     
                     Rectangle {
