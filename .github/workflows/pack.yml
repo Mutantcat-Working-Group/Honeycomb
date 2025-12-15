@@ -13,17 +13,17 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    # ① 用在线安装器拉 Qt 6.10.1 + MinGW 11.2.0
-    #    archives 按需增减，最少需要 qtbase + qtdeclarative + qtquickcontrols2
-    - name: Install Qt 6.10.1 (online installer channel)
+    # ① 在线安装器装 Qt 6.10.1 MinGW 11.2.0
+    - name: Install Qt 6.10.1
       uses: jurplel/install-qt-action@v4
       with:
-        version:      '6.10.1'
-        arch:         'win64_mingw_11.2.0'
-        tools:        'tools_mingw90,qt.tools.win64_mingw1120'   # 同时装 MinGW 11.2.0
-        install-deps: 'true'
-        cache:        true
-        aqt: 'install-qt windows desktop 6.10.1 win64_mingw_11.2.0 --archives qtbase qtdeclarative qttools qtsvg qtquickcontrols2 qtquicktimeline'
+        version:        '6.10.1'
+        arch:           'win64_mingw_11.2.0'
+        tools:          'tools_mingw90,qt.tools.win64_mingw1120'
+        modules:        'qtquickcontrols2 qtquicktimeline qtsvg'
+        install-deps:   true
+        cache:          true
+        use-official:   true   # 关键：强制用 Qt 在线源
 
     # ② 生成 & 编译
     - name: Configure & Build
@@ -36,7 +36,7 @@ jobs:
       run: |
         conan install . --deployer=full_deploy -s build_type=Release --build=missing
 
-    # ④ 打包：exe + Qt 运行时 + QML 插件 + 三方 DLL
+    # ④ 打包
     - name: Deploy
       run: |
         mkdir app
