@@ -23,6 +23,7 @@
 #include "src/WebSocketTest.h"
 #include "src/RestfulTest.h"
 #include "src/MQTTListener.h"
+#include "src/MQTTPublisher.h"
 
 int main(int argc, char *argv[])
 {
@@ -58,6 +59,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<WebSocketTest>("Honeycomb", 1, 0, "WebSocketTest");
     qmlRegisterType<RestfulTest>("Honeycomb", 1, 0, "RestfulTest");
     qmlRegisterType<MQTTListener>("Honeycomb", 1, 0, "MQTTListener");
+    qmlRegisterType<MQTTPublisher>("Honeycomb", 1, 0, "MQTTPublisher");
 
     QQmlApplicationEngine engine;
     

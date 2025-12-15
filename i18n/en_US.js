@@ -656,6 +656,15 @@ function getEnLang() {
         messageLog: "Message Log",
         subscribeBtn: "Subscribe",
         unsubscribeBtn: "Unsubscribe",
-        noMessages: "No messages"
+        noMessages: "No messages",
+        
+        // MQTT Publisher Tool
+        toolMQTTPublisher: "MQTT Publisher",
+        toolMQTTPublisherDesc: "Connect to MQTT Broker and publish messages to topics",
+        publishSettings: "Publish Settings",
+        publishLog: "Publish Log",
+        publishBtn: "Publish",
+        retainedMessage: "Retained Message",
+        noPublishLog: "No publish log"
     };
 }

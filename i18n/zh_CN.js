@@ -656,6 +656,15 @@ function getZhLang() {
         messageLog: "消息日志",
         subscribeBtn: "订阅",
         unsubscribeBtn: "取消订阅",
-        noMessages: "暂无消息"
+        noMessages: "暂无消息",
+        
+        // MQTT广播工具
+        toolMQTTPublisher: "MQTT广播",
+        toolMQTTPublisherDesc: "连接到MQTT Broker并发布消息到指定主题",
+        publishSettings: "发布设置",
+        publishLog: "发布日志",
+        publishBtn: "发布",
+        retainedMessage: "保留消息",
+        noPublishLog: "暂无发布日志"
     };
 }
