@@ -21,7 +21,7 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.10.1'
-        arch:  ${{ matrix.os == 'windows-latest' && 'win64_mingw' || 'gcc_64' }}
+        arch:  'win64_mingw_11.2.0'
         tools: 'tools_mingw90'   # Windows 需要配套 MinGW
         cache: true              # 二次构建加速
 
@@ -41,17 +41,17 @@ jobs:
         # 再把 Conan 三方 dll 拷进来（见下方④）
         7z a Honeycomb-win.zip app/
 
-    - name: Bundle (Linux)
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        linuxdeployqt build/appHoneycomb -qmldir ${{env.Qt6_DIR}}/qml -appimage
-        mv *.AppImage Honeycomb-linux.AppImage
+    # - name: Bundle (Linux)
+    #   if: matrix.os == 'ubuntu-latest'
+    #   run: |
+    #     linuxdeployqt build/appHoneycomb -qmldir ${{env.Qt6_DIR}}/qml -appimage
+    #     mv *.AppImage Honeycomb-linux.AppImage
 
-    - name: Bundle (macOS)
-      if: matrix.os == 'macos-latest'
-      run: |
-        macdeployqt build/appHoneycomb.app -qmldir ${{env.Qt6_DIR}}/qml -dmg
-        mv *.dmg Honeycomb-mac.dmg
+    # - name: Bundle (macOS)
+    #   if: matrix.os == 'macos-latest'
+    #   run: |
+    #     macdeployqt build/appHoneycomb.app -qmldir ${{env.Qt6_DIR}}/qml -dmg
+    #     mv *.dmg Honeycomb-mac.dmg
 
     # ④ 把 Conan 依赖 DLL 也拷进去（Windows 例）
     - name: Copy 3rd-party DLLs (Windows)
