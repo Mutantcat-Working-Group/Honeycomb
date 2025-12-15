@@ -1,4 +1,4 @@
-name: Pack Qt Quick App (Windows-MinGW 6.10.1)
+name: Pack Qt Quick App (Windows 6.10.1 在线安装器)
 
 on:
   push:
@@ -13,13 +13,19 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    # ① 装 Qt 6.10.1 MinGW 11.2.0
-    - name: Install Qt
+    # ① 用在线安装器拉 Qt 6.10.1 + MinGW 11.2.0
+    #    额外参数说明：
+    #    -m qt.tools.win64_mingw1120  → 同时装配套 MinGW 11.2.0
+    #    -m qt.qt6.6101.win64_mingw1120.qtbase 等模块按需追加
+    - name: Install Qt 6.10.1 (online installer)
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.10.1'
         arch: 'win64_mingw_11.2.0'
+        tools: 'tools_ifw,qt.tools.win64_mingw1120'
+        install-deps: 'true'
         cache: true
+        aqt: 'install-qt windows desktop 6.10.1 win64_mingw_11.2.0 --archives qtbase qtdeclarative qttools qtsvg qtquickcontrols2 qtquicktimeline'
 
     # ② 生成 & 编译
     - name: Configure & Build
@@ -27,7 +33,7 @@ jobs:
         cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
         cmake --build build --config Release
 
-    # ③ Conan 三方库 → full_deploy 导出
+    # ③ Conan 三方库导出
     - name: Install 3rd-party (Conan)
       run: |
         conan install . --deployer=full_deploy -s build_type=Release --build=missing
@@ -39,11 +45,11 @@ jobs:
         copy build\appHoneycomb.exe app\
         windeployqt app\appHoneycomb.exe --qmldir %Qt6_DIR%\qml --release
         xcopy /y full_deploy\host\*\Release\*\bin\*.dll app\
-        7z a Honeycomb-win.zip app\
+        7z a Honeycomb-win-6.10.1.zip app\
 
     # ⑤ 上传成品
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: Honeycomb-win-6.10.1
-        path: Honeycomb-win.zip
+        path: Honeycomb-win-6.10.1.zip
