@@ -14,6 +14,7 @@ MQTTPublisher::MQTTPublisher(QObject *parent)
     , m_retained(false)
     , m_isConnected(false)
     , m_messageLog("")
+    , m_messageCount(0)
 {
 }
 
@@ -207,18 +208,30 @@ void MQTTPublisher::publish()
 void MQTTPublisher::clearLog()
 {
     m_messageLog = "";
+    m_messageCount = 0;
     emit messageLogChanged();
 }
 
 void MQTTPublisher::appendLog(const QString &message)
 {
-    QString timestamp = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    QString timestamp = QDateTime::currentDateTime().toString("hh:mm:ss.zzz");
     QString logEntry = QString("[%1] %2").arg(timestamp, message);
     
     if (!m_messageLog.isEmpty()) {
         m_messageLog += "\n";
     }
     m_messageLog += logEntry;
+    m_messageCount++;
+    
+    // 限制日志行数，避免内存占用过大和UI卡顿
+    if (m_messageCount > MAX_LOG_LINES) {
+        // 删除最旧的日志行
+        int firstNewline = m_messageLog.indexOf('\n');
+        if (firstNewline != -1) {
+            m_messageLog = m_messageLog.mid(firstNewline + 1);
+            m_messageCount--;
+        }
+    }
     
     emit messageLogChanged();
 }

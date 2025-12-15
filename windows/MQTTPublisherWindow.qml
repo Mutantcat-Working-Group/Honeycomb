@@ -476,7 +476,8 @@ Window {
                             id: logText
                             text: mqttPublisher.messageLog
                             readOnly: true
-                            wrapMode: TextArea.Wrap
+                            wrapMode: TextArea.NoWrap
+                            textFormat: TextEdit.PlainText
                             font.pixelSize: 12
                             font.family: "Consolas, Monaco, monospace"
                             color: "#333333"

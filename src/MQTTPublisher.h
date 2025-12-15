@@ -89,6 +89,8 @@ private:
     bool m_retained;
     bool m_isConnected;
     QString m_messageLog;
+    int m_messageCount;
+    static const int MAX_LOG_LINES = 1000;
 };
 
 #endif // MQTTPUBLISHER_H

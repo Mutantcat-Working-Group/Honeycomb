@@ -84,6 +84,8 @@ private:
     bool m_isSubscribed;
     QString m_messageLog;
     QTimer *m_receiveTimer;
+    int m_messageCount;
+    static const int MAX_LOG_LINES = 1000;
 };
 
 #endif // MQTTLISTENER_H
