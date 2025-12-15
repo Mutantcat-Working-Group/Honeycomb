@@ -673,6 +673,17 @@ function getZhLang() {
         inputSettings: "输入设置",
         calculationResult: "计算结果",
         calculateBtn: "计算",
-        clickCalculateToStart: "点击「计算」按钮开始"
+        clickCalculateToStart: "点击「计算」按钮开始",
+        
+        // RTSP预览
+        toolRTSPViewer: "RTSP预览",
+        toolRTSPViewerDesc: "实时预览RTSP视频流",
+        rtspSettings: "RTSP设置",
+        videoPreview: "视频预览",
+        startPreview: "开始预览",
+        stopPreview: "停止预览",
+        noVideoStream: "暂无视频流\n点击「开始预览」连接RTSP",
+        resolution: "分辨率",
+        bufferProgress: "缓冲"
     };
 }

@@ -25,6 +25,7 @@
 #include "src/MQTTListener.h"
 #include "src/MQTTPublisher.h"
 #include "src/SubnetCalculator.h"
+#include "src/RTSPViewer.h"
 
 int main(int argc, char *argv[])
 {
@@ -62,6 +63,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<MQTTListener>("Honeycomb", 1, 0, "MQTTListener");
     qmlRegisterType<MQTTPublisher>("Honeycomb", 1, 0, "MQTTPublisher");
     qmlRegisterType<SubnetCalculator>("Honeycomb", 1, 0, "SubnetCalculator");
+    qmlRegisterType<RTSPViewer>("Honeycomb", 1, 0, "RTSPViewer");
 
     QQmlApplicationEngine engine;
     

@@ -673,6 +673,17 @@ function getEnLang() {
         inputSettings: "Input Settings",
         calculationResult: "Calculation Result",
         calculateBtn: "Calculate",
-        clickCalculateToStart: "Click 'Calculate' to start"
+        clickCalculateToStart: "Click 'Calculate' to start",
+        
+        // RTSP Viewer
+        toolRTSPViewer: "RTSP Viewer",
+        toolRTSPViewerDesc: "Real-time RTSP video stream preview",
+        rtspSettings: "RTSP Settings",
+        videoPreview: "Video Preview",
+        startPreview: "Start Preview",
+        stopPreview: "Stop Preview",
+        noVideoStream: "No video stream\nClick 'Start Preview' to connect",
+        resolution: "Resolution",
+        bufferProgress: "Buffer"
     };
 }

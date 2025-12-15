@@ -67,7 +67,8 @@ ApplicationWindow {
         "RESTful测试": "qrc:/qt/qml/Honeycomb/windows/RestfulTestWindow.qml",
         "MQTT监听": "qrc:/qt/qml/Honeycomb/windows/MQTTListenerWindow.qml",
         "MQTT广播": "qrc:/qt/qml/Honeycomb/windows/MQTTPublisherWindow.qml",
-        "子网掩码计算器": "qrc:/qt/qml/Honeycomb/windows/SubnetCalculatorWindow.qml"
+        "子网掩码计算器": "qrc:/qt/qml/Honeycomb/windows/SubnetCalculatorWindow.qml",
+        "RTSP预览": "qrc:/qt/qml/Honeycomb/windows/RTSPViewerWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
