@@ -346,7 +346,7 @@ Window {
                             text: I18n.t("subscribeBtn") || "订阅"
                             Layout.preferredWidth: 80
                             Layout.preferredHeight: 32
-                            enabled: mqttListener.isConnected
+                            enabled: mqttListener.isConnected && !mqttListener.isSubscribed
                             
                             background: Rectangle {
                                 color: parent.pressed ? "#1565c0" : (parent.hovered ? "#1e88e5" : "#1976d2")
@@ -371,7 +371,7 @@ Window {
                             text: I18n.t("unsubscribeBtn") || "取消订阅"
                             Layout.preferredWidth: 90
                             Layout.preferredHeight: 32
-                            enabled: mqttListener.isConnected
+                            enabled: mqttListener.isConnected && mqttListener.isSubscribed
                             
                             background: Rectangle {
                                 color: parent.pressed ? "#f0f0f0" : (parent.hovered ? "#f5f5f5" : "white")

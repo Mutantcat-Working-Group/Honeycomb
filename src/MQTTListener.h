@@ -18,6 +18,7 @@ class MQTTListener : public QObject
     Q_PROPERTY(QString topic READ topic WRITE setTopic NOTIFY topicChanged)
     Q_PROPERTY(int qos READ qos WRITE setQos NOTIFY qosChanged)
     Q_PROPERTY(bool isConnected READ isConnected NOTIFY isConnectedChanged)
+    Q_PROPERTY(bool isSubscribed READ isSubscribed NOTIFY isSubscribedChanged)
     Q_PROPERTY(QString connectionStatus READ connectionStatus NOTIFY connectionStatusChanged)
     Q_PROPERTY(QString messageLog READ messageLog NOTIFY messageLogChanged)
     Q_PROPERTY(QString username READ username WRITE setUsername NOTIFY usernameChanged)
@@ -40,6 +41,7 @@ public:
     void setQos(int qos);
 
     bool isConnected() const { return m_isConnected; }
+    bool isSubscribed() const { return m_isSubscribed; }
     QString connectionStatus() const;
     QString messageLog() const { return m_messageLog; }
 
@@ -61,6 +63,7 @@ signals:
     void topicChanged();
     void qosChanged();
     void isConnectedChanged();
+    void isSubscribedChanged();
     void connectionStatusChanged();
     void messageLogChanged();
     void usernameChanged();
@@ -78,7 +81,9 @@ private:
     QString m_password;
     int m_qos;
     bool m_isConnected;
+    bool m_isSubscribed;
     QString m_messageLog;
+    QTimer *m_receiveTimer;
 };
 
 #endif // MQTTLISTENER_H

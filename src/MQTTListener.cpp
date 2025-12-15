@@ -11,8 +11,23 @@ MQTTListener::MQTTListener(QObject *parent)
     , m_password("")
     , m_qos(1)
     , m_isConnected(false)
+    , m_isSubscribed(false)
     , m_messageLog("")
+    , m_receiveTimer(new QTimer(this))
 {
+    connect(m_receiveTimer, &QTimer::timeout, this, [this]() {
+        if (!m_isConnected || !m_isSubscribed || !m_client) return;
+        
+        try {
+            auto msg = m_client->try_consume_message_for(std::chrono::milliseconds(100));
+            if (msg) {
+                QString topic = QString::fromStdString(msg->get_topic());
+                QString payload = QString::fromStdString(msg->to_string());
+                appendLog(tr("收到消息 [%1]: %2").arg(topic, payload));
+            }
+        } catch (...) {
+        }
+    });
 }
 
 MQTTListener::~MQTTListener()
@@ -135,10 +150,18 @@ void MQTTListener::disconnect()
     }
 
     try {
+        // 停止定时器
+        m_receiveTimer->stop();
+        
         if (m_client) {
+            if (m_isSubscribed) {
+                m_client->stop_consuming();
+            }
             m_client->disconnect()->wait();
             m_isConnected = false;
+            m_isSubscribed = false;
             emit isConnectedChanged();
+            emit isSubscribedChanged();
             emit connectionStatusChanged();
             appendLog(tr("连接已断开"));
         }
@@ -154,6 +177,11 @@ void MQTTListener::subscribe()
         return;
     }
 
+    if (m_isSubscribed) {
+        appendLog(tr("警告: 已经订阅了主题"));
+        return;
+    }
+
     if (m_topic.isEmpty()) {
         appendLog(tr("错误: 主题不能为空"));
         return;
@@ -165,25 +193,13 @@ void MQTTListener::subscribe()
         m_client->start_consuming();
         m_client->subscribe(m_topic.toStdString(), m_qos)->wait();
         
+        m_isSubscribed = true;
+        emit isSubscribedChanged();
+        
         appendLog(tr("订阅成功，等待消息..."));
         
-        QTimer::singleShot(100, this, [this]() {
-            if (!m_isConnected || !m_client) return;
-            
-            try {
-                auto msg = m_client->try_consume_message_for(std::chrono::milliseconds(100));
-                if (msg) {
-                    QString topic = QString::fromStdString(msg->get_topic());
-                    QString payload = QString::fromStdString(msg->to_string());
-                    appendLog(tr("收到消息 [%1]: %2").arg(topic, payload));
-                }
-                
-                if (m_isConnected) {
-                    QTimer::singleShot(100, this, [this]() { subscribe(); });
-                }
-            } catch (...) {
-            }
-        });
+        // 启动定时器接收消息
+        m_receiveTimer->start(100);
         
     } catch (const mqtt::exception& exc) {
         appendLog(tr("订阅异常: %1").arg(QString::fromStdString(exc.what())));
@@ -197,14 +213,26 @@ void MQTTListener::unsubscribe()
         return;
     }
 
+    if (!m_isSubscribed) {
+        appendLog(tr("警告: 未订阅任何主题"));
+        return;
+    }
+
     if (m_topic.isEmpty()) {
         appendLog(tr("错误: 主题不能为空"));
         return;
     }
 
     try {
+        // 停止定时器
+        m_receiveTimer->stop();
+        
         m_client->unsubscribe(m_topic.toStdString())->wait();
         m_client->stop_consuming();
+        
+        m_isSubscribed = false;
+        emit isSubscribedChanged();
+        
         appendLog(tr("已取消订阅主题: %1").arg(m_topic));
     } catch (const mqtt::exception& exc) {
         appendLog(tr("取消订阅异常: %1").arg(QString::fromStdString(exc.what())));
