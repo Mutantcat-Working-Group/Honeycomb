@@ -646,6 +646,16 @@ function getEnLang() {
         responseBody: "Response Body",
         responseHeaders: "Response Headers",
         noResponse: "No response data",
-        noHeaders: "No response headers"
+        noHeaders: "No response headers",
+        
+        // MQTT Listener Tool
+        toolMQTTListener: "MQTT Listener",
+        toolMQTTListenerDesc: "Connect to MQTT Broker and subscribe to topics",
+        connectionSettings: "Connection Settings",
+        subscriptionSettings: "Subscription Settings",
+        messageLog: "Message Log",
+        subscribeBtn: "Subscribe",
+        unsubscribeBtn: "Unsubscribe",
+        noMessages: "No messages"
     };
 }

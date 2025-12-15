@@ -646,6 +646,16 @@ function getZhLang() {
         responseBody: "响应体",
         responseHeaders: "响应头",
         noResponse: "暂无响应数据",
-        noHeaders: "暂无响应头"
+        noHeaders: "暂无响应头",
+        
+        // MQTT监听工具
+        toolMQTTListener: "MQTT监听",
+        toolMQTTListenerDesc: "连接到MQTT Broker并订阅主题接收消息",
+        connectionSettings: "连接设置",
+        subscriptionSettings: "订阅设置",
+        messageLog: "消息日志",
+        subscribeBtn: "订阅",
+        unsubscribeBtn: "取消订阅",
+        noMessages: "暂无消息"
     };
 }

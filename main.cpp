@@ -22,6 +22,7 @@
 #include "src/UuidGenerator.h"
 #include "src/WebSocketTest.h"
 #include "src/RestfulTest.h"
+#include "src/MQTTListener.h"
 
 int main(int argc, char *argv[])
 {
@@ -56,6 +57,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<UuidGenerator>("Honeycomb", 1, 0, "UuidGenerator");
     qmlRegisterType<WebSocketTest>("Honeycomb", 1, 0, "WebSocketTest");
     qmlRegisterType<RestfulTest>("Honeycomb", 1, 0, "RestfulTest");
+    qmlRegisterType<MQTTListener>("Honeycomb", 1, 0, "MQTTListener");
 
     QQmlApplicationEngine engine;
     

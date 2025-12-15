@@ -71,6 +71,7 @@ qt_add_qml_module(appHoneycomb
         windows/UuidWindow.qml
         windows/WebSocketTestWindow.qml
         windows/RestfulTestWindow.qml
+        windows/MQTTListenerWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
@@ -116,6 +117,8 @@ qt_add_qml_module(appHoneycomb
         src/WebSocketTest.cpp
         src/RestfulTest.h
         src/RestfulTest.cpp
+        src/MQTTListener.h
+        src/MQTTListener.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

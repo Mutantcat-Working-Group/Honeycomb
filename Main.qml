@@ -64,7 +64,8 @@ ApplicationWindow {
         "随机IPv6地址": "qrc:/qt/qml/Honeycomb/windows/RandomIpv6Window.qml",
         "生成UUID": "qrc:/qt/qml/Honeycomb/windows/UuidWindow.qml",
         "WebSocket测试": "qrc:/qt/qml/Honeycomb/windows/WebSocketTestWindow.qml",
-        "RESTful测试": "qrc:/qt/qml/Honeycomb/windows/RestfulTestWindow.qml"
+        "RESTful测试": "qrc:/qt/qml/Honeycomb/windows/RestfulTestWindow.qml",
+        "MQTT监听": "qrc:/qt/qml/Honeycomb/windows/MQTTListenerWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
