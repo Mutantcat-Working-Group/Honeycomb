@@ -155,9 +155,17 @@ void MQTTListener::disconnect()
         m_receiveTimer->stop();
         
         if (m_client) {
-            if (m_isSubscribed) {
+            // 如果已订阅，先取消订阅
+            if (m_isSubscribed && !m_topic.isEmpty()) {
+                try {
+                    m_client->unsubscribe(m_topic.toStdString())->wait();
+                    appendLog(tr("已取消订阅主题: %1").arg(m_topic));
+                } catch (const mqtt::exception& unsubExc) {
+                    appendLog(tr("取消订阅异常: %1").arg(QString::fromStdString(unsubExc.what())));
+                }
                 m_client->stop_consuming();
             }
+            
             m_client->disconnect()->wait();
             m_isConnected = false;
             m_isSubscribed = false;
@@ -197,7 +205,11 @@ void MQTTListener::subscribe()
         m_isSubscribed = true;
         emit isSubscribedChanged();
         
-        appendLog(tr("订阅成功，等待消息..."));
+        if (m_topic == "#") {
+            appendLog(tr("订阅成功，将接收所有主题的消息..."));
+        } else {
+            appendLog(tr("订阅成功，等待消息..."));
+        }
         
         // 启动定时器接收消息
         m_receiveTimer->start(100);

@@ -299,7 +299,7 @@ Window {
                             id: topicInput
                             Layout.fillWidth: true
                             text: "test/topic"
-                            placeholderText: "例如: test/topic 或 sensor/+/temperature"
+                            placeholderText: "例如: test/topic, sensor/+/temperature 或 # (订阅所有主题)"
                             font.pixelSize: 14
                             
                             background: Rectangle {
