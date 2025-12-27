@@ -21,6 +21,8 @@ function getZhLang() {
         navNetworkDesc: "网络测试相关工具",
         navHardware: "硬件工具",
         navHardwareDesc: "硬件信息相关工具",
+        navAI: "AI工具",
+        navAIDesc: "AI辅助相关工具",
         
         // 工具说明分类
         toolAbout: "关于蜂巢",
@@ -153,6 +155,16 @@ function getZhLang() {
         toolRegisterRefDesc: "各种芯片寄存器信息",
         toolAsm: "汇编速查",
         toolAsmDesc: "各种指令集汇编速查",
+        
+        // AI工具分类
+        toolAIPrompt: "AI提示词",
+        toolAIPromptDesc: "AI提示词生成与优化",
+        toolAgentPrompt: "Agent提示词",
+        toolAgentPromptDesc: "Agent智能体提示词模板",
+        toolOpenAITest: "OpenAI API测试",
+        toolOpenAITestDesc: "OpenAI API接口测试工具",
+        toolNNTable: "NN对照表",
+        toolNNTableDesc: "神经网络层对照参考",
         
         // 关于窗口
         aboutTitle: "关于蜂巢",

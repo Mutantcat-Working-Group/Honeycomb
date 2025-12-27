@@ -21,6 +21,8 @@ function getEnLang() {
         navNetworkDesc: "Network testing tools",
         navHardware: "Hardware",
         navHardwareDesc: "Hardware info tools",
+        navAI: "AI Tools",
+        navAIDesc: "AI assistant tools",
         
         // Tool info category
         toolAbout: "About Honeycomb",
@@ -153,6 +155,16 @@ function getEnLang() {
         toolRegisterRefDesc: "Chip register info",
         toolAsm: "Assembly Reference",
         toolAsmDesc: "Instruction set assembly",
+        
+        // AI tools
+        toolAIPrompt: "AI Prompt",
+        toolAIPromptDesc: "AI prompt generation & optimization",
+        toolAgentPrompt: "Agent Prompt",
+        toolAgentPromptDesc: "Agent prompt templates",
+        toolOpenAITest: "OpenAI API Test",
+        toolOpenAITestDesc: "OpenAI API testing tool",
+        toolNNTable: "NN Reference",
+        toolNNTableDesc: "Neural network layer reference",
         
         // About window
         aboutTitle: "About Honeycomb",

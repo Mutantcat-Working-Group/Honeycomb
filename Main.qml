@@ -117,7 +117,8 @@ ApplicationWindow {
         {text: I18n.t("navEncrypt"), desc: I18n.t("navEncryptDesc"), icon: ""},
         {text: I18n.t("navRandom"), desc: I18n.t("navRandomDesc"), icon: ""},
         {text: I18n.t("navNetwork"), desc: I18n.t("navNetworkDesc"), icon: ""},
-        {text: I18n.t("navHardware"), desc: I18n.t("navHardwareDesc"), icon: ""}
+        {text: I18n.t("navHardware"), desc: I18n.t("navHardwareDesc"), icon: ""},
+        {text: I18n.t("navAI"), desc: I18n.t("navAIDesc"), icon: ""}
     ]
     
     // 各分类的工具数据
@@ -195,6 +196,12 @@ ApplicationWindow {
             {title: I18n.t("toolRiscv"), subtitle: I18n.t("toolRiscvDesc"), key: "RISC-V指令集模块"},
             {title: I18n.t("toolRegisterRef"), subtitle: I18n.t("toolRegisterRefDesc"), key: "通用寄存器速查"},
             {title: I18n.t("toolAsm"), subtitle: I18n.t("toolAsmDesc"), key: "汇编速查"}
+        ],
+        8: [ // AI工具
+            {title: I18n.t("toolAIPrompt"), subtitle: I18n.t("toolAIPromptDesc"), key: "AI提示词"},
+            {title: I18n.t("toolAgentPrompt"), subtitle: I18n.t("toolAgentPromptDesc"), key: "Agent提示词"},
+            {title: I18n.t("toolOpenAITest"), subtitle: I18n.t("toolOpenAITestDesc"), key: "OpenAI API测试"},
+            {title: I18n.t("toolNNTable"), subtitle: I18n.t("toolNNTableDesc"), key: "NN对照表"}
         ]
     }
     
