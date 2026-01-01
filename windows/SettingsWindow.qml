@@ -6,7 +6,7 @@ import "../i18n/i18n.js" as I18n
 Window {
     id: settingsWindow
     width: 500
-    height: 400
+    height: 300
     minimumWidth: 400
     minimumHeight: 300
     title: I18n.t("toolSettings") || "软件设置"
@@ -154,39 +154,6 @@ Window {
                             color: "#666"
                             wrapMode: Text.Wrap
                             lineHeight: 1.4
-                        }
-                    }
-                }
-                
-                // 关于卡片
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: aboutContent.height + 32
-                    color: "white"
-                    border.color: "#e0e0e0"
-                    border.width: 1
-                    radius: 8
-                    
-                    ColumnLayout {
-                        id: aboutContent
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.margins: 16
-                        spacing: 12
-                        
-                        Text {
-                            text: "ℹ️ " + (I18n.t("settingsAbout") || "关于")
-                            font.pixelSize: 14
-                            font.bold: true
-                            color: "#333"
-                        }
-                        
-                        Text {
-                            Layout.fillWidth: true
-                            text: I18n.t("settingsVersion") || "蜂巢工具箱 v1.0.0"
-                            font.pixelSize: 13
-                            color: "#666"
                         }
                     }
                 }
