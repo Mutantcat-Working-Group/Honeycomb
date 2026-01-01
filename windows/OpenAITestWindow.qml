@@ -378,9 +378,9 @@ Window {
                         
                         ColumnLayout {
                             width: chatScrollView.width
-                            spacing: 10
+                            spacing: 12
                             
-                            Item { height: 15 }
+                            Item { height: 10 }
                             
                             // 空状态提示
                             Text {
@@ -406,7 +406,7 @@ Window {
                                         return colonIndex >= 0 ? modelData.substring(colonIndex + 1) : modelData
                                     }
                                     
-                                    height: msgColumn.height + 20
+                                    implicitHeight: msgColumn.height + 24
                                     color: isUser ? "#e3f2fd" : "#f5f5f5"
                                     radius: 8
                                     
@@ -524,46 +524,33 @@ Window {
                                 }
                             }
                             
-                            ColumnLayout {
-                                Layout.preferredWidth: 80
+                            Button {
+                                Layout.preferredWidth: 70
                                 Layout.fillHeight: true
-                                spacing: 5
+                                text: client.isLoading ? (I18n.t("stop") || "停止") : (I18n.t("send") || "发送")
                                 
-                                Button {
-                                    Layout.fillWidth: true
-                                    Layout.fillHeight: true
-                                    text: client.isLoading ? (I18n.t("stop") || "停止") : (I18n.t("send") || "发送")
-                                    
-                                    contentItem: Text {
-                                        text: parent.text
-                                        font.pixelSize: 14
-                                        color: "white"
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-                                    
-                                    background: Rectangle {
-                                        color: client.isLoading ? 
-                                            (parent.pressed ? "#c62828" : (parent.hovered ? "#e53935" : "#d32f2f")) :
-                                            (parent.pressed ? "#1565c0" : (parent.hovered ? "#1e88e5" : "#1976d2"))
-                                        radius: 6
-                                    }
-                                    
-                                    onClicked: {
-                                        if (client.isLoading) {
-                                            client.stopGeneration()
-                                        } else {
-                                            sendMessage()
-                                        }
-                                    }
+                                contentItem: Text {
+                                    text: parent.text
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
                                 }
                                 
-                                Text {
-                                    Layout.fillWidth: true
-                                    text: "Ctrl+Enter"
-                                    font.pixelSize: 10
-                                    color: "#999"
-                                    horizontalAlignment: Text.AlignHCenter
+                                background: Rectangle {
+                                    color: client.isLoading ? 
+                                        (parent.pressed ? "#c62828" : (parent.hovered ? "#e53935" : "#d32f2f")) :
+                                        (parent.pressed ? "#1565c0" : (parent.hovered ? "#1e88e5" : "#1976d2"))
+                                    radius: 6
+                                }
+                                
+                                onClicked: {
+                                    if (client.isLoading) {
+                                        client.stopGeneration()
+                                    } else {
+                                        sendMessage()
+                                    }
                                 }
                             }
                         }
