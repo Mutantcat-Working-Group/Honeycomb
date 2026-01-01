@@ -25,11 +25,13 @@ Window {
         id: httpServer
         
         onLogMessage: function(message) {
-            logModel.insert(0, {text: message})
+            logModel.append({text: message})
             // 限制日志数量
             if (logModel.count > 200) {
-                logModel.remove(logModel.count - 1)
+                logModel.remove(0)
             }
+            // 自动滚动到底部
+            logListView.positionViewAtEnd()
         }
     }
     
