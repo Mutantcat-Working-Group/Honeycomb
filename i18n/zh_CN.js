@@ -3,7 +3,7 @@ function getZhLang() {
         appTitle: "蜂巢工具箱",
         langBtnCn: "中文",
         langBtnEn: "English",
-        
+
         // 导航项
         navToolInfo: "工具说明",
         navToolInfoDesc: "软件介绍与帮助",
@@ -23,7 +23,7 @@ function getZhLang() {
         navHardwareDesc: "硬件信息相关工具",
         navAI: "AI工具",
         navAIDesc: "AI辅助相关工具",
-        
+
         // 工具说明分类
         toolAbout: "关于蜂巢",
         toolAboutDesc: "软件介绍与说明",
@@ -35,7 +35,7 @@ function getZhLang() {
         toolFeedbackDesc: "问题反馈与建议",
         toolSettings: "软件设置",
         toolSettingsDesc: "修改本软件设置",
-        
+
         // 编码工具分类
         toolBarcode: "条形码生成",
         toolBarcodeDesc: "数字生成条形码",
@@ -53,7 +53,7 @@ function getZhLang() {
         toolRadixDesc: "数字进制相互转换",
         toolComplement: "补码转换",
         toolComplementDesc: "原码反码补码转换",
-        
+
         // 字符工具分类
         toolTrimSpace: "字符串去空格",
         toolTrimSpaceDesc: "去除字符串中的空格",
@@ -71,7 +71,7 @@ function getZhLang() {
         toolRegexDesc: "测试正则表达式",
         toolCase: "大小写转换",
         toolCaseDesc: "文本大小写转换",
-        
+
         // 开发工具分类
         toolJsonFormat: "JSON格式化",
         toolJsonFormatDesc: "将JSON格式化输出",
@@ -101,7 +101,7 @@ function getZhLang() {
         toolContentTypeDesc: "MIME类型参考大全",
         toolHtmlChar: "HTML特殊字符",
         toolHtmlCharDesc: "HTML字符编解码",
-        
+
         // 加密工具分类
         toolWinEncrypt: "Windows加密",
         toolWinEncryptDesc: "Windows自带指令",
@@ -115,7 +115,7 @@ function getZhLang() {
         toolPwdStrengthDesc: "分析密码安全强度",
         toolSMCrypto: "国密加解密",
         toolSMCryptoDesc: "SM3哈希/SM4加解密",
-        
+
         // 随机工具分类
         toolRandomNum: "随机数字",
         toolRandomNumDesc: "生成随机数字",
@@ -131,7 +131,7 @@ function getZhLang() {
         toolRandomIpv6Desc: "生成随机IPv6地址",
         toolUuid: "生成UUID",
         toolUuidDesc: "生成唯一标识符",
-        
+
         // 网络工具分类
         toolWebSocketTest: "WebSocket测试",
         toolWebSocketTestDesc: "WebSocket连接测试工具",
@@ -149,7 +149,7 @@ function getZhLang() {
         toolFolderMappingDesc: "将文件夹映射为HTTP服务",
         toolFakeApi: "Fake API",
         toolFakeApiDesc: "模拟API接口服务",
-        
+
         // 硬件工具分类
         toolRegister: "寄存器寻址范围",
         toolRegisterDesc: "不同位数寄存器范围",
@@ -161,7 +161,7 @@ function getZhLang() {
         toolRegisterRefDesc: "各种芯片寄存器信息",
         toolAsm: "汇编速查",
         toolAsmDesc: "各种指令集汇编速查",
-        
+
         // AI工具分类
         toolAIPrompt: "AI提示词",
         toolAIPromptDesc: "AI提示词生成与优化",
@@ -177,7 +177,7 @@ function getZhLang() {
         toolContextFloatDesc: "AI上下文管理飘窗工具",
         toolMLHandbook: "机器学习手书",
         toolMLHandbookDesc: "机器学习算法与公式手册",
-        
+
         // 软件设置
         settingsLanguage: "语言设置",
         settingsLanguageDesc: "选择界面显示语言，切换后需要重新打开窗口生效",
@@ -185,7 +185,7 @@ function getZhLang() {
         settingsTip: "提示",
         settingsTipDesc: "语言切换后，主界面会立即更新。已打开的工具窗口需要关闭后重新打开才能看到新语言。",
         settingsAbout: "关于",
-        
+
         // Agent提示词
         agentWorkspace: "协同文件夹",
         agentSelectFolder: "选择文件夹",
@@ -204,7 +204,7 @@ function getZhLang() {
         agentEmptyFolder: "未选择文件夹",
         agentSelectFileHint: "选择文件查看内容",
         agentDropImageHint: "拖拽图片到这里\n或点击上方按钮粘贴",
-        
+
         // ML手书/NN对照表/Layer对照表 界面文本
         mlSearchPlaceholder: "搜索算法名称或描述...",
         mlAllCategories: "全部",
@@ -236,7 +236,7 @@ function getZhLang() {
         nnOfficialDocs: "官方文档",
         copy: "复制",
         copied: "已复制",
-        
+
         // 文件夹映射
         folderPath: "文件夹路径:",
         selectFolderPlaceholder: "点击右侧按钮选择文件夹...",
@@ -254,7 +254,7 @@ function getZhLang() {
         clearLog: "清空日志",
         noLogs: "暂无日志，启动服务后将显示访问记录",
         selectFolder: "选择要映射的文件夹",
-        
+
         // Fake API
         routeList: "路由列表",
         addRoute: "+ 添加路由",
@@ -272,7 +272,7 @@ function getZhLang() {
         exportConfig: "导出配置",
         importSuccess: "导入成功",
         exportSuccess: "导出成功",
-        
+
         // 上下文飘窗
         contextFloatPin: "置顶",
         contextFloatUnpin: "取消置顶",
@@ -290,27 +290,29 @@ function getZhLang() {
         contextFloatTagPlaceholder: "输入标签...",
         contextFloatResetTitle: "确认重置",
         contextFloatResetConfirm: "确定要重置为默认内容吗？当前内容将会丢失。",
-        
+
         // 关于窗口
         aboutTitle: "关于蜂巢",
         aboutDesc: "蜂巢工具箱是一个离线工具箱，提供了一些常用的工具。",
         aboutWebsite: "官网：www.mutantcat.org",
-        aboutVersion: "版本：1.1.20251209",
-        
+        aboutVersion: "版本：1.1.20260101",
+
         // 更新日志窗口
         changelogTitle: "更新日志",
         changelogVersion: "版本",
         changelogDate: "日期",
         changelogDescription: "更新内容",
+        changelogAIFeature: "增加AI功能",
+        changelogAIFeatureDesc: "新增Agent协同、OpenAI API测试等AI相关功能",
         changelogQtMigration: "迁移至Qt实现",
         changelogQtMigrationDesc: "全面重构UI框架，采用Qt/QML技术栈，提供更流畅的用户体验和跨平台支持",
-        
+
         // 反馈建议窗口
         feedbackWebsite: "官方网站",
         feedbackUrl: "反馈地址",
         feedbackGithub: "Github 仓库",
         feedbackEmail: "反馈邮箱",
-        
+
         // 通用按钮和标签
         generateBtn: "生成",
         copyBtn: "复制",
@@ -319,7 +321,7 @@ function getZhLang() {
         clickToGenerate: "点击上方按钮生成",
         formatBtn: "格式化",
         clearBtn: "清空",
-        
+
         // JSON 格式化工具
         jsonInputPlaceholder: "在此输入或粘贴 JSON 数据...",
         jsonFormatError: "JSON 格式错误: ",
@@ -333,19 +335,19 @@ function getZhLang() {
         includeUpper: "包含大写字母",
         includeLower: "包含小写字母",
         includeDigits: "包含数字",
-        
+
         // 条形码工具
         barcodeInput: "输入内容",
         barcodeInputHint: "请输入要生成条形码的内容",
         saveBarcode: "保存条形码",
         saveSuccess: "保存成功",
         copySuccess: "已复制到剪贴板",
-        
+
         // 二维码工具
         qrcodeInput: "输入内容",
         qrcodeInputHint: "请输入要生成二维码的文字",
         saveQRCode: "保存二维码",
-        
+
         // 字符串去空格工具
         trimAllSpaces: "所有空格",
         trimEdgeSpaces: "首尾空格",
@@ -365,7 +367,7 @@ function getZhLang() {
         clickToProcess: "点击处理",
         textTooLong: "文本过长，请分段处理（最大10万字符）",
         processError: "处理出错，请检查文本内容",
-        
+
         // 字符串去回车工具
         trimAllNewlines: "所有回车",
         trimExtraNewlines: "多余回车",
@@ -373,13 +375,13 @@ function getZhLang() {
         newlineCount: "回车数量",
         newlineToBr: "回车转br",
         brToNewline: "br转回车",
-        
+
         // 去除空格回车工具
         trimAllWhitespace: "全部去除",
         mergeWhitespace: "合并空白",
         trimLineEdges: "整理行",
         whitespaceCount: "空白字符",
-        
+
         // 替换与转义工具
         normalReplace: "普通替换",
         regexReplace: "正则替换",
@@ -400,7 +402,7 @@ function getZhLang() {
         htmlDecode: "HTML 解码",
         urlEncode: "URL 编码",
         urlDecode: "URL 解码",
-        
+
         // 字数统计工具
         analyzeBtn: "开始统计",
         wordCountPlaceholder: "在此粘贴或输入需要统计的文本...",
@@ -418,7 +420,7 @@ function getZhLang() {
         paragraphs: "段落数",
         englishWords: "英文单词",
         copyStats: "复制统计",
-        
+
         // 时间戳转换工具
         currentTime: "当前时间",
         useCurrentTime: "使用当前时间",
@@ -446,7 +448,7 @@ function getZhLang() {
         permissionString: "权限字符串",
         htaccessTip: "提示：转换结果仅供参考，请仔细检查并测试配置",
         loadExample: "加载示例",
-        
+
         // 颜色值转换工具
         randomColor: "随机颜色",
         colorTip: "点击上方按钮生成随机颜色，或在下方修改颜色值",
@@ -462,7 +464,7 @@ function getZhLang() {
         colorHSVFunc: "HSV 函数",
         startPicking: "开始取色",
         stopPicking: "停止取色",
-        
+
         // 中文转Unicode工具
         chineseText: "中文文本",
         unicodeText: "Unicode 编码",
@@ -470,14 +472,14 @@ function getZhLang() {
         unicodePlaceholderCode: "在此输入Unicode编码...",
         unicodeTip: "支持格式：\\uXXXX、&#xXXXX;、&#XXXXX;、U+XXXX",
         clear: "清空",
-        
+
         // ASCII码表工具
         asciiChar: "字符",
         asciiDesc: "说明",
         asciiControl: "控制字符 (0-31, 127)",
         asciiPrintable: "可打印字符 (32-126)",
         asciiTotal: "共 128 个字符",
-        
+
         // 进制转换工具
         radixBinary: "二进制",
         radixOctal: "八进制",
@@ -492,7 +494,7 @@ function getZhLang() {
         radixInvalidInput: "无效输入",
         radixError: "转换错误",
         radixTip: "提示：二进制仅支持0-1，八进制支持0-7，十进制支持0-9，十六进制支持0-9和A-F",
-        
+
         // 补码转换工具
         bitWidth: "位宽",
         decimal: "十进制",
@@ -507,7 +509,7 @@ function getZhLang() {
         complementTip1: "• 正数的原码、反码、补码相同",
         complementTip2: "• 负数的反码 = 原码符号位不变，其他位取反",
         complementTip3: "• 负数的补码 = 反码 + 1",
-        
+
         // 文本对比工具
         diffLeftText: "原始文本",
         diffRightText: "对比文本",
@@ -530,7 +532,7 @@ function getZhLang() {
         diffNoDiff: "无差异",
         diffEmptyHint: "点击「比较」按钮查看差异",
         lines: "行",
-        
+
         // 正则测试工具
         regexPattern: "正则表达式",
         regexCommon: "常用正则",
@@ -563,7 +565,7 @@ function getZhLang() {
         regexOneMore: "1或多次",
         regexZeroOne: "0或1次",
         chars: "字符",
-        
+
         // 大小写转换工具
         caseConvert: "大小写转换",
         caseMode: "转换模式:",
@@ -577,7 +579,7 @@ function getZhLang() {
         caseTipsContent: "• 全部大写: hello → HELLO  • 全部小写: HELLO → hello  • 首字母大写: hello world → Hello world  • 单词首字母大写: hello world → Hello World  • 大小写互换: HeLLo → hEllO",
         convert: "转换",
         outputText: "输出结果",
-        
+
         // 使用帮助
         helpWelcome: "👋 欢迎使用蜂巢工具箱",
         helpWelcomeDesc: "蜂巢工具箱是一款面向开发者的离线工具集合，提供编码转换、字符处理、加密解密、随机生成等多种实用工具，无需联网即可使用。",
@@ -609,7 +611,7 @@ function getZhLang() {
         helpShortcut4: "• 软件设置中可切换界面语言",
         helpFooter: "如有问题或建议，欢迎通过「反馈建议」功能联系我们 ❤️",
         search: "搜索",
-        
+
         // HTTP状态码工具
         httpStatusCode: "状态码",
         httpStatusName: "名称",
@@ -678,19 +680,19 @@ function getZhLang() {
         httpStatus508: "检测到循环，在处理请求时检测到无限循环",
         httpStatus510: "未扩展，服务器需要对请求进行扩展",
         httpStatus511: "需要网络认证，客户端需要进行网络认证才能访问",
-        
+
         // Content-Type工具
         contentTypeMime: "MIME类型",
         contentTypeDesc: "描述",
         contentTypeExt: "文件扩展名",
-        
+
         // HTML特殊字符工具
         htmlOriginalText: "原始文本",
         htmlEncodedText: "HTML编码",
         htmlOriginalPlaceholder: "在此输入要编码的文本...",
         htmlEncodedPlaceholder: "在此输入要解码的HTML文本...",
         htmlCharTip: "支持HTML实体编码、数字实体编码(&#123;、&#x1A;)，用于防止XSS攻击和确保HTML正确显示",
-        
+
         // Windows加密工具
         winEncryptFilePath: "文件路径",
         winEncryptFilePlaceholder: "请输入文件完整路径...",
@@ -699,7 +701,7 @@ function getZhLang() {
         winEncryptCmd: "CMD 命令",
         winEncryptEnterFile: "请先输入文件路径",
         winEncryptTip: "提示：PowerShell支持所有算法，CMD在某些Windows版本中可能不支持SHA384和SHA512",
-        
+
         // MD5加密工具
         encrypt: "加密",
         encryptDesc: "加密解密相关功能",
@@ -709,7 +711,7 @@ function getZhLang() {
         autoGenerate: "自动生成",
         uppercase: "大写输出",
         enterTextToGenerate: "请输入文本以生成MD5哈希值",
-        
+
         // 密码强度分析工具
         inputPassword: "输入密码",
         enterPasswordHere: "请输入要分析的密码...",
@@ -722,7 +724,7 @@ function getZhLang() {
         containsUppercase: "包含大写字母",
         containsDigits: "包含数字",
         containsSpecialChars: "包含特殊字符 (!@#$%^&*等)",
-        
+
         // 随机MAC地址工具
         generateCount: "生成数量",
         vendor: "厂商",
@@ -737,25 +739,25 @@ function getZhLang() {
         noFormat: "无分隔 (001122)",
         lowercase: "小写 (aa:bb:cc)",
         uppercase: "大写 (AA:BB:CC)",
-        
+
         // 随机IPv4地址工具
         ipType: "IP类型",
         privateIp: "私有IP",
         publicIp: "公共IP",
         loopbackIp: "回环IP",
         multicastIp: "多播IP",
-        
+
         // 随机IPv6地址工具
         globalUnicast: "全局单播",
         linkLocal: "链路本地",
         uniqueLocal: "唯一本地",
         fullFormat: "完整格式",
         compressedFormat: "压缩格式",
-        
+
         // UUID工具
         version: "版本",
         defaultFormat: "默认",
-        
+
         // WebSocket测试工具
         serverUrl: "服务器URL",
         enterServerUrl: "请输入WebSocket服务器地址...",
@@ -768,7 +770,7 @@ function getZhLang() {
         communicationLog: "通信日志",
         clearLogBtn: "清空日志",
         noLogMessages: "暂无通信日志",
-        
+
         // RESTful测试工具
         httpMethod: "HTTP方法",
         requestUrl: "请求URL",
@@ -784,7 +786,7 @@ function getZhLang() {
         responseHeaders: "响应头",
         noResponse: "暂无响应数据",
         noHeaders: "暂无响应头",
-        
+
         // MQTT监听工具
         toolMQTTListener: "MQTT监听",
         toolMQTTListenerDesc: "连接到MQTT Broker并订阅主题接收消息",
@@ -794,7 +796,7 @@ function getZhLang() {
         subscribeBtn: "订阅",
         unsubscribeBtn: "取消订阅",
         noMessages: "暂无消息",
-        
+
         // MQTT广播工具
         toolMQTTPublisher: "MQTT广播",
         toolMQTTPublisherDesc: "连接到MQTT Broker并发布消息到指定主题",
@@ -803,7 +805,7 @@ function getZhLang() {
         publishBtn: "发布",
         retainedMessage: "保留消息",
         noPublishLog: "暂无发布日志",
-        
+
         // 子网掩码计算器
         toolSubnetCalculator: "子网掩码计算器",
         toolSubnetCalculatorDesc: "计算IP地址的网络信息和主机范围",
@@ -811,7 +813,7 @@ function getZhLang() {
         calculationResult: "计算结果",
         calculateBtn: "计算",
         clickCalculateToStart: "点击「计算」按钮开始",
-        
+
         // RTSP预览
         toolRTSPViewer: "RTSP预览",
         toolRTSPViewerDesc: "实时预览RTSP视频流",
@@ -822,13 +824,13 @@ function getZhLang() {
         noVideoStream: "暂无视频流\n点击「开始预览」连接RTSP",
         resolution: "分辨率",
         bufferProgress: "缓冲",
-        
+
         // 寄存器寻址范围
         toolRegisterRange: "寄存器寻址范围",
         toolRegisterRangeDesc: "不同位数通用寄存器的寻址范围和最大值",
         registerInfo: "寄存器信息",
         tips: "提示",
-        
+
         // 国密加解密
         smCrypto: "国密加解密",
         smCryptoDesc: "支持SM3哈希和SM4加密算法",
@@ -849,7 +851,7 @@ function getZhLang() {
         sm3Desc: "国密哈希算法，输出256位哈希值，类似SHA-256",
         sm4Desc: "国密对称加密算法，128位密钥，支持ECB/CBC模式",
         error: "错误",
-        
+
         // OpenAI API测试
         apiSettings: "API 设置",
         apiUrl: "API 地址",

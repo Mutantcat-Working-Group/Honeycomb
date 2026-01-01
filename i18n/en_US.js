@@ -295,13 +295,15 @@ function getEnLang() {
         aboutTitle: "About Honeycomb",
         aboutDesc: "Honeycomb is an offline toolbox that provides some commonly used tools.",
         aboutWebsite: "Website: www.mutantcat.org",
-        aboutVersion: "Version: 1.1.20251209",
+        aboutVersion: "Version: 1.1.20260101",
         
         // Changelog window
         changelogTitle: "Changelog",
         changelogVersion: "Version",
         changelogDate: "Date",
         changelogDescription: "Description",
+        changelogAIFeature: "Added AI Features",
+        changelogAIFeatureDesc: "Added Agent Collaboration, OpenAI API Test and other AI-related features",
         changelogQtMigration: "Migrated to Qt",
         changelogQtMigrationDesc: "Complete UI framework refactoring using Qt/QML technology stack, providing smoother user experience and cross-platform support",
         
