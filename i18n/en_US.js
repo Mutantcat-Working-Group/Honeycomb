@@ -821,6 +821,24 @@ function getEnLang() {
         resultWillAppear: "Result will appear here",
         sm3Desc: "Chinese national hash algorithm, 256-bit output, similar to SHA-256",
         sm4Desc: "Chinese national symmetric encryption, 128-bit key, supports ECB/CBC mode",
-        error: "Error"
+        error: "Error",
+        
+        // OpenAI API Test
+        apiSettings: "API Settings",
+        apiUrl: "API URL",
+        apiKey: "API Key",
+        model: "Model",
+        temperature: "Temperature",
+        maxTokens: "Max Tokens",
+        testConnection: "Test Connection",
+        clearChat: "Clear Chat",
+        success: "Success",
+        you: "You",
+        aiThinking: "AI is responding...",
+        thinking: "Thinking...",
+        startChatHint: "Enter a message to start chatting",
+        enterMessage: "Enter message...",
+        stop: "Stop",
+        send: "Send"
     };
 }

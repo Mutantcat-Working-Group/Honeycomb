@@ -821,6 +821,24 @@ function getZhLang() {
         resultWillAppear: "结果将显示在这里",
         sm3Desc: "国密哈希算法，输出256位哈希值，类似SHA-256",
         sm4Desc: "国密对称加密算法，128位密钥，支持ECB/CBC模式",
-        error: "错误"
+        error: "错误",
+        
+        // OpenAI API测试
+        apiSettings: "API 设置",
+        apiUrl: "API 地址",
+        apiKey: "API 密钥",
+        model: "模型",
+        temperature: "温度",
+        maxTokens: "最大Token",
+        testConnection: "测试连接",
+        clearChat: "清空对话",
+        success: "成功",
+        you: "你",
+        aiThinking: "AI 正在回复...",
+        thinking: "思考中...",
+        startChatHint: "输入消息开始对话",
+        enterMessage: "输入消息...",
+        stop: "停止",
+        send: "发送"
     };
 }

@@ -28,8 +28,9 @@ Window {
         standardButtons: Dialog.Ok
         anchors.centerIn: parent
         modal: true
+        width: 350
         
-        Label {
+        contentItem: Label {
             text: errorDialog.text
             wrapMode: Text.Wrap
         }

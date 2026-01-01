@@ -30,6 +30,7 @@
 #include "src/FolderHttpServer.h"
 #include "src/FakeApiServer.h"
 #include "src/SMCrypto.h"
+#include "src/OpenAIClient.h"
 
 int main(int argc, char *argv[])
 {
@@ -72,6 +73,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<FolderHttpServer>("Honeycomb", 1, 0, "FolderHttpServer");
     qmlRegisterType<FakeApiServer>("Honeycomb", 1, 0, "FakeApiServer");
     qmlRegisterType<SMCrypto>("Honeycomb", 1, 0, "SMCrypto");
+    qmlRegisterType<OpenAIClient>("Honeycomb", 1, 0, "OpenAIClient");
 
     QQmlApplicationEngine engine;
     
