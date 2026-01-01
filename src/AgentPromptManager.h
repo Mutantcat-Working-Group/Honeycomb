@@ -42,6 +42,7 @@ public:
     Q_INVOKABLE void createFolder(const QString &parentPath, const QString &folderName);
     Q_INVOKABLE void deleteItem(const QString &path);
     Q_INVOKABLE void renameItem(const QString &oldPath, const QString &newName);
+    Q_INVOKABLE void initializeSkeleton();
     
     // 图片相关
     Q_INVOKABLE void pasteImageFromClipboard();

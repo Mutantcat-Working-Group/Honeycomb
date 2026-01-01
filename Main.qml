@@ -84,7 +84,7 @@ ApplicationWindow {
         "国密加解密": "qrc:/qt/qml/Honeycomb/windows/SMCryptoWindow.qml",
         "OpenAI API测试": "qrc:/qt/qml/Honeycomb/windows/OpenAITestWindow.qml",
         "软件设置": "qrc:/qt/qml/Honeycomb/windows/SettingsWindow.qml",
-        "Agent提示词": "qrc:/qt/qml/Honeycomb/windows/AgentPromptWindow.qml"
+        "Agent协同": "qrc:/qt/qml/Honeycomb/windows/AgentPromptWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
@@ -242,7 +242,7 @@ ApplicationWindow {
         ],
         8: [ // AI工具
             {title: I18n.t("toolAIPrompt"), subtitle: I18n.t("toolAIPromptDesc"), key: "AI提示词"},
-            {title: I18n.t("toolAgentPrompt"), subtitle: I18n.t("toolAgentPromptDesc"), key: "Agent提示词"},
+            {title: I18n.t("toolAgentPrompt"), subtitle: I18n.t("toolAgentPromptDesc"), key: "Agent协同"},
             {title: I18n.t("toolContextFloat"), subtitle: I18n.t("toolContextFloatDesc"), key: "上下文飘窗"},
             {title: I18n.t("toolOpenAITest"), subtitle: I18n.t("toolOpenAITestDesc"), key: "OpenAI API测试"},
             {title: I18n.t("toolNNTable"), subtitle: I18n.t("toolNNTableDesc"), key: "NN对照表"},

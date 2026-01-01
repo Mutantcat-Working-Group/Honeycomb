@@ -165,8 +165,8 @@ function getEnLang() {
         // AI tools
         toolAIPrompt: "AI Prompt",
         toolAIPromptDesc: "AI prompt generation & optimization",
-        toolAgentPrompt: "Agent Prompt",
-        toolAgentPromptDesc: "Agent prompt templates",
+        toolAgentPrompt: "Agent Collab",
+        toolAgentPromptDesc: "AI-First collaborative development workspace",
         toolOpenAITest: "OpenAI API Test",
         toolOpenAITestDesc: "OpenAI API testing tool",
         toolNNTable: "NN Reference",

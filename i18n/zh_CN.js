@@ -165,8 +165,8 @@ function getZhLang() {
         // AI工具分类
         toolAIPrompt: "AI提示词",
         toolAIPromptDesc: "AI提示词生成与优化",
-        toolAgentPrompt: "Agent提示词",
-        toolAgentPromptDesc: "Agent智能体提示词模板",
+        toolAgentPrompt: "Agent协同",
+        toolAgentPromptDesc: "AI-First协同开发工作区",
         toolOpenAITest: "OpenAI API测试",
         toolOpenAITestDesc: "OpenAI API接口测试工具",
         toolNNTable: "NN对照表",

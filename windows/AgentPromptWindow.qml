@@ -125,6 +125,57 @@ Window {
         }
     }
     
+    // 初始化骨架确认对话框
+    Dialog {
+        id: initConfirmDialog
+        title: "初始化骨架结构"
+        standardButtons: Dialog.Yes | Dialog.No
+        anchors.centerIn: parent
+        modal: true
+        width: 450
+        
+        contentItem: ColumnLayout {
+            spacing: 12
+            width: parent.width
+            
+            Text {
+                Layout.fillWidth: true
+                text: "将在当前文件夹中创建 AI-First Development 协同开发的目录结构："
+                font.pixelSize: 14
+                color: "#333"
+                wrapMode: Text.Wrap
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                implicitHeight: structureText.implicitHeight + 20
+                color: "#f5f5f5"
+                radius: 4
+                
+                Text {
+                    id: structureText
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: 10
+                    text: "├── project_overview.md\n├── architecture/\n├── domain/\n├── patterns/\n├── tasks/\n├── references/\n├── images/\n├── verify/\n└── prompts/"
+                    font.family: "Consolas, Monaco, monospace"
+                    font.pixelSize: 12
+                    color: "#666"
+                }
+            }
+            
+            Text {
+                Layout.fillWidth: true
+                text: "⚠️ 已存在的文件/文件夹不会被覆盖"
+                font.pixelSize: 12
+                color: "#f57c00"
+            }
+        }
+        
+        onAccepted: manager.initializeSkeleton()
+    }
+    
     // 确认删除对话框
     Dialog {
         id: deleteDialog
@@ -359,6 +410,28 @@ Window {
                                 createDialog.open()
                             }
                         }
+                    }
+                    
+                    // 初始化骨架按钮
+                    Button {
+                        Layout.fillWidth: true
+                        text: "🚀 初始化骨架"
+                        implicitHeight: 32
+                        visible: manager.rootPath !== ""
+                        
+                        contentItem: Text {
+                            text: parent.text
+                            font.pixelSize: 12
+                            color: "white"
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+                        
+                        background: Rectangle {
+                            color: parent.pressed ? "#e65100" : (parent.hovered ? "#ff9800" : "#fb8c00")
+                            radius: 4
+                        }
+                        
+                        onClicked: initConfirmDialog.open()
                     }
                 }
             }
