@@ -70,6 +70,7 @@ ApplicationWindow {
         "子网掩码计算器": "qrc:/qt/qml/Honeycomb/windows/SubnetCalculatorWindow.qml",
         "RTSP预览": "qrc:/qt/qml/Honeycomb/windows/RTSPViewerWindow.qml",
         "文件夹映射": "qrc:/qt/qml/Honeycomb/windows/FolderMappingWindow.qml",
+        "Fake API": "qrc:/qt/qml/Honeycomb/windows/FakeApiWindow.qml",
         "寄存器寻址范围": "qrc:/qt/qml/Honeycomb/windows/RegisterRangeWindow.qml",
         "电阻阻值计算": "qrc:/qt/qml/Honeycomb/windows/ResistorCalculatorWindow.qml",
         "RISC-V指令集模块": "qrc:/qt/qml/Honeycomb/windows/RISCVInstructionWindow.qml",
@@ -195,7 +196,8 @@ ApplicationWindow {
             {title: I18n.t("toolMqttPub"), subtitle: I18n.t("toolMqttPubDesc"), key: "MQTT广播"},
             {title: I18n.t("toolSubnet"), subtitle: I18n.t("toolSubnetDesc"), key: "子网掩码计算器"},
             {title: I18n.t("toolRtsp"), subtitle: I18n.t("toolRtspDesc"), key: "RTSP预览"},
-            {title: I18n.t("toolFolderMapping"), subtitle: I18n.t("toolFolderMappingDesc"), key: "文件夹映射"}
+            {title: I18n.t("toolFolderMapping"), subtitle: I18n.t("toolFolderMappingDesc"), key: "文件夹映射"},
+            {title: I18n.t("toolFakeApi"), subtitle: I18n.t("toolFakeApiDesc"), key: "Fake API"}
         ],
         7: [ // 硬件工具
             {title: I18n.t("toolRegister"), subtitle: I18n.t("toolRegisterDesc"), key: "寄存器寻址范围"},

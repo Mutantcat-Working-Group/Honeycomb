@@ -49,6 +49,10 @@ public:
     // 导入导出
     Q_INVOKABLE QString exportRoutes() const;
     Q_INVOKABLE bool importRoutes(const QString &json);
+    Q_INVOKABLE bool exportToFile(const QString &filePath) const;
+    Q_INVOKABLE bool importFromFile(const QString &filePath);
+    Q_INVOKABLE QString selectExportFile();
+    Q_INVOKABLE QString selectImportFile();
 
 signals:
     void portChanged();
@@ -72,7 +76,7 @@ private:
     void sendErrorResponse(QTcpSocket *socket, int statusCode, const QString &message);
     void setStatusMessage(const QString &message);
     QString getMimeTypeForResponseType(const QString &responseType) const;
-    QVariantMap* findMatchingRoute(const QString &method, const QString &path);
+    int findMatchingRoute(const QString &method, const QString &path);
 
     QTcpServer *m_server;
     int m_port;

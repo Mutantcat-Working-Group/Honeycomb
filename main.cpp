@@ -28,6 +28,7 @@
 #include "src/RTSPViewer.h"
 #include "src/ResistorCalculator.h"
 #include "src/FolderHttpServer.h"
+#include "src/FakeApiServer.h"
 
 int main(int argc, char *argv[])
 {
@@ -68,6 +69,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<RTSPViewer>("Honeycomb", 1, 0, "RTSPViewer");
     qmlRegisterType<ResistorCalculator>("Honeycomb", 1, 0, "ResistorCalculator");
     qmlRegisterType<FolderHttpServer>("Honeycomb", 1, 0, "FolderHttpServer");
+    qmlRegisterType<FakeApiServer>("Honeycomb", 1, 0, "FakeApiServer");
 
     QQmlApplicationEngine engine;
     

@@ -145,6 +145,8 @@ function getZhLang() {
         toolRtspDesc: "实时视频流预览",
         toolFolderMapping: "文件夹映射",
         toolFolderMappingDesc: "将文件夹映射为HTTP服务",
+        toolFakeApi: "Fake API",
+        toolFakeApiDesc: "模拟API接口服务",
         
         // 硬件工具分类
         toolRegister: "寄存器寻址范围",
@@ -223,6 +225,20 @@ function getZhLang() {
         clearLog: "清空日志",
         noLogs: "暂无日志，启动服务后将显示访问记录",
         selectFolder: "选择要映射的文件夹",
+        
+        // Fake API
+        routeList: "路由列表",
+        addRoute: "+ 添加路由",
+        noRoutes: "暂无路由\n点击上方按钮添加",
+        routePath: "路由路径:",
+        httpMethods: "请求方法:",
+        statusCode: "状态码:",
+        responseDelay: "延迟(ms):",
+        responseType: "响应类型:",
+        responseBody: "响应内容:",
+        selectFile: "选择文件...",
+        filePathTip: "输入文件的完整路径",
+        selectRouteToEdit: "请从左侧选择或添加一个路由进行编辑",
         
         // 上下文飘窗
         contextFloatPin: "置顶",

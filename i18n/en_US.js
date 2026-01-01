@@ -145,6 +145,8 @@ function getEnLang() {
         toolRtspDesc: "Real-time video stream",
         toolFolderMapping: "Folder Mapping",
         toolFolderMappingDesc: "Map folder to HTTP server",
+        toolFakeApi: "Fake API",
+        toolFakeApiDesc: "Mock API server",
         
         // Hardware tools
         toolRegister: "Register Range",
@@ -223,6 +225,20 @@ function getEnLang() {
         clearLog: "Clear Log",
         noLogs: "No logs yet, access records will appear after starting server",
         selectFolder: "Select folder to map",
+        
+        // Fake API
+        routeList: "Route List",
+        addRoute: "+ Add Route",
+        noRoutes: "No routes\nClick button above to add",
+        routePath: "Route Path:",
+        httpMethods: "HTTP Methods:",
+        statusCode: "Status Code:",
+        responseDelay: "Delay(ms):",
+        responseType: "Response Type:",
+        responseBody: "Response Body:",
+        selectFile: "Select File...",
+        filePathTip: "Enter full path to the file",
+        selectRouteToEdit: "Select or add a route from the left to edit",
         
         // Context Float Window
         contextFloatPin: "Pin",
