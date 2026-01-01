@@ -82,7 +82,8 @@ ApplicationWindow {
         "NN对照表": "qrc:/qt/qml/Honeycomb/windows/NNTableWindow.qml",
         "Layer对照表": "qrc:/qt/qml/Honeycomb/windows/KerasLayerWindow.qml",
         "国密加解密": "qrc:/qt/qml/Honeycomb/windows/SMCryptoWindow.qml",
-        "OpenAI API测试": "qrc:/qt/qml/Honeycomb/windows/OpenAITestWindow.qml"
+        "OpenAI API测试": "qrc:/qt/qml/Honeycomb/windows/OpenAITestWindow.qml",
+        "软件设置": "qrc:/qt/qml/Honeycomb/windows/SettingsWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
@@ -107,6 +108,12 @@ ApplicationWindow {
                         }
                         window.destroy()
                     })
+                    // 如果是设置窗口，连接语言切换信号
+                    if (window.languageChanged) {
+                        window.languageChanged.connect(function(lang) {
+                            mainWindow.refreshUI()
+                        })
+                    }
                     window.show()
                 }
             } else if (component.status === Component.Error) {
@@ -117,21 +124,44 @@ ApplicationWindow {
         }
     }
     
-    // 导航项数据
-    property var navItems: [
-        {text: I18n.t("navToolInfo"), desc: I18n.t("navToolInfoDesc"), icon: ""},
-        {text: I18n.t("navEncode"), desc: I18n.t("navEncodeDesc"), icon: ""},
-        {text: I18n.t("navString"), desc: I18n.t("navStringDesc"), icon: ""},
-        {text: I18n.t("navDev"), desc: I18n.t("navDevDesc"), icon: ""},
-        {text: I18n.t("navEncrypt"), desc: I18n.t("navEncryptDesc"), icon: ""},
-        {text: I18n.t("navRandom"), desc: I18n.t("navRandomDesc"), icon: ""},
-        {text: I18n.t("navNetwork"), desc: I18n.t("navNetworkDesc"), icon: ""},
-        {text: I18n.t("navHardware"), desc: I18n.t("navHardwareDesc"), icon: ""},
-        {text: I18n.t("navAI"), desc: I18n.t("navAIDesc"), icon: ""}
-    ]
+    // 刷新界面语言的计数器
+    property int refreshCounter: 0
     
-    // 各分类的工具数据
-    property var toolsData: {
+    // 刷新界面语言
+    function refreshUI() {
+        refreshCounter++
+        // 强制重新计算所有依赖 I18n 的绑定
+        mainWindow.title = I18n.t("appTitle")
+    }
+    
+    // 导航项数据 - 使用函数使其响应刷新
+    function getNavItems() {
+        // 引用 refreshCounter 使得刷新时重新计算
+        var _ = refreshCounter
+        return [
+            {text: I18n.t("navToolInfo"), desc: I18n.t("navToolInfoDesc"), icon: ""},
+            {text: I18n.t("navEncode"), desc: I18n.t("navEncodeDesc"), icon: ""},
+            {text: I18n.t("navString"), desc: I18n.t("navStringDesc"), icon: ""},
+            {text: I18n.t("navDev"), desc: I18n.t("navDevDesc"), icon: ""},
+            {text: I18n.t("navEncrypt"), desc: I18n.t("navEncryptDesc"), icon: ""},
+            {text: I18n.t("navRandom"), desc: I18n.t("navRandomDesc"), icon: ""},
+            {text: I18n.t("navNetwork"), desc: I18n.t("navNetworkDesc"), icon: ""},
+            {text: I18n.t("navHardware"), desc: I18n.t("navHardwareDesc"), icon: ""},
+            {text: I18n.t("navAI"), desc: I18n.t("navAIDesc"), icon: ""}
+        ]
+    }
+    
+    property var navItems: getNavItems()
+    
+    onRefreshCounterChanged: {
+        navItems = getNavItems()
+        toolsData = getToolsData()
+    }
+    
+    // 各分类的工具数据 - 使用函数使其响应刷新
+    function getToolsData() {
+        var _ = refreshCounter
+        return {
         0: [ // 工具说明
             {title: I18n.t("toolAbout"), subtitle: I18n.t("toolAboutDesc"), key: "关于蜂巢"},
             {title: I18n.t("toolHelp"), subtitle: I18n.t("toolHelpDesc"), key: "使用帮助"},
@@ -218,7 +248,10 @@ ApplicationWindow {
             {title: I18n.t("toolKerasLayer"), subtitle: I18n.t("toolKerasLayerDesc"), key: "Layer对照表"},
             {title: I18n.t("toolMLHandbook"), subtitle: I18n.t("toolMLHandbookDesc"), key: "机器学习手书"}
         ]
+        }
     }
+    
+    property var toolsData: getToolsData()
     
     // 计算卡片列数
     property int cardMinWidth: 220

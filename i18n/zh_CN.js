@@ -178,6 +178,14 @@ function getZhLang() {
         toolMLHandbook: "机器学习手书",
         toolMLHandbookDesc: "机器学习算法与公式手册",
         
+        // 软件设置
+        settingsLanguage: "语言设置",
+        settingsLanguageDesc: "选择界面显示语言，切换后需要重新打开窗口生效",
+        currentLanguage: "当前语言",
+        settingsTip: "提示",
+        settingsTipDesc: "语言切换后，主界面会立即更新。已打开的工具窗口需要关闭后重新打开才能看到新语言。",
+        settingsAbout: "关于",
+        
         // ML手书/NN对照表/Layer对照表 界面文本
         mlSearchPlaceholder: "搜索算法名称或描述...",
         mlAllCategories: "全部",

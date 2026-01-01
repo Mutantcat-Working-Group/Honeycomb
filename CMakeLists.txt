@@ -89,6 +89,7 @@ qt_add_qml_module(appHoneycomb
         windows/FakeApiWindow.qml
         windows/SMCryptoWindow.qml
         windows/OpenAITestWindow.qml
+        windows/SettingsWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js

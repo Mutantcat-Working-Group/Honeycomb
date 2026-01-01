@@ -178,6 +178,14 @@ function getEnLang() {
         toolMLHandbook: "ML Handbook",
         toolMLHandbookDesc: "Machine learning algorithms & formulas",
         
+        // Settings
+        settingsLanguage: "Language",
+        settingsLanguageDesc: "Select interface language. Changes take effect after reopening windows.",
+        currentLanguage: "Current Language",
+        settingsTip: "Tip",
+        settingsTipDesc: "After switching languages, the main interface will update immediately. Opened tool windows need to be closed and reopened to see the new language.",
+        settingsAbout: "About",
+        
         // ML Handbook/NN Table/Layer Table UI Text
         mlSearchPlaceholder: "Search algorithm name or description...",
         mlAllCategories: "All",
