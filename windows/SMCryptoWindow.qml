@@ -7,7 +7,7 @@ import "../i18n/i18n.js" as I18n
 Window {
     id: smCryptoWindow
     width: 700
-    height: 700
+    height: 720
     title: I18n.t("smCrypto") || "国密加解密"
     flags: Qt.Window
     modality: Qt.NonModal
@@ -162,6 +162,8 @@ Window {
                             text: parent.text
                             font.pixelSize: 12
                             color: "#1976d2"
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
                         }
                         
                         background: Rectangle {
@@ -223,6 +225,8 @@ Window {
                             text: parent.text
                             font.pixelSize: 12
                             color: "#1976d2"
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
                         }
                         
                         background: Rectangle {
@@ -427,6 +431,8 @@ Window {
                                 text: parent.text
                                 font.pixelSize: 12
                                 color: "#1976d2"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
                             }
                             
                             background: Rectangle {
