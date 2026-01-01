@@ -665,6 +665,7 @@ Window {
         MenuItem {
             text: "新建文件"
             visible: treeContextMenu.isDir
+            height: visible ? implicitHeight : 0
             onTriggered: {
                 createDialog.parentPath = treeContextMenu.targetPath
                 createDialog.isFolder = false
@@ -675,6 +676,7 @@ Window {
         MenuItem {
             text: "新建文件夹"
             visible: treeContextMenu.isDir
+            height: visible ? implicitHeight : 0
             onTriggered: {
                 createDialog.parentPath = treeContextMenu.targetPath
                 createDialog.isFolder = true
@@ -682,7 +684,10 @@ Window {
             }
         }
         
-        MenuSeparator { visible: treeContextMenu.isDir }
+        MenuSeparator { 
+            visible: treeContextMenu.isDir
+            height: visible ? implicitHeight : 0
+        }
         
         MenuItem {
             text: "重命名"
