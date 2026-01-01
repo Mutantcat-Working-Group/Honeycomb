@@ -44,7 +44,8 @@
 - 常用浏览器UA
 - Go交叉编译
 - htaccess转nginx
-- Manifest权限大全
+- Android权限
+- Harmony权限
 - HTTP状态码
 - Content-Type
 - HTML特殊字符
@@ -55,6 +56,7 @@
 - SHA1加密
 - SHA256加密
 - 密码强度分析
+- 国密加解密
 
 #### 随机工具
 - 随机数字
@@ -72,6 +74,8 @@
 - MQTT广播
 - 子网掩码计算器
 - RTSP预览
+- 文件夹映射
+- Fake API
 
 #### 硬件工具
 - 寄存器寻址范围
@@ -80,3 +84,11 @@
 - 通用寄存器速查
 - 汇编速查
 
+#### AI工具
+- AI提示词
+- Agent协同
+- 上下文飘窗
+- OpenAI API测试
+- NN对照表
+- Layer对照表
+- 机器学习手书
