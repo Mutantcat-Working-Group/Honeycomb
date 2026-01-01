@@ -428,7 +428,7 @@ Window {
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.margins: 10
-                    text: "├── project_overview.md\n├── architecture/\n├── domain/\n├── patterns/\n├── tasks/\n├── references/\n├── images/\n├── verify/\n└── prompts/"
+                    text: "├── project_overview.md\n├── architecture/\n├── domain/\n├── patterns/\n├── tasks/\n├── references/\n├── images/\n├── verify/\n├── prompts/\n└── directory/"
                     font.family: "Consolas, Monaco, monospace"
                     font.pixelSize: 12
                     color: "#666"

@@ -289,7 +289,8 @@ void AgentPromptManager::initializeSkeleton()
         "references",
         "images",
         "verify",
-        "prompts"
+        "prompts",
+        "directory"
     };
     
     // 定义文件及其内容
@@ -547,6 +548,93 @@ paths:
 - 性能问题
 - 安全隐患
 - 可维护性
+)";
+
+    // directory 目录 - 文件夹结构定义
+    files["directory/folder_structure.md"] = R"(# 项目目录结构
+
+## 根目录结构
+```
+project/
+├── src/                    # 源代码目录
+├── tests/                  # 测试代码目录
+├── docs/                   # 文档目录
+├── config/                 # 配置文件目录
+├── scripts/                # 脚本目录
+├── assets/                 # 静态资源目录
+└── build/                  # 构建输出目录
+```
+
+## 详细说明
+
+### src/ - 源代码
+<!-- 描述源代码目录的组织方式 -->
+
+### tests/ - 测试代码
+<!-- 描述测试代码的组织方式 -->
+
+### docs/ - 文档
+<!-- 描述文档的组织方式 -->
+)";
+
+    files["directory/src_structure.md"] = R"(# 源代码目录结构
+
+## 目录布局
+```
+src/
+├── components/             # 组件目录
+├── services/               # 服务层
+├── models/                 # 数据模型
+├── utils/                  # 工具函数
+├── hooks/                  # 自定义hooks
+├── constants/              # 常量定义
+├── types/                  # 类型定义
+└── main.ts                 # 入口文件
+```
+
+## 目录职责
+
+### components/
+<!-- 组件目录的组织原则 -->
+
+### services/
+<!-- 服务层的组织原则 -->
+
+### models/
+<!-- 数据模型的组织原则 -->
+
+### utils/
+<!-- 工具函数的组织原则 -->
+)";
+
+    files["directory/file_naming.md"] = R"(# 文件命名规范
+
+## 目录命名
+- 使用小写字母
+- 多单词使用连字符或下划线分隔
+- 避免使用特殊字符
+
+## 文件命名
+
+### 组件文件
+<!-- 组件文件的命名规则 -->
+
+### 服务文件
+<!-- 服务文件的命名规则 -->
+
+### 测试文件
+<!-- 测试文件的命名规则 -->
+
+### 配置文件
+<!-- 配置文件的命名规则 -->
+
+## 命名示例
+| 类型 | 命名格式 | 示例 |
+|------|----------|------|
+| 组件 | PascalCase | UserProfile.tsx |
+| 服务 | camelCase | userService.ts |
+| 工具 | camelCase | formatDate.ts |
+| 常量 | UPPER_SNAKE | API_ENDPOINTS.ts |
 )";
 
     // 创建目录
