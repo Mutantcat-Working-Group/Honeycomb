@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "../i18n/i18n.js" as I18n
 
 Window {
     id: kerasLayerWindow
@@ -8,7 +9,7 @@ Window {
     height: 700
     minimumWidth: 800
     minimumHeight: 550
-    title: "Layer对照表 - TensorFlow/Keras"
+    title: I18n.t("toolKerasLayer") || "Layer对照表"
     flags: Qt.Window
 
     // 分类数据
@@ -205,7 +206,7 @@ Window {
                 spacing: 16
 
                 Text {
-                    text: "TensorFlow/Keras Layer 对照表"
+                    text: I18n.t("toolKerasLayer") || "TensorFlow/Keras Layer 对照表"
                     font.pixelSize: 20
                     font.bold: true
                     color: "#333"
@@ -241,7 +242,7 @@ Window {
 
                             Text {
                                 anchors.fill: parent
-                                text: "搜索层名称或描述..."
+                                text: I18n.t("kerasSearchPlaceholder") || "搜索层名称或描述..."
                                 color: "#999"
                                 font.pixelSize: 13
                                 visible: !parent.text && !parent.activeFocus
@@ -303,14 +304,14 @@ Window {
                                 anchors.rightMargin: 12
 
                                 Text {
-                                    text: "层名称"
+                                    text: I18n.t("nnLayerName") || "层名称"
                                     font.pixelSize: 13
                                     font.bold: true
                                     color: "#666"
                                     Layout.preferredWidth: 120
                                 }
                                 Text {
-                                    text: "分类"
+                                    text: I18n.t("mlCategory") || "分类"
                                     font.pixelSize: 13
                                     font.bold: true
                                     color: "#666"
@@ -395,7 +396,7 @@ Window {
 
                             Text {
                                 anchors.centerIn: parent
-                                text: "共 " + filteredLayers.length + " 个层"
+                                text: (I18n.t("kerasLayerCount") || "共 {0} 个层").replace("{0}", filteredLayers.length)
                                 font.pixelSize: 12
                                 color: "#888"
                             }
@@ -434,7 +435,7 @@ Window {
 
                                 Text {
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    text: "请从左侧列表选择一个层"
+                                    text: I18n.t("kerasSelectLayer") || "请从左侧列表选择一个层"
                                     font.pixelSize: 14
                                     color: "#888"
                                 }
@@ -480,7 +481,7 @@ Window {
                                 Item { Layout.fillWidth: true }
 
                                 Button {
-                                    text: "查看文档"
+                                    text: I18n.t("nnViewDocs") || "查看文档"
                                     font.pixelSize: 12
                                     onClicked: {
                                         if (selectedLayerIndex >= 0 && selectedLayerIndex < filteredLayers.length) {
@@ -517,7 +518,7 @@ Window {
                                 spacing: 8
 
                                 Text {
-                                    text: "用法"
+                                    text: I18n.t("nnUsage") || "用法"
                                     font.pixelSize: 14
                                     font.bold: true
                                     color: "#333"
@@ -555,7 +556,7 @@ Window {
                                         }
 
                                         ToolTip.visible: containsMouse
-                                        ToolTip.text: "点击复制"
+                                        ToolTip.text: I18n.t("mlClickToCopy") || "点击复制"
                                         ToolTip.delay: 500
                                     }
                                 }
@@ -567,7 +568,7 @@ Window {
                                 spacing: 8
 
                                 Text {
-                                    text: "示例"
+                                    text: I18n.t("nnExample") || "示例"
                                     font.pixelSize: 14
                                     font.bold: true
                                     color: "#333"
@@ -605,7 +606,7 @@ Window {
                                         }
 
                                         ToolTip.visible: containsMouse
-                                        ToolTip.text: "点击复制"
+                                        ToolTip.text: I18n.t("mlClickToCopy") || "点击复制"
                                         ToolTip.delay: 500
                                     }
                                 }
@@ -617,7 +618,7 @@ Window {
                                 spacing: 8
 
                                 Text {
-                                    text: "快速参考"
+                                    text: I18n.t("nnQuickRef") || "快速参考"
                                     font.pixelSize: 14
                                     font.bold: true
                                     color: "#333"
@@ -640,7 +641,7 @@ Window {
 
                                         Text {
                                             width: parent.width
-                                            text: "模块路径: tf.keras.layers." + (selectedLayerIndex >= 0 && selectedLayerIndex < filteredLayers.length ? filteredLayers[selectedLayerIndex].name : "")
+                                            text: (I18n.t("nnModulePath") || "模块路径") + ": tf.keras.layers." + (selectedLayerIndex >= 0 && selectedLayerIndex < filteredLayers.length ? filteredLayers[selectedLayerIndex].name : "")
                                             font.pixelSize: 12
                                             color: "#6d4c41"
                                             wrapMode: Text.Wrap
@@ -648,7 +649,7 @@ Window {
 
                                         Text {
                                             width: parent.width
-                                            text: "导入方式: from tensorflow.keras.layers import " + (selectedLayerIndex >= 0 && selectedLayerIndex < filteredLayers.length ? filteredLayers[selectedLayerIndex].name : "")
+                                            text: (I18n.t("nnImportMethod") || "导入方式") + ": from tensorflow.keras.layers import " + (selectedLayerIndex >= 0 && selectedLayerIndex < filteredLayers.length ? filteredLayers[selectedLayerIndex].name : "")
                                             font.pixelSize: 12
                                             color: "#6d4c41"
                                             wrapMode: Text.Wrap

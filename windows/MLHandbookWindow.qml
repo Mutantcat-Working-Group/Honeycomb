@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "../i18n/i18n.js" as I18n
 
 Window {
     id: mlHandbookWindow
@@ -8,7 +9,7 @@ Window {
     height: 720
     minimumWidth: 850
     minimumHeight: 600
-    title: "机器学习手书"
+    title: I18n.t("toolMLHandbook") || "机器学习手书"
     flags: Qt.Window
 
     // 分类数据
@@ -698,7 +699,7 @@ Window {
                 spacing: 16
 
                 Text {
-                    text: "机器学习算法手书"
+                    text: I18n.t("toolMLHandbook") || "机器学习算法手书"
                     font.pixelSize: 20
                     font.bold: true
                     color: "#333"
@@ -734,7 +735,7 @@ Window {
 
                             Text {
                                 anchors.fill: parent
-                                text: "搜索算法名称或描述..."
+                                text: I18n.t("mlSearchPlaceholder") || "搜索算法名称或描述..."
                                 color: "#999"
                                 font.pixelSize: 13
                                 visible: !parent.text && !parent.activeFocus
@@ -796,14 +797,14 @@ Window {
                                 anchors.rightMargin: 12
 
                                 Text {
-                                    text: "算法名称"
+                                    text: I18n.t("mlAlgorithmName") || "算法名称"
                                     font.pixelSize: 13
                                     font.bold: true
                                     color: "#666"
                                     Layout.preferredWidth: 140
                                 }
                                 Text {
-                                    text: "分类"
+                                    text: I18n.t("mlCategory") || "分类"
                                     font.pixelSize: 13
                                     font.bold: true
                                     color: "#666"
@@ -900,7 +901,7 @@ Window {
 
                             Text {
                                 anchors.centerIn: parent
-                                text: "共 " + filteredAlgorithms.length + " 个算法"
+                                text: (I18n.t("mlAlgorithmCount") || "共 {0} 个算法").replace("{0}", filteredAlgorithms.length)
                                 font.pixelSize: 12
                                 color: "#888"
                             }
@@ -950,7 +951,7 @@ Window {
 
                                     Text {
                                         anchors.horizontalCenter: parent.horizontalCenter
-                                        text: "请从左侧列表选择一个算法"
+                                        text: I18n.t("mlSelectAlgorithm") || "请从左侧列表选择一个算法"
                                         font.pixelSize: 14
                                         color: "#888"
                                     }
@@ -985,8 +986,9 @@ Window {
                                         }
                                     }
 
+                                    Item { Layout.fillWidth: true }
+
                                     Rectangle {
-                                        Layout.leftMargin: 8
                                         width: categoryTag.width + 16
                                         height: 24
                                         radius: 12
@@ -1000,8 +1002,6 @@ Window {
                                             color: "#4caf50"
                                         }
                                     }
-
-                                    Item { Layout.fillWidth: true }
                                 }
 
                                 // 简介
@@ -1026,7 +1026,7 @@ Window {
 
                                 // 核心原理
                                 DetailSection {
-                                    title: "核心原理"
+                                    title: I18n.t("mlCorePrinciple") || "核心原理"
                                     icon: "\u{1F9E0}"
                                     content: selectedAlgorithmIndex >= 0 && selectedAlgorithmIndex < filteredAlgorithms.length ? filteredAlgorithms[selectedAlgorithmIndex].principle : ""
                                     bgColor: "#fff3e0"
@@ -1035,7 +1035,7 @@ Window {
 
                                 // 关键公式
                                 DetailSection {
-                                    title: "关键公式"
+                                    title: I18n.t("mlKeyFormula") || "关键公式"
                                     icon: "\u{1F4DD}"
                                     content: selectedAlgorithmIndex >= 0 && selectedAlgorithmIndex < filteredAlgorithms.length ? filteredAlgorithms[selectedAlgorithmIndex].formula : ""
                                     bgColor: "#e3f2fd"
@@ -1045,7 +1045,7 @@ Window {
 
                                 // 优点
                                 DetailSection {
-                                    title: "优点"
+                                    title: I18n.t("mlPros") || "优点"
                                     icon: "\u{2705}"
                                     content: selectedAlgorithmIndex >= 0 && selectedAlgorithmIndex < filteredAlgorithms.length ? filteredAlgorithms[selectedAlgorithmIndex].pros : ""
                                     bgColor: "#e8f5e9"
@@ -1054,7 +1054,7 @@ Window {
 
                                 // 缺点
                                 DetailSection {
-                                    title: "缺点"
+                                    title: I18n.t("mlCons") || "缺点"
                                     icon: "\u{26A0}"
                                     content: selectedAlgorithmIndex >= 0 && selectedAlgorithmIndex < filteredAlgorithms.length ? filteredAlgorithms[selectedAlgorithmIndex].cons : ""
                                     bgColor: "#ffebee"
@@ -1063,7 +1063,7 @@ Window {
 
                                 // 应用场景
                                 DetailSection {
-                                    title: "应用场景"
+                                    title: I18n.t("mlApplications") || "应用场景"
                                     icon: "\u{1F3AF}"
                                     content: selectedAlgorithmIndex >= 0 && selectedAlgorithmIndex < filteredAlgorithms.length ? filteredAlgorithms[selectedAlgorithmIndex].applications : ""
                                     bgColor: "#f3e5f5"
@@ -1086,7 +1086,7 @@ Window {
                                         spacing: 4
 
                                         Text {
-                                            text: "\u{1F4E6} 常用库"
+                                            text: "\u{1F4E6} " + (I18n.t("mlLibraries") || "常用库")
                                             font.pixelSize: 12
                                             color: "#90a4ae"
                                         }
@@ -1113,7 +1113,7 @@ Window {
                                         }
 
                                         ToolTip.visible: containsMouse
-                                        ToolTip.text: "点击复制"
+                                        ToolTip.text: I18n.t("mlClickToCopy") || "点击复制"
                                         ToolTip.delay: 500
                                     }
                                 }

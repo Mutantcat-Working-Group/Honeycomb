@@ -290,7 +290,7 @@ Window {
                 TextField {
                     id: searchInput
                     Layout.preferredWidth: 300
-                    placeholderText: "搜索层名称、描述..."
+                    placeholderText: I18n.t("nnSearchPlaceholder") || "搜索层名称、描述..."
                     
                     background: Rectangle {
                         color: "white"
@@ -325,7 +325,7 @@ Window {
                 Item { Layout.fillWidth: true }
                 
                 Text {
-                    text: "共 " + filteredData.length + " 项"
+                    text: (I18n.t("nnLayerCount") || "共 {0} 个层").replace("{0}", filteredData.length).replace("层", "项")
                     font.pixelSize: 13
                     color: "#666"
                 }
@@ -364,7 +364,7 @@ Window {
                             spacing: 10
                             
                             Text {
-                                text: "层名称"
+                                text: I18n.t("nnLayerName") || "层名称"
                                 font.pixelSize: 14
                                 font.bold: true
                                 color: "#333"
@@ -372,7 +372,7 @@ Window {
                             }
                             
                             Text {
-                                text: "分类"
+                                text: I18n.t("mlCategory") || "分类"
                                 font.pixelSize: 14
                                 font.bold: true
                                 color: "#333"
@@ -380,7 +380,7 @@ Window {
                             }
                             
                             Text {
-                                text: "描述"
+                                text: I18n.t("nnDesc") || "描述"
                                 font.pixelSize: 14
                                 font.bold: true
                                 color: "#333"
@@ -467,7 +467,7 @@ Window {
                         
                         // 标题
                         Text {
-                            text: selectedLayer ? "nn." + selectedLayer.name : "选择一个层查看详情"
+                            text: selectedLayer ? "nn." + selectedLayer.name : (I18n.t("nnSelectLayer") || "选择一个层查看详情")
                             font.pixelSize: 20
                             font.bold: true
                             font.family: "Consolas"
@@ -506,7 +506,7 @@ Window {
                             visible: selectedLayer !== null
                             
                             Text {
-                                text: "描述"
+                                text: I18n.t("nnDesc") || "描述"
                                 font.pixelSize: 14
                                 font.bold: true
                                 color: "#333"
@@ -531,7 +531,7 @@ Window {
                                 width: parent.width
                                 
                                 Text {
-                                    text: "用法示例"
+                                    text: I18n.t("nnUsage") || "用法示例"
                                     font.pixelSize: 14
                                     font.bold: true
                                     color: "#333"
@@ -540,7 +540,7 @@ Window {
                                 Item { Layout.fillWidth: true }
                                 
                                 Button {
-                                    text: "复制"
+                                    text: I18n.t("copy") || "复制"
                                     implicitWidth: 60
                                     implicitHeight: 28
                                     
@@ -594,7 +594,7 @@ Window {
                             visible: selectedLayer !== null
                             
                             Text {
-                                text: "官方文档："
+                                text: (I18n.t("nnOfficialDocs") || "官方文档") + "："
                                 font.pixelSize: 13
                                 color: "#666"
                             }
@@ -636,7 +636,7 @@ Window {
             
             Text {
                 anchors.centerIn: parent
-                text: "✓ 已复制"
+                text: "✓ " + (I18n.t("copied") || "已复制")
                 font.pixelSize: 14
                 color: "white"
             }
