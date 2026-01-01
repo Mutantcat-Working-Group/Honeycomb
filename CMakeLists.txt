@@ -81,6 +81,7 @@ qt_add_qml_module(appHoneycomb
         windows/RegisterRefWindow.qml
         windows/AsmRefWindow.qml
         windows/ContextFloatWindow.qml
+        windows/AIPromptWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js

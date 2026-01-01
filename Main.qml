@@ -75,7 +75,8 @@ ApplicationWindow {
         "通用寄存器速查": "qrc:/qt/qml/Honeycomb/windows/RegisterRefWindow.qml",
         "汇编速查": "qrc:/qt/qml/Honeycomb/windows/AsmRefWindow.qml",
         "上下文飘窗": "qrc:/qt/qml/Honeycomb/windows/ContextFloatWindow.qml",
-        "机器学习手书": "qrc:/qt/qml/Honeycomb/windows/MLHandbookWindow.qml"
+        "机器学习手书": "qrc:/qt/qml/Honeycomb/windows/MLHandbookWindow.qml",
+        "AI提示词": "qrc:/qt/qml/Honeycomb/windows/AIPromptWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
