@@ -733,3 +733,92 @@ void AgentPromptManager::openInExplorer(const QString &path)
     QDesktopServices::openUrl(QUrl::fromLocalFile(dirPath));
 #endif
 }
+
+QVariantList AgentPromptManager::getSelectableFiles()
+{
+    QVariantList result;
+    if (m_rootPath.isEmpty()) return result;
+    
+    collectFilesRecursive(m_rootPath, result, 0);
+    return result;
+}
+
+void AgentPromptManager::collectFilesRecursive(const QString &path, QVariantList &result, int depth)
+{
+    QDir dir(path);
+    if (!dir.exists()) return;
+    
+    QStringList entries = dir.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot, QDir::DirsFirst | QDir::Name);
+    
+    for (const QString &entry : entries) {
+        QString fullPath = dir.absoluteFilePath(entry);
+        QFileInfo info(fullPath);
+        
+        // 跳过 images 文件夹
+        if (info.isDir() && entry.toLower() == "images") {
+            continue;
+        }
+        
+        if (info.isDir()) {
+            collectFilesRecursive(fullPath, result, depth + 1);
+        } else {
+            // 只包含文本文件
+            if (entry.endsWith(".md", Qt::CaseInsensitive) ||
+                entry.endsWith(".yaml", Qt::CaseInsensitive) ||
+                entry.endsWith(".yml", Qt::CaseInsensitive) ||
+                entry.endsWith(".sql", Qt::CaseInsensitive) ||
+                entry.endsWith(".txt", Qt::CaseInsensitive)) {
+                
+                QVariantMap item;
+                item["name"] = entry;
+                item["path"] = fullPath;
+                item["relativePath"] = QDir(m_rootPath).relativeFilePath(fullPath);
+                item["depth"] = depth;
+                result.append(item);
+            }
+        }
+    }
+}
+
+QString AgentPromptManager::generatePrompt(const QStringList &selectedPaths)
+{
+    if (selectedPaths.isEmpty()) return QString();
+    
+    QString prompt;
+    prompt += "# AI-First Development 协同上下文\n\n";
+    prompt += "以下是项目的相关文档，请基于这些内容帮助我推进项目开发：\n\n";
+    prompt += "---\n\n";
+    
+    for (const QString &filePath : selectedPaths) {
+        QFile file(filePath);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            continue;
+        }
+        
+        QTextStream in(&file);
+        in.setEncoding(QStringConverter::Utf8);
+        QString content = in.readAll();
+        file.close();
+        
+        QString relativePath = QDir(m_rootPath).relativeFilePath(filePath);
+        QString extension = QFileInfo(filePath).suffix().toLower();
+        
+        prompt += QString("## 📄 %1\n\n").arg(relativePath);
+        
+        // 根据文件类型添加代码块
+        QString codeType = "text";
+        if (extension == "md") codeType = "markdown";
+        else if (extension == "yaml" || extension == "yml") codeType = "yaml";
+        else if (extension == "sql") codeType = "sql";
+        
+        prompt += QString("```%1\n%2\n```\n\n").arg(codeType, content.trimmed());
+        prompt += "---\n\n";
+    }
+    
+    prompt += "## 📝 任务\n\n";
+    prompt += "请基于以上上下文内容，帮我：\n";
+    prompt += "1. [在这里描述你的具体需求]\n\n";
+    prompt += "请确保你的回复符合项目已有的架构设计和编码规范。\n";
+    
+    return prompt;
+}

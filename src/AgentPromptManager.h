@@ -53,6 +53,10 @@ public:
     Q_INVOKABLE QString getRelativePath(const QString &imagePath);
     Q_INVOKABLE void copyToClipboard(const QString &text);
     Q_INVOKABLE void openInExplorer(const QString &path);
+    
+    // 提示词生成
+    Q_INVOKABLE QVariantList getSelectableFiles();
+    Q_INVOKABLE QString generatePrompt(const QStringList &selectedPaths);
 
 signals:
     void rootPathChanged();
@@ -69,6 +73,7 @@ private:
     void loadFileContent(const QString &path);
     void loadImagesFromFolder(const QString &path);
     QString generateImageName();
+    void collectFilesRecursive(const QString &path, QVariantList &result, int depth);
 
     QString m_rootPath;
     QVariantList m_fileTree;

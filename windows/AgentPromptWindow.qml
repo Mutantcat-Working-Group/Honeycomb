@@ -125,6 +125,276 @@ Window {
         }
     }
     
+    // 生成提示词对话框
+    Dialog {
+        id: promptGeneratorDialog
+        title: "生成提示词"
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        anchors.centerIn: parent
+        modal: true
+        width: 600
+        height: 500
+        
+        property var selectedFiles: []
+        property var fileList: []
+        
+        contentItem: ColumnLayout {
+            spacing: 12
+            
+            Text {
+                Layout.fillWidth: true
+                text: "请勾选需要包含在提示词中的文件："
+                font.pixelSize: 14
+                color: "#333"
+            }
+            
+            // 全选/取消全选按钮
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 10
+                
+                Button {
+                    text: "全选"
+                    implicitHeight: 26
+                    implicitWidth: 60
+                    
+                    contentItem: Text {
+                        text: parent.text
+                        font.pixelSize: 11
+                        color: "#666"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    
+                    background: Rectangle {
+                        color: parent.pressed ? "#e0e0e0" : (parent.hovered ? "#f0f0f0" : "white")
+                        border.color: "#ddd"
+                        border.width: 1
+                        radius: 4
+                    }
+                    
+                    onClicked: {
+                        var all = []
+                        for (var i = 0; i < promptGeneratorDialog.fileList.length; i++) {
+                            all.push(promptGeneratorDialog.fileList[i].path)
+                        }
+                        promptGeneratorDialog.selectedFiles = all
+                    }
+                }
+                
+                Button {
+                    text: "取消全选"
+                    implicitHeight: 26
+                    implicitWidth: 70
+                    
+                    contentItem: Text {
+                        text: parent.text
+                        font.pixelSize: 11
+                        color: "#666"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    
+                    background: Rectangle {
+                        color: parent.pressed ? "#e0e0e0" : (parent.hovered ? "#f0f0f0" : "white")
+                        border.color: "#ddd"
+                        border.width: 1
+                        radius: 4
+                    }
+                    
+                    onClicked: promptGeneratorDialog.selectedFiles = []
+                }
+                
+                Item { Layout.fillWidth: true }
+                
+                Text {
+                    text: "已选择 " + promptGeneratorDialog.selectedFiles.length + " 个文件"
+                    font.pixelSize: 12
+                    color: "#666"
+                }
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                color: "#fafafa"
+                border.color: "#e0e0e0"
+                border.width: 1
+                radius: 4
+                
+                ScrollView {
+                    anchors.fill: parent
+                    anchors.margins: 8
+                    clip: true
+                    
+                    ListView {
+                        id: fileSelectList
+                        model: promptGeneratorDialog.fileList
+                        spacing: 4
+                        
+                        delegate: Rectangle {
+                            width: fileSelectList.width
+                            height: 36
+                            color: fileItemMouse.containsMouse ? "#f5f5f5" : "transparent"
+                            radius: 4
+                            
+                            property bool isChecked: promptGeneratorDialog.selectedFiles.indexOf(modelData.path) !== -1
+                            
+                            MouseArea {
+                                id: fileItemMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onClicked: {
+                                    var idx = promptGeneratorDialog.selectedFiles.indexOf(modelData.path)
+                                    var newList = promptGeneratorDialog.selectedFiles.slice()
+                                    if (idx === -1) {
+                                        newList.push(modelData.path)
+                                    } else {
+                                        newList.splice(idx, 1)
+                                    }
+                                    promptGeneratorDialog.selectedFiles = newList
+                                }
+                            }
+                            
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.leftMargin: 8 + modelData.depth * 20
+                                anchors.rightMargin: 8
+                                spacing: 8
+                                
+                                CheckBox {
+                                    checked: parent.parent.isChecked
+                                    onClicked: {
+                                        var idx = promptGeneratorDialog.selectedFiles.indexOf(modelData.path)
+                                        var newList = promptGeneratorDialog.selectedFiles.slice()
+                                        if (idx === -1) {
+                                            newList.push(modelData.path)
+                                        } else {
+                                            newList.splice(idx, 1)
+                                        }
+                                        promptGeneratorDialog.selectedFiles = newList
+                                    }
+                                }
+                                
+                                Text {
+                                    text: "📄"
+                                    font.pixelSize: 14
+                                }
+                                
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: modelData.relativePath
+                                    font.pixelSize: 13
+                                    color: "#333"
+                                    elide: Text.ElideMiddle
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            Text {
+                Layout.fillWidth: true
+                text: "💡 提示：生成的提示词将包含选中文件的内容，用于推进项目开发"
+                font.pixelSize: 11
+                color: "#999"
+                wrapMode: Text.Wrap
+            }
+        }
+        
+        onAccepted: {
+            if (selectedFiles.length === 0) {
+                manager.errorOccurred("请至少选择一个文件")
+                return
+            }
+            var prompt = manager.generatePrompt(selectedFiles)
+            generatedPromptDialog.promptText = prompt
+            generatedPromptDialog.open()
+        }
+    }
+    
+    // 生成的提示词显示对话框
+    Dialog {
+        id: generatedPromptDialog
+        title: "生成的提示词"
+        standardButtons: Dialog.Close
+        anchors.centerIn: parent
+        modal: true
+        width: 700
+        height: 550
+        
+        property string promptText: ""
+        
+        contentItem: ColumnLayout {
+            spacing: 12
+            
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 10
+                
+                Text {
+                    text: "可复制以下提示词发送给 AI Agent："
+                    font.pixelSize: 14
+                    color: "#333"
+                }
+                
+                Item { Layout.fillWidth: true }
+                
+                Button {
+                    text: "📋 复制"
+                    implicitHeight: 28
+                    
+                    contentItem: Text {
+                        text: parent.text
+                        font.pixelSize: 12
+                        color: "white"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    
+                    background: Rectangle {
+                        color: parent.pressed ? "#1565c0" : (parent.hovered ? "#1e88e5" : "#1976d2")
+                        radius: 4
+                    }
+                    
+                    onClicked: {
+                        manager.copyToClipboard(generatedPromptDialog.promptText)
+                        manager.successMessage("已复制到剪贴板")
+                    }
+                }
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                color: "#fafafa"
+                border.color: "#e0e0e0"
+                border.width: 1
+                radius: 4
+                
+                ScrollView {
+                    anchors.fill: parent
+                    anchors.margins: 8
+                    clip: true
+                    
+                    TextArea {
+                        text: generatedPromptDialog.promptText
+                        font.family: "Consolas, Monaco, monospace"
+                        font.pixelSize: 13
+                        wrapMode: TextArea.Wrap
+                        readOnly: true
+                        selectByMouse: true
+                        
+                        background: Rectangle {
+                            color: "transparent"
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     // 初始化骨架确认对话框
     Dialog {
         id: initConfirmDialog
@@ -432,6 +702,32 @@ Window {
                         }
                         
                         onClicked: initConfirmDialog.open()
+                    }
+                    
+                    // 生成提示词按钮
+                    Button {
+                        Layout.fillWidth: true
+                        text: "✨ 生成提示词"
+                        implicitHeight: 32
+                        visible: manager.rootPath !== ""
+                        
+                        contentItem: Text {
+                            text: parent.text
+                            font.pixelSize: 12
+                            color: "white"
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+                        
+                        background: Rectangle {
+                            color: parent.pressed ? "#5e35b1" : (parent.hovered ? "#7e57c2" : "#673ab7")
+                            radius: 4
+                        }
+                        
+                        onClicked: {
+                            promptGeneratorDialog.selectedFiles = []
+                            promptGeneratorDialog.fileList = manager.getSelectableFiles()
+                            promptGeneratorDialog.open()
+                        }
                     }
                 }
             }
