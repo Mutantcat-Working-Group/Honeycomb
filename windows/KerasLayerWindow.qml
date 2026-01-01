@@ -451,7 +451,7 @@ Window {
                             // 层名称和分类
                             RowLayout {
                                 Layout.fillWidth: true
-                                spacing: 12
+                                spacing: 20
 
                                 Text {
                                     text: selectedLayerIndex >= 0 && selectedLayerIndex < filteredLayers.length ? filteredLayers[selectedLayerIndex].name : ""
@@ -461,6 +461,7 @@ Window {
                                 }
 
                                 Rectangle {
+                                    Layout.leftMargin: 4
                                     width: categoryTag.width + 16
                                     height: 24
                                     radius: 12
@@ -468,6 +469,7 @@ Window {
 
                                     Text {
                                         id: categoryTag
+                                        width: parent
                                         anchors.centerIn: parent
                                         text: selectedLayerIndex >= 0 && selectedLayerIndex < filteredLayers.length ? filteredLayers[selectedLayerIndex].category : ""
                                         font.pixelSize: 12
