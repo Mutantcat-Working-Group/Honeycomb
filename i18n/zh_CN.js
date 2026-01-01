@@ -186,6 +186,25 @@ function getZhLang() {
         settingsTipDesc: "语言切换后，主界面会立即更新。已打开的工具窗口需要关闭后重新打开才能看到新语言。",
         settingsAbout: "关于",
         
+        // Agent提示词
+        agentWorkspace: "协同文件夹",
+        agentSelectFolder: "选择文件夹",
+        agentRefresh: "刷新",
+        agentNewFile: "新建文件",
+        agentNewFolder: "新建文件夹",
+        agentRename: "重命名",
+        agentDelete: "删除",
+        agentSave: "保存",
+        agentOpenInExplorer: "在资源管理器中打开",
+        agentCopyAbsPath: "复制绝对路径",
+        agentCopyRelPath: "复制相对路径",
+        agentPasteImage: "从剪切板粘贴",
+        agentDragHint: "或拖拽图片到下方区域",
+        agentImageCount: "共 {0} 张图片",
+        agentEmptyFolder: "未选择文件夹",
+        agentSelectFileHint: "选择文件查看内容",
+        agentDropImageHint: "拖拽图片到这里\n或点击上方按钮粘贴",
+        
         // ML手书/NN对照表/Layer对照表 界面文本
         mlSearchPlaceholder: "搜索算法名称或描述...",
         mlAllCategories: "全部",

@@ -83,7 +83,8 @@ ApplicationWindow {
         "Layer对照表": "qrc:/qt/qml/Honeycomb/windows/KerasLayerWindow.qml",
         "国密加解密": "qrc:/qt/qml/Honeycomb/windows/SMCryptoWindow.qml",
         "OpenAI API测试": "qrc:/qt/qml/Honeycomb/windows/OpenAITestWindow.qml",
-        "软件设置": "qrc:/qt/qml/Honeycomb/windows/SettingsWindow.qml"
+        "软件设置": "qrc:/qt/qml/Honeycomb/windows/SettingsWindow.qml",
+        "Agent提示词": "qrc:/qt/qml/Honeycomb/windows/AgentPromptWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收

@@ -186,6 +186,25 @@ function getEnLang() {
         settingsTipDesc: "After switching languages, the main interface will update immediately. Opened tool windows need to be closed and reopened to see the new language.",
         settingsAbout: "About",
         
+        // Agent Prompt
+        agentWorkspace: "Workspace",
+        agentSelectFolder: "Select Folder",
+        agentRefresh: "Refresh",
+        agentNewFile: "New File",
+        agentNewFolder: "New Folder",
+        agentRename: "Rename",
+        agentDelete: "Delete",
+        agentSave: "Save",
+        agentOpenInExplorer: "Open in Explorer",
+        agentCopyAbsPath: "Copy Absolute Path",
+        agentCopyRelPath: "Copy Relative Path",
+        agentPasteImage: "Paste from Clipboard",
+        agentDragHint: "or drag images to the area below",
+        agentImageCount: "{0} images",
+        agentEmptyFolder: "No folder selected",
+        agentSelectFileHint: "Select a file to view content",
+        agentDropImageHint: "Drop images here\nor click the button above to paste",
+        
         // ML Handbook/NN Table/Layer Table UI Text
         mlSearchPlaceholder: "Search algorithm name or description...",
         mlAllCategories: "All",

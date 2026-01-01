@@ -31,6 +31,7 @@
 #include "src/FakeApiServer.h"
 #include "src/SMCrypto.h"
 #include "src/OpenAIClient.h"
+#include "src/AgentPromptManager.h"
 
 int main(int argc, char *argv[])
 {
@@ -74,6 +75,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<FakeApiServer>("Honeycomb", 1, 0, "FakeApiServer");
     qmlRegisterType<SMCrypto>("Honeycomb", 1, 0, "SMCrypto");
     qmlRegisterType<OpenAIClient>("Honeycomb", 1, 0, "OpenAIClient");
+    qmlRegisterType<AgentPromptManager>("Honeycomb", 1, 0, "AgentPromptManager");
 
     QQmlApplicationEngine engine;
     
