@@ -87,6 +87,7 @@ qt_add_qml_module(appHoneycomb
         windows/MLHandbookWindow.qml
         windows/FolderMappingWindow.qml
         windows/FakeApiWindow.qml
+        windows/SMCryptoWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
@@ -146,6 +147,8 @@ qt_add_qml_module(appHoneycomb
         src/FolderHttpServer.cpp
         src/FakeApiServer.h
         src/FakeApiServer.cpp
+        src/SMCrypto.h
+        src/SMCrypto.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

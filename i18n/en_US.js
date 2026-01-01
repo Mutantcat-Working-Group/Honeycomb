@@ -113,6 +113,8 @@ function getEnLang() {
         toolSha256Desc: "String to SHA256",
         toolPwdStrength: "Password Strength",
         toolPwdStrengthDesc: "Analyze password strength",
+        toolSMCrypto: "SM Crypto",
+        toolSMCryptoDesc: "SM3 Hash/SM4 Encrypt",
         
         // Random tools
         toolRandomNum: "Random Number",
@@ -239,6 +241,10 @@ function getEnLang() {
         selectFile: "Select File...",
         filePathTip: "Enter full path to the file",
         selectRouteToEdit: "Select or add a route from the left to edit",
+        importConfig: "Import Config",
+        exportConfig: "Export Config",
+        importSuccess: "Import Success",
+        exportSuccess: "Export Success",
         
         // Context Float Window
         contextFloatPin: "Pin",
@@ -794,6 +800,27 @@ function getEnLang() {
         toolRegisterRange: "Register Address Range",
         toolRegisterRangeDesc: "Address range and max values for different bit-width registers",
         registerInfo: "Register Information",
-        tips: "Tips"
+        tips: "Tips",
+        
+        // SM Crypto
+        smCrypto: "SM Crypto",
+        smCryptoDesc: "Support SM3 hash and SM4 encryption",
+        algorithm: "Algorithm",
+        hash: "Hash",
+        symmetric: "Symmetric",
+        mode: "Mode",
+        key: "Key",
+        generateKey: "Generate Key",
+        generateIV: "Generate IV",
+        enterKeyHex: "Enter 32 hex characters key...",
+        enterIVHex: "Enter 32 hex characters IV...",
+        enterTextToHash: "Enter text to hash...",
+        enterTextOrCipher: "Enter plaintext to encrypt or hex ciphertext to decrypt...",
+        encrypt: "Encrypt",
+        decrypt: "Decrypt",
+        resultWillAppear: "Result will appear here",
+        sm3Desc: "Chinese national hash algorithm, 256-bit output, similar to SHA-256",
+        sm4Desc: "Chinese national symmetric encryption, 128-bit key, supports ECB/CBC mode",
+        error: "Error"
     };
 }

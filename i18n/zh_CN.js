@@ -113,6 +113,8 @@ function getZhLang() {
         toolSha256Desc: "字符串转SHA256",
         toolPwdStrength: "密码强度分析",
         toolPwdStrengthDesc: "分析密码安全强度",
+        toolSMCrypto: "国密加解密",
+        toolSMCryptoDesc: "SM3哈希/SM4加解密",
         
         // 随机工具分类
         toolRandomNum: "随机数字",
@@ -239,6 +241,10 @@ function getZhLang() {
         selectFile: "选择文件...",
         filePathTip: "输入文件的完整路径",
         selectRouteToEdit: "请从左侧选择或添加一个路由进行编辑",
+        importConfig: "导入配置",
+        exportConfig: "导出配置",
+        importSuccess: "导入成功",
+        exportSuccess: "导出成功",
         
         // 上下文飘窗
         contextFloatPin: "置顶",
@@ -794,6 +800,27 @@ function getZhLang() {
         toolRegisterRange: "寄存器寻址范围",
         toolRegisterRangeDesc: "不同位数通用寄存器的寻址范围和最大值",
         registerInfo: "寄存器信息",
-        tips: "提示"
+        tips: "提示",
+        
+        // 国密加解密
+        smCrypto: "国密加解密",
+        smCryptoDesc: "支持SM3哈希和SM4加密算法",
+        algorithm: "算法",
+        hash: "哈希",
+        symmetric: "对称加密",
+        mode: "模式",
+        key: "密钥",
+        generateKey: "生成密钥",
+        generateIV: "生成IV",
+        enterKeyHex: "请输入32位十六进制密钥...",
+        enterIVHex: "请输入32位十六进制IV...",
+        enterTextToHash: "请输入要哈希的文本...",
+        enterTextOrCipher: "加密时输入明文，解密时输入十六进制密文...",
+        encrypt: "加密",
+        decrypt: "解密",
+        resultWillAppear: "结果将显示在这里",
+        sm3Desc: "国密哈希算法，输出256位哈希值，类似SHA-256",
+        sm4Desc: "国密对称加密算法，128位密钥，支持ECB/CBC模式",
+        error: "错误"
     };
 }
