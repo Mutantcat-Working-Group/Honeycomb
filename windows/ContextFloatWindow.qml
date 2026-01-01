@@ -10,7 +10,7 @@ Window {
     minimumWidth: 500
     minimumHeight: 400
     title: I18n.t("toolContextFloat") + (windowTag.length > 0 ? " - " + windowTag : "") + (alwaysOnTop ? " [" + I18n.t("contextFloatPinned") + "]" : "")
-    flags: alwaysOnTop ? (Qt.Window | Qt.WindowStaysOnTopHint) : Qt.Window
+    flags: alwaysOnTop ? (Qt.Window | Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint) : Qt.Window
     modality: Qt.NonModal
     
     // 窗口标签
@@ -149,47 +149,6 @@ Window {
     Rectangle {
         anchors.fill: parent
         color: "#f9f9f9"
-        
-        // 可拖动区域（左上角移动块，仅置顶时显示）
-        Rectangle {
-            id: dragBlock
-            anchors.top: parent.top
-            anchors.left: parent.left
-            width: 24
-            height: 24
-            radius: 4
-            visible: alwaysOnTop
-            color: dragArea.containsMouse ? "#0078d4" : "#e0e0e0"
-            z: 100
-            
-            Text {
-                anchors.centerIn: parent
-                text: "⋮⋮"
-                font.pixelSize: 12
-                color: dragArea.containsMouse ? "white" : "#888"
-            }
-            
-            MouseArea {
-                id: dragArea
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.SizeAllCursor
-                
-                property point clickPos: Qt.point(0, 0)
-                
-                onPressed: function(mouse) {
-                    clickPos = Qt.point(mouse.x, mouse.y)
-                }
-                
-                onPositionChanged: function(mouse) {
-                    if (pressed) {
-                        var delta = Qt.point(mouse.x - clickPos.x, mouse.y - clickPos.y)
-                        contextFloatWindow.x += delta.x
-                        contextFloatWindow.y += delta.y
-                    }
-                }
-            }
-        }
         
         ColumnLayout {
             anchors.fill: parent
