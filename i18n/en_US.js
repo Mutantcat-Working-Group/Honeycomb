@@ -165,6 +165,28 @@ function getEnLang() {
         toolOpenAITestDesc: "OpenAI API testing tool",
         toolNNTable: "NN Reference",
         toolNNTableDesc: "Neural network layer reference",
+        toolContextFloat: "Context Float",
+        toolContextFloatDesc: "AI context management float window",
+        toolMLHandbook: "ML Handbook",
+        toolMLHandbookDesc: "Machine learning algorithms & formulas",
+        
+        // Context Float Window
+        contextFloatPin: "Pin",
+        contextFloatUnpin: "Unpin",
+        contextFloatPinned: "Pinned",
+        contextFloatCopyAll: "Copy All",
+        contextFloatReset: "Reset",
+        contextFloatUndo: "Undo",
+        contextFloatRedo: "Redo",
+        contextFloatUndoSteps: "Undo",
+        contextFloatRedoSteps: "Redo",
+        contextFloatCharCount: "Characters",
+        contextFloatTip: "Write AI context prompts, pin to float, Ctrl+Z undo, Ctrl+Y redo",
+        contextFloatPlaceholder: "Enter context prompts here...",
+        contextFloatTag: "Tag",
+        contextFloatTagPlaceholder: "Enter tag...",
+        contextFloatResetTitle: "Confirm Reset",
+        contextFloatResetConfirm: "Are you sure to reset to default content? Current content will be lost.",
         
         // About window
         aboutTitle: "About Honeycomb",

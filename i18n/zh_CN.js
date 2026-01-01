@@ -165,6 +165,28 @@ function getZhLang() {
         toolOpenAITestDesc: "OpenAI API接口测试工具",
         toolNNTable: "NN对照表",
         toolNNTableDesc: "神经网络层对照参考",
+        toolContextFloat: "上下文飘窗",
+        toolContextFloatDesc: "AI上下文管理飘窗工具",
+        toolMLHandbook: "机器学习手书",
+        toolMLHandbookDesc: "机器学习算法与公式手册",
+        
+        // 上下文飘窗
+        contextFloatPin: "置顶",
+        contextFloatUnpin: "取消置顶",
+        contextFloatPinned: "已置顶",
+        contextFloatCopyAll: "复制全部",
+        contextFloatReset: "重置",
+        contextFloatUndo: "撤销",
+        contextFloatRedo: "重做",
+        contextFloatUndoSteps: "可撤销",
+        contextFloatRedoSteps: "可重做",
+        contextFloatCharCount: "字符数",
+        contextFloatTip: "编写AI上下文提示词，可置顶悬浮显示，Ctrl+Z撤销，Ctrl+Y重做",
+        contextFloatPlaceholder: "在此输入上下文提示词...",
+        contextFloatTag: "窗口标签",
+        contextFloatTagPlaceholder: "输入标签...",
+        contextFloatResetTitle: "确认重置",
+        contextFloatResetConfirm: "确定要重置为默认内容吗？当前内容将会丢失。",
         
         // 关于窗口
         aboutTitle: "关于蜂巢",
