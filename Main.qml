@@ -77,7 +77,8 @@ ApplicationWindow {
         "上下文飘窗": "qrc:/qt/qml/Honeycomb/windows/ContextFloatWindow.qml",
         "机器学习手书": "qrc:/qt/qml/Honeycomb/windows/MLHandbookWindow.qml",
         "AI提示词": "qrc:/qt/qml/Honeycomb/windows/AIPromptWindow.qml",
-        "NN对照表": "qrc:/qt/qml/Honeycomb/windows/NNTableWindow.qml"
+        "NN对照表": "qrc:/qt/qml/Honeycomb/windows/NNTableWindow.qml",
+        "Layer对照表": "qrc:/qt/qml/Honeycomb/windows/KerasLayerWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
@@ -204,9 +205,10 @@ ApplicationWindow {
         8: [ // AI工具
             {title: I18n.t("toolAIPrompt"), subtitle: I18n.t("toolAIPromptDesc"), key: "AI提示词"},
             {title: I18n.t("toolAgentPrompt"), subtitle: I18n.t("toolAgentPromptDesc"), key: "Agent提示词"},
+            {title: I18n.t("toolContextFloat"), subtitle: I18n.t("toolContextFloatDesc"), key: "上下文飘窗"},
             {title: I18n.t("toolOpenAITest"), subtitle: I18n.t("toolOpenAITestDesc"), key: "OpenAI API测试"},
             {title: I18n.t("toolNNTable"), subtitle: I18n.t("toolNNTableDesc"), key: "NN对照表"},
-            {title: I18n.t("toolContextFloat"), subtitle: I18n.t("toolContextFloatDesc"), key: "上下文飘窗"},
+            {title: I18n.t("toolKerasLayer"), subtitle: I18n.t("toolKerasLayerDesc"), key: "Layer对照表"},
             {title: I18n.t("toolMLHandbook"), subtitle: I18n.t("toolMLHandbookDesc"), key: "机器学习手书"}
         ]
     }

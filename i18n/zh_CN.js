@@ -165,6 +165,8 @@ function getZhLang() {
         toolOpenAITestDesc: "OpenAI API接口测试工具",
         toolNNTable: "NN对照表",
         toolNNTableDesc: "神经网络层对照参考",
+        toolKerasLayer: "Layer对照表",
+        toolKerasLayerDesc: "TensorFlow/Keras层参考",
         toolContextFloat: "上下文飘窗",
         toolContextFloatDesc: "AI上下文管理飘窗工具",
         toolMLHandbook: "机器学习手书",

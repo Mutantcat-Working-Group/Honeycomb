@@ -165,6 +165,8 @@ function getEnLang() {
         toolOpenAITestDesc: "OpenAI API testing tool",
         toolNNTable: "NN Reference",
         toolNNTableDesc: "Neural network layer reference",
+        toolKerasLayer: "Layer Reference",
+        toolKerasLayerDesc: "TensorFlow/Keras layer reference",
         toolContextFloat: "Context Float",
         toolContextFloatDesc: "AI context management float window",
         toolMLHandbook: "ML Handbook",

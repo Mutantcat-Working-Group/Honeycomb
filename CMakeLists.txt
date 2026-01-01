@@ -83,6 +83,7 @@ qt_add_qml_module(appHoneycomb
         windows/ContextFloatWindow.qml
         windows/AIPromptWindow.qml
         windows/NNTableWindow.qml
+        windows/KerasLayerWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
