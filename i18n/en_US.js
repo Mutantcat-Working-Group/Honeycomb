@@ -143,6 +143,8 @@ function getEnLang() {
         toolSubnetDesc: "IP & subnet calculation",
         toolRtsp: "RTSP Preview",
         toolRtspDesc: "Real-time video stream",
+        toolFolderMapping: "Folder Mapping",
+        toolFolderMappingDesc: "Map folder to HTTP server",
         
         // Hardware tools
         toolRegister: "Register Range",
@@ -203,6 +205,24 @@ function getEnLang() {
         nnOfficialDocs: "Official Docs",
         copy: "Copy",
         copied: "Copied",
+        
+        // Folder Mapping
+        folderPath: "Folder Path:",
+        selectFolderPlaceholder: "Click browse to select a folder...",
+        browse: "Browse...",
+        portNumber: "Port:",
+        portRange: "(Range: 1-65535, recommended 8080)",
+        startServer: "Start Server",
+        stopServer: "Stop Server",
+        serverStopped: "Server not running",
+        requestCount: "Requests:",
+        accessUrl: "Access URL",
+        openInBrowser: "Open in Browser",
+        copyUrl: "Copy URL",
+        serverLog: "Server Log",
+        clearLog: "Clear Log",
+        noLogs: "No logs yet, access records will appear after starting server",
+        selectFolder: "Select folder to map",
         
         // Context Float Window
         contextFloatPin: "Pin",

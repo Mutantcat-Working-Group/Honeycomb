@@ -27,6 +27,7 @@
 #include "src/SubnetCalculator.h"
 #include "src/RTSPViewer.h"
 #include "src/ResistorCalculator.h"
+#include "src/FolderHttpServer.h"
 
 int main(int argc, char *argv[])
 {
@@ -66,6 +67,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<SubnetCalculator>("Honeycomb", 1, 0, "SubnetCalculator");
     qmlRegisterType<RTSPViewer>("Honeycomb", 1, 0, "RTSPViewer");
     qmlRegisterType<ResistorCalculator>("Honeycomb", 1, 0, "ResistorCalculator");
+    qmlRegisterType<FolderHttpServer>("Honeycomb", 1, 0, "FolderHttpServer");
 
     QQmlApplicationEngine engine;
     

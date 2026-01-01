@@ -85,6 +85,7 @@ qt_add_qml_module(appHoneycomb
         windows/NNTableWindow.qml
         windows/KerasLayerWindow.qml
         windows/MLHandbookWindow.qml
+        windows/FolderMappingWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
@@ -140,6 +141,8 @@ qt_add_qml_module(appHoneycomb
         src/RTSPViewer.cpp
         src/ResistorCalculator.h
         src/ResistorCalculator.cpp
+        src/FolderHttpServer.h
+        src/FolderHttpServer.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

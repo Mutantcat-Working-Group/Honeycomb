@@ -143,6 +143,8 @@ function getZhLang() {
         toolSubnetDesc: "IP地址与子网划分",
         toolRtsp: "RTSP预览",
         toolRtspDesc: "实时视频流预览",
+        toolFolderMapping: "文件夹映射",
+        toolFolderMappingDesc: "将文件夹映射为HTTP服务",
         
         // 硬件工具分类
         toolRegister: "寄存器寻址范围",
@@ -203,6 +205,24 @@ function getZhLang() {
         nnOfficialDocs: "官方文档",
         copy: "复制",
         copied: "已复制",
+        
+        // 文件夹映射
+        folderPath: "文件夹路径:",
+        selectFolderPlaceholder: "点击右侧按钮选择文件夹...",
+        browse: "浏览...",
+        portNumber: "端口号:",
+        portRange: "(范围: 1-65535，推荐 8080)",
+        startServer: "启动服务",
+        stopServer: "停止服务",
+        serverStopped: "服务未启动",
+        requestCount: "请求数:",
+        accessUrl: "访问地址",
+        openInBrowser: "在浏览器中打开",
+        copyUrl: "复制地址",
+        serverLog: "服务日志",
+        clearLog: "清空日志",
+        noLogs: "暂无日志，启动服务后将显示访问记录",
+        selectFolder: "选择要映射的文件夹",
         
         // 上下文飘窗
         contextFloatPin: "置顶",
