@@ -99,7 +99,7 @@ bool JsonYamlConverter::YamlToJson(const YAML::Node &yamlNode, Json::Value &json
                 if (scalar.find('.') != std::string::npos) {
                     jsonNode = std::stod(scalar);
                 } else {
-                    jsonNode = std::stoll(scalar);
+                    jsonNode = static_cast<Json::Int64>(std::stoll(scalar));
                 }
             } else if (isBoolean(QString::fromStdString(scalar))) {
                 jsonNode = (scalar == "true" || scalar == "True");
