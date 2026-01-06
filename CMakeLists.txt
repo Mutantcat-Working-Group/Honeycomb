@@ -17,6 +17,7 @@ qt_standard_project_setup(REQUIRES 6.8)
 qt_add_executable(appHoneycomb
     main.cpp
     app.rc
+    logo.icns
 )
 
 qt_add_qml_module(appHoneycomb
@@ -162,9 +163,10 @@ qt_add_qml_module(appHoneycomb
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 set_target_properties(appHoneycomb PROPERTIES
-#    MACOSX_BUNDLE_GUI_IDENTIFIER com.example.appHoneycomb
+    MACOSX_BUNDLE_GUI_IDENTIFIER com.yourcompany.appHoneycomb
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE_ICON_FILE logo
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
 )
@@ -178,7 +180,7 @@ target_link_libraries(appHoneycomb
         Qt6::Multimedia
         yaml-cpp::yaml-cpp
         JsonCpp::JsonCpp
-        PahoMqttCpp::paho-mqttpp3-static
+        PahoMqttCpp::paho-mqttpp3-shared
 )
 
 include(GNUInstallDirs)
