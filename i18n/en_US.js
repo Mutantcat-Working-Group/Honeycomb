@@ -61,6 +61,8 @@ function getEnLang() {
         toolTrimNewlineDesc: "Remove newlines from string",
         toolTrimAll: "Remove All Whitespace",
         toolTrimAllDesc: "Remove spaces & newlines",
+        toolTrimCJKSpace: "Remove CJK Spaces",
+        toolTrimCJKSpaceDesc: "Remove spaces between CJK & Latin/digits",
         toolReplace: "Replace & Escape",
         toolReplaceDesc: "Replace specified chars",
         toolWordCount: "Word Count",
@@ -295,7 +297,7 @@ function getEnLang() {
         aboutTitle: "About Honeycomb",
         aboutDesc: "Honeycomb is an offline toolbox that provides some commonly used tools.",
         aboutWebsite: "Website: www.mutantcat.org",
-        aboutVersion: "Version: 1.1.20260101",
+        aboutVersion: "Version: 1.1.20260322",
         
         // Changelog window
         changelogTitle: "Changelog",
@@ -376,6 +378,12 @@ function getEnLang() {
         newlineToBr: "Newline to BR",
         brToNewline: "BR to Newline",
         
+        // Trim CJK Space tool
+        trimCJKAll: "Remove All",
+        trimCJKEnglish: "CJK-English",
+        trimCJKDigit: "CJK-Digit",
+        trimCJKSpaceCount: "Separator Spaces",
+
         // Trim All tool
         trimAllWhitespace: "Remove All",
         mergeWhitespace: "Merge",

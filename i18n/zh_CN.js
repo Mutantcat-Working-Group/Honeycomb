@@ -61,6 +61,8 @@ function getZhLang() {
         toolTrimNewlineDesc: "去除字符串中的回车",
         toolTrimAll: "去除空格回车",
         toolTrimAllDesc: "去除文中空格和回车",
+        toolTrimCJKSpace: "去除分隔空格",
+        toolTrimCJKSpaceDesc: "去除中英文和中数字间的空格",
         toolReplace: "替换与转义",
         toolReplaceDesc: "替换指定字符",
         toolWordCount: "字数统计",
@@ -295,7 +297,7 @@ function getZhLang() {
         aboutTitle: "关于蜂巢",
         aboutDesc: "蜂巢工具箱是一个离线工具箱，提供了一些常用的工具。",
         aboutWebsite: "官网：www.mutantcat.org",
-        aboutVersion: "版本：1.1.20260101",
+        aboutVersion: "版本：1.1.20260322",
 
         // 更新日志窗口
         changelogTitle: "更新日志",
@@ -375,6 +377,12 @@ function getZhLang() {
         newlineCount: "回车数量",
         newlineToBr: "回车转br",
         brToNewline: "br转回车",
+
+        // 去除分隔空格工具
+        trimCJKAll: "全部去除",
+        trimCJKEnglish: "中英空格",
+        trimCJKDigit: "中数空格",
+        trimCJKSpaceCount: "分隔空格",
 
         // 去除空格回车工具
         trimAllWhitespace: "全部去除",

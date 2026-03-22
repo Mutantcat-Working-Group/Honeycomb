@@ -44,6 +44,7 @@ qt_add_qml_module(appHoneycomb
         windows/TrimSpaceWindow.qml
         windows/TrimNewlineWindow.qml
         windows/TrimAllWindow.qml
+        windows/TrimCJKSpaceWindow.qml
         windows/ReplaceWindow.qml
         windows/WordCountWindow.qml
         windows/JsonFormatWindow.qml
