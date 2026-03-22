@@ -288,7 +288,7 @@ function getEnLang() {
         contextFloatUndoSteps: "Undo",
         contextFloatRedoSteps: "Redo",
         contextFloatCharCount: "Characters",
-        contextFloatTip: "Write AI context prompts, pin to float, Ctrl+Z undo, Ctrl+Y redo",
+        contextFloatTip: "Write AI context prompts, pin to float, Ctrl+Z(Command+z) undo, Ctrl+Y(Command+Shift+z) redo",
         contextFloatPlaceholder: "Enter context prompts here...",
         contextFloatTag: "Tag",
         contextFloatTagPlaceholder: "Enter tag...",

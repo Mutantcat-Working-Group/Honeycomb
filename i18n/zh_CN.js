@@ -288,7 +288,7 @@ function getZhLang() {
         contextFloatUndoSteps: "可撤销",
         contextFloatRedoSteps: "可重做",
         contextFloatCharCount: "字符数",
-        contextFloatTip: "编写AI上下文提示词，可置顶悬浮显示，Ctrl+Z撤销，Ctrl+Y重做",
+        contextFloatTip: "编写AI上下文提示词，可置顶悬浮显示，Ctrl+Z(Command+z)撤销，Ctrl+Y(Command+Shift+z)重做",
         contextFloatPlaceholder: "在此输入上下文提示词...",
         contextFloatTag: "窗口标签",
         contextFloatTagPlaceholder: "输入标签...",
