@@ -26,6 +26,7 @@ ApplicationWindow {
         "随机混合串": "qrc:/qt/qml/Honeycomb/windows/RandomMixedWindow.qml",
         "条形码生成": "qrc:/qt/qml/Honeycomb/windows/BarcodeWindow.qml",
         "二维码生成": "qrc:/qt/qml/Honeycomb/windows/QRCodeWindow.qml",
+        "识别二维码": "qrc:/qt/qml/Honeycomb/windows/QRCodeScannerWindow.qml",
         "时间戳转换": "qrc:/qt/qml/Honeycomb/windows/TimestampWindow.qml",
         "颜色值转换": "qrc:/qt/qml/Honeycomb/windows/ColorConverterWindow.qml",
         "中文转Unicode": "qrc:/qt/qml/Honeycomb/windows/UnicodeWindow.qml",
@@ -174,6 +175,7 @@ ApplicationWindow {
         1: [ // 编码工具
             {title: I18n.t("toolBarcode"), subtitle: I18n.t("toolBarcodeDesc"), key: "条形码生成"},
             {title: I18n.t("toolQrcode"), subtitle: I18n.t("toolQrcodeDesc"), key: "二维码生成"},
+            {title: I18n.t("toolQRScanner"), subtitle: I18n.t("toolQRScannerDesc"), key: "识别二维码"},
             {title: I18n.t("toolTimestamp"), subtitle: I18n.t("toolTimestampDesc"), key: "时间戳转换"},
             {title: I18n.t("toolColor"), subtitle: I18n.t("toolColorDesc"), key: "颜色值转换"},
             {title: I18n.t("toolUnicode"), subtitle: I18n.t("toolUnicodeDesc"), key: "中文转Unicode"},

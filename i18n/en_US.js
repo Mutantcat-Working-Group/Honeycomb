@@ -41,6 +41,8 @@ function getEnLang() {
         toolBarcodeDesc: "Generate barcode from numbers",
         toolQrcode: "QR Code Generator",
         toolQrcodeDesc: "Generate QR code from text",
+        toolQRScanner: "QR Scanner",
+        toolQRScannerDesc: "Scan QR code from image",
         toolTimestamp: "Timestamp Converter",
         toolTimestampDesc: "Convert timestamp & date",
         toolColor: "Color Converter",
@@ -349,6 +351,15 @@ function getEnLang() {
         qrcodeInput: "Input",
         qrcodeInputHint: "Enter text to generate QR code",
         saveQRCode: "Save QR Code",
+
+        // QR Scanner tool
+        qrScanSelectImage: "Select Image",
+        qrScanClipboard: "From Clipboard",
+        qrScanScreenshot: "Screenshot",
+        qrScanResult: "Scan Result",
+        qrScanFormat: "Format",
+        qrScanNoResult: "No QR code or barcode detected",
+        qrScanNoImage: "Click buttons above to load or capture image",
         
         // Trim Space tool
         trimAllSpaces: "All Spaces",

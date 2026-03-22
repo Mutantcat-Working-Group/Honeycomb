@@ -5,10 +5,16 @@ project(Honeycomb VERSION 1.1.20260101 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
+# MSVC UTF-8 encoding support
+if(MSVC)
+    add_compile_options(/utf-8)
+endif()
+
 find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 Widgets WebSockets Multimedia)
 find_package(yaml-cpp REQUIRED)
 find_package(jsoncpp REQUIRED)
 find_package(PahoMqttCpp REQUIRED)
+find_package(ZXing REQUIRED)
 
 
 qt_standard_project_setup(REQUIRES 6.8)
@@ -33,6 +39,7 @@ qt_add_qml_module(appHoneycomb
         windows/RandomMixedWindow.qml
         windows/BarcodeWindow.qml
         windows/QRCodeWindow.qml
+        windows/QRCodeScannerWindow.qml
         windows/TimestampWindow.qml
         windows/ColorConverterWindow.qml
         windows/UnicodeWindow.qml
@@ -112,6 +119,8 @@ qt_add_qml_module(appHoneycomb
         src/BarcodeGenerator.cpp
         src/QRCodeGenerator.h
         src/QRCodeGenerator.cpp
+        src/QRCodeScanner.h
+        src/QRCodeScanner.cpp
         src/JsonYamlConverter.h
         src/JsonYamlConverter.cpp
         src/ColorPicker.h
@@ -181,7 +190,8 @@ target_link_libraries(appHoneycomb
         Qt6::Multimedia
         yaml-cpp::yaml-cpp
         JsonCpp::JsonCpp
-        PahoMqttCpp::paho-mqttpp3-shared
+        PahoMqttCpp::paho-mqttpp3-static
+        ZXing::ZXing
 )
 
 include(GNUInstallDirs)

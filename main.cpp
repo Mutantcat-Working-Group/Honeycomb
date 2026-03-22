@@ -9,6 +9,7 @@
 #include "src/RandomMixedGenerator.h"
 #include "src/BarcodeGenerator.h"
 #include "src/QRCodeGenerator.h"
+#include "src/QRCodeScanner.h"
 #include "src/JsonYamlConverter.h"
 #include "src/ColorPicker.h"
 #include "src/ColorSelector.h"
@@ -46,6 +47,7 @@ int main(int argc, char *argv[])
     // 创建图像提供器
     g_barcodeImageProvider = new BarcodeImageProvider();
     g_qrcodeImageProvider = new QRCodeImageProvider();
+    g_qrScannerImageProvider = new QRScannerImageProvider();
 
     // 注册 C++ 类型到 QML
     qmlRegisterType<RandomNumberGenerator>("Honeycomb", 1, 0, "RandomNumberGenerator");
@@ -53,6 +55,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<RandomMixedGenerator>("Honeycomb", 1, 0, "RandomMixedGenerator");
     qmlRegisterType<BarcodeGenerator>("Honeycomb", 1, 0, "BarcodeGenerator");
     qmlRegisterType<QRCodeGenerator>("Honeycomb", 1, 0, "QRCodeGenerator");
+    qmlRegisterType<QRCodeScanner>("Honeycomb", 1, 0, "QRCodeScanner");
     qmlRegisterType<JsonYamlConverter>("Honeycomb", 1, 0, "JsonYamlConverter");
     qmlRegisterType<ColorPicker>("Honeycomb", 1, 0, "ColorPicker");
     qmlRegisterType<ColorSelector>("Honeycomb", 1, 0, "ColorSelector");
@@ -82,6 +85,7 @@ int main(int argc, char *argv[])
     // 添加图像提供器到引擎
     engine.addImageProvider("barcode", g_barcodeImageProvider);
     engine.addImageProvider("qrcode", g_qrcodeImageProvider);
+    engine.addImageProvider("qrscanner", g_qrScannerImageProvider);
     
     QObject::connect(
         &engine,

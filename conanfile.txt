@@ -2,6 +2,7 @@
 yaml-cpp/0.8.0
 jsoncpp/1.9.6
 paho-mqtt-cpp/1.5.3
+zxing-cpp/2.0.0
 
 [generators]
 CMakeDeps

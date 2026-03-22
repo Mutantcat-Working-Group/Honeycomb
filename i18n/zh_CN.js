@@ -41,6 +41,8 @@ function getZhLang() {
         toolBarcodeDesc: "数字生成条形码",
         toolQrcode: "二维码生成",
         toolQrcodeDesc: "文字生成二维码",
+        toolQRScanner: "识别二维码",
+        toolQRScannerDesc: "从图片识别二维码内容",
         toolTimestamp: "时间戳转换",
         toolTimestampDesc: "时间戳与日期互转",
         toolColor: "颜色值转换",
@@ -349,6 +351,15 @@ function getZhLang() {
         qrcodeInput: "输入内容",
         qrcodeInputHint: "请输入要生成二维码的文字",
         saveQRCode: "保存二维码",
+
+        // 识别二维码工具
+        qrScanSelectImage: "选择图片",
+        qrScanClipboard: "从剪贴板",
+        qrScanScreenshot: "截图识别",
+        qrScanResult: "识别结果",
+        qrScanFormat: "编码格式",
+        qrScanNoResult: "未检测到二维码或条码",
+        qrScanNoImage: "点击上方按钮加载或截取图片",
 
         // 字符串去空格工具
         trimAllSpaces: "所有空格",
