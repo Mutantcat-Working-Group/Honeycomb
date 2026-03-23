@@ -46,6 +46,59 @@ Window {
                     width: changelogWindow.width - 60
                     spacing: 15
                     
+                    // 更新条目 - 1.1.20260322
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 80
+                        color: "white"
+                        border.color: "#e0e0e0"
+                        border.width: 1
+                        radius: 8
+                        
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 15
+                            spacing: 15
+                            
+                            // 日期标签
+                            Rectangle {
+                                Layout.preferredWidth: 120
+                                Layout.preferredHeight: 40
+                                color: "#e91e63"
+                                radius: 6
+                                
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "1.1.20260322"
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    color: "white"
+                                }
+                            }
+                            
+                            // 更新内容
+                            Column {
+                                Layout.fillWidth: true
+                                spacing: 5
+                                
+                                Text {
+                                    text: I18n.t("changelogNewTools") || "新增工具功能"
+                                    font.pixelSize: 16
+                                    font.bold: true
+                                    color: "#333"
+                                }
+                                
+                                Text {
+                                    text: I18n.t("changelogNewToolsDesc") || "新增降AI功能、加解密功能、去分隔功能"
+                                    font.pixelSize: 14
+                                    color: "#666"
+                                    wrapMode: Text.WordWrap
+                                    Layout.fillWidth: true
+                                }
+                            }
+                        }
+                    }
+                    
                     // 更新条目 - 1.1.20260101
                     Rectangle {
                         Layout.fillWidth: true

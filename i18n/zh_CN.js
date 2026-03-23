@@ -119,6 +119,8 @@ function getZhLang() {
         toolPwdStrengthDesc: "分析密码安全强度",
         toolSMCrypto: "国密加解密",
         toolSMCryptoDesc: "SM3哈希/SM4加解密",
+        toolAESCrypto: "AES加解密",
+        toolAESCryptoDesc: "AES对称加密解密",
 
         // 随机工具分类
         toolRandomNum: "随机数字",
@@ -312,6 +314,10 @@ function getZhLang() {
         changelogAIFeatureDesc: "新增Agent协同、OpenAI API测试等AI相关功能",
         changelogQtMigration: "迁移至Qt实现",
         changelogQtMigrationDesc: "全面重构UI框架，采用Qt/QML技术栈，提供更流畅的用户体验和跨平台支持",
+        
+        // 新增工具功能
+        changelogNewTools: "新增工具功能",
+        changelogNewToolsDesc: "新增降AI功能、加解密功能、去分隔功能",
 
         // 反馈建议窗口
         feedbackWebsite: "官方网站",
@@ -872,6 +878,15 @@ function getZhLang() {
         sm3Desc: "国密哈希算法，输出256位哈希值，类似SHA-256",
         sm4Desc: "国密对称加密算法，128位密钥，支持ECB/CBC模式",
         error: "错误",
+
+        // AES加解密
+        aesCryptoDesc: "支持AES-128/192/256加密，ECB/CBC模式",
+        aesKeySize: "密钥长度",
+        aesKeyPlaceholder128: "请输入32位十六进制密钥...",
+        aesKeyPlaceholder192: "请输入48位十六进制密钥...",
+        aesKeyPlaceholder256: "请输入64位十六进制密钥...",
+        aesInputPlaceholder: "加密时输入明文，解密时输入十六进制密文...",
+        aesDesc: "高级加密标准，支持128/192/256位密钥，ECB/CBC模式，使用PKCS7填充",
 
         // OpenAI API测试
         apiSettings: "API 设置",

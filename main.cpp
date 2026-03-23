@@ -31,6 +31,7 @@
 #include "src/FolderHttpServer.h"
 #include "src/FakeApiServer.h"
 #include "src/SMCrypto.h"
+#include "src/AESCrypto.h"
 #include "src/OpenAIClient.h"
 #include "src/AgentPromptManager.h"
 
@@ -77,6 +78,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<FolderHttpServer>("Honeycomb", 1, 0, "FolderHttpServer");
     qmlRegisterType<FakeApiServer>("Honeycomb", 1, 0, "FakeApiServer");
     qmlRegisterType<SMCrypto>("Honeycomb", 1, 0, "SMCrypto");
+    qmlRegisterType<AESCrypto>("Honeycomb", 1, 0, "AESCrypto");
     qmlRegisterType<OpenAIClient>("Honeycomb", 1, 0, "OpenAIClient");
     qmlRegisterType<AgentPromptManager>("Honeycomb", 1, 0, "AgentPromptManager");
 

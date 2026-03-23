@@ -84,6 +84,7 @@ ApplicationWindow {
         "NN对照表": "qrc:/qt/qml/Honeycomb/windows/NNTableWindow.qml",
         "Layer对照表": "qrc:/qt/qml/Honeycomb/windows/KerasLayerWindow.qml",
         "国密加解密": "qrc:/qt/qml/Honeycomb/windows/SMCryptoWindow.qml",
+        "AES加解密": "qrc:/qt/qml/Honeycomb/windows/AESCryptoWindow.qml",
         "OpenAI API测试": "qrc:/qt/qml/Honeycomb/windows/OpenAITestWindow.qml",
         "软件设置": "qrc:/qt/qml/Honeycomb/windows/SettingsWindow.qml",
         "Agent协同": "qrc:/qt/qml/Honeycomb/windows/AgentPromptWindow.qml",
@@ -217,7 +218,8 @@ ApplicationWindow {
             {title: I18n.t("toolSha1"), subtitle: I18n.t("toolSha1Desc"), key: "SHA1加密"},
             {title: I18n.t("toolSha256"), subtitle: I18n.t("toolSha256Desc"), key: "SHA256加密"},
             {title: I18n.t("toolPwdStrength"), subtitle: I18n.t("toolPwdStrengthDesc"), key: "密码强度分析"},
-            {title: I18n.t("toolSMCrypto"), subtitle: I18n.t("toolSMCryptoDesc"), key: "国密加解密"}
+            {title: I18n.t("toolSMCrypto"), subtitle: I18n.t("toolSMCryptoDesc"), key: "国密加解密"},
+            {title: I18n.t("toolAESCrypto"), subtitle: I18n.t("toolAESCryptoDesc"), key: "AES加解密"}
         ],
         5: [ // 随机工具
             {title: I18n.t("toolRandomNum"), subtitle: I18n.t("toolRandomNumDesc"), key: "随机数字"},

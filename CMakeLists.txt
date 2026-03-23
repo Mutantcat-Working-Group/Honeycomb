@@ -97,6 +97,7 @@ qt_add_qml_module(appHoneycomb
         windows/FolderMappingWindow.qml
         windows/FakeApiWindow.qml
         windows/SMCryptoWindow.qml
+        windows/AESCryptoWindow.qml
         windows/OpenAITestWindow.qml
         windows/SettingsWindow.qml
         windows/AgentPromptWindow.qml
@@ -164,6 +165,8 @@ qt_add_qml_module(appHoneycomb
         src/FakeApiServer.cpp
         src/SMCrypto.h
         src/SMCrypto.cpp
+        src/AESCrypto.h
+        src/AESCrypto.cpp
         src/OpenAIClient.h
         src/OpenAIClient.cpp
         src/AgentPromptManager.h

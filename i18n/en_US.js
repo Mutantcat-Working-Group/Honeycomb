@@ -119,6 +119,8 @@ function getEnLang() {
         toolPwdStrengthDesc: "Analyze password strength",
         toolSMCrypto: "SM Crypto",
         toolSMCryptoDesc: "SM3 Hash/SM4 Encrypt",
+        toolAESCrypto: "AES Crypto",
+        toolAESCryptoDesc: "AES encryption/decryption",
         
         // Random tools
         toolRandomNum: "Random Number",
@@ -312,6 +314,10 @@ function getEnLang() {
         changelogAIFeatureDesc: "Added Agent Collaboration, OpenAI API Test and other AI-related features",
         changelogQtMigration: "Migrated to Qt",
         changelogQtMigrationDesc: "Complete UI framework refactoring using Qt/QML technology stack, providing smoother user experience and cross-platform support",
+        
+        // New tools
+        changelogNewTools: "New Tools Added",
+        changelogNewToolsDesc: "Added AI text reducer, AES encryption, and whitespace separator removal tools",
         
         // Feedback window
         feedbackWebsite: "Official Website",
@@ -872,6 +878,15 @@ function getEnLang() {
         sm3Desc: "Chinese national hash algorithm, 256-bit output, similar to SHA-256",
         sm4Desc: "Chinese national symmetric encryption, 128-bit key, supports ECB/CBC mode",
         error: "Error",
+        
+        // AES Crypto
+        aesCryptoDesc: "Supports AES-128/192/256 encryption, ECB/CBC mode",
+        aesKeySize: "Key Size",
+        aesKeyPlaceholder128: "Enter 32 hex characters key...",
+        aesKeyPlaceholder192: "Enter 48 hex characters key...",
+        aesKeyPlaceholder256: "Enter 64 hex characters key...",
+        aesInputPlaceholder: "Enter plaintext to encrypt or hex ciphertext to decrypt...",
+        aesDesc: "Advanced Encryption Standard, supports 128/192/256-bit keys, ECB/CBC mode, PKCS7 padding",
         
         // OpenAI API Test
         apiSettings: "API Settings",
