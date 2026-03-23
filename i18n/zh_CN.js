@@ -181,6 +181,8 @@ function getZhLang() {
         toolContextFloatDesc: "AI上下文管理飘窗工具",
         toolMLHandbook: "机器学习手书",
         toolMLHandbookDesc: "机器学习算法与公式手册",
+        toolAiTextReducer: "对照降AI",
+        toolAiTextReducerDesc: "对照原文重写降低AI率",
 
         // 软件设置
         settingsLanguage: "语言设置",
@@ -887,6 +889,23 @@ function getZhLang() {
         startChatHint: "输入消息开始对话",
         enterMessage: "输入消息...",
         stop: "停止",
-        send: "发送"
+        send: "发送",
+
+        // 对照降AI
+        aiReducerTitle: "对照降AI",
+        aiReducerDesc: "将AI生成的文本粘贴到下方，点击确定后进行对照重写",
+        aiReducerOriginal: "原文输入",
+        aiReducerPlaceholder: "请在此粘贴AI生成的文本，每段文字用空行分隔...",
+        aiReducerConfirm: "确定",
+        aiReducerCompare: "对照编辑",
+        aiReducerParagraphs: "共",
+        aiReducerParagraphUnit: "段",
+        aiReducerBack: "返回修改",
+        aiReducerCopyResult: "复制结果",
+        aiReducerOriginalCol: "原文（AI生成）",
+        aiReducerRewrittenCol: "重写（降低AI率）",
+        aiReducerEdited: "已编辑",
+        aiReducerPending: "待编辑",
+        aiReducerRewritePlaceholder: "在此输入理解后的文本..."
     };
 }

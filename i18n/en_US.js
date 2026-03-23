@@ -181,6 +181,8 @@ function getEnLang() {
         toolContextFloatDesc: "AI context management float window",
         toolMLHandbook: "ML Handbook",
         toolMLHandbookDesc: "Machine learning algorithms & formulas",
+        toolAiTextReducer: "AI Text Reducer",
+        toolAiTextReducerDesc: "Rewrite text to reduce AI detection",
         
         // Settings
         settingsLanguage: "Language",
@@ -887,6 +889,23 @@ function getEnLang() {
         startChatHint: "Enter a message to start chatting",
         enterMessage: "Enter message...",
         stop: "Stop",
-        send: "Send"
+        send: "Send",
+        
+        // AI Text Reducer
+        aiReducerTitle: "AI Text Reducer",
+        aiReducerDesc: "Paste AI-generated text below, then click confirm to start rewriting",
+        aiReducerOriginal: "Original Text",
+        aiReducerPlaceholder: "Paste AI-generated text here, separate paragraphs with blank lines...",
+        aiReducerConfirm: "Confirm",
+        aiReducerCompare: "Compare & Edit",
+        aiReducerParagraphs: "Total",
+        aiReducerParagraphUnit: "paragraphs",
+        aiReducerBack: "Back",
+        aiReducerCopyResult: "Copy Result",
+        aiReducerOriginalCol: "Original (AI Generated)",
+        aiReducerRewrittenCol: "Rewritten (Humanized)",
+        aiReducerEdited: "Edited",
+        aiReducerPending: "Pending",
+        aiReducerRewritePlaceholder: "Enter your rewritten text here..."
     };
 }

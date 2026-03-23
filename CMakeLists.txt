@@ -100,6 +100,7 @@ qt_add_qml_module(appHoneycomb
         windows/OpenAITestWindow.qml
         windows/SettingsWindow.qml
         windows/AgentPromptWindow.qml
+        windows/AiTextReducerWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
