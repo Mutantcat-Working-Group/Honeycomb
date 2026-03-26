@@ -40,7 +40,9 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     
     // 设置应用程序图标
+#ifndef Q_OS_MACOS
     app.setWindowIcon(QIcon(":/qt/qml/Honeycomb/logo.png"));
+#endif
 
     // 设置 Qt Quick Controls 样式为 Basic，支持自定义控件外观
     QQuickStyle::setStyle("Basic");

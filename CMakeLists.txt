@@ -1,6 +1,42 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(Honeycomb VERSION 1.1.20260322 LANGUAGES CXX)
+if(APPLE AND (NOT DEFINED CMAKE_OSX_SYSROOT OR CMAKE_OSX_SYSROOT STREQUAL ""))
+    if(DEFINED ENV{SDKROOT} AND NOT "$ENV{SDKROOT}" STREQUAL "")
+        set(CMAKE_OSX_SYSROOT "$ENV{SDKROOT}" CACHE STRING "macOS SDK path" FORCE)
+    else()
+        execute_process(
+            COMMAND xcrun --sdk macosx --show-sdk-path
+            OUTPUT_VARIABLE detected_macos_sdk
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_QUIET
+        )
+
+        if(detected_macos_sdk)
+            set(CMAKE_OSX_SYSROOT "${detected_macos_sdk}" CACHE STRING "macOS SDK path" FORCE)
+        endif()
+    endif()
+endif()
+
+if(CMAKE_GENERATOR STREQUAL "Ninja" AND (NOT DEFINED CMAKE_MAKE_PROGRAM OR CMAKE_MAKE_PROGRAM STREQUAL ""))
+    find_program(HONEYCOMB_NINJA_PROGRAM ninja)
+    if(HONEYCOMB_NINJA_PROGRAM)
+        set(CMAKE_MAKE_PROGRAM "${HONEYCOMB_NINJA_PROGRAM}" CACHE FILEPATH "Ninja executable" FORCE)
+    endif()
+endif()
+
+project(Honeycomb VERSION 1.1.20260322 LANGUAGES C CXX)
+
+if(APPLE)
+    if(NOT DEFINED CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG OR CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG STREQUAL "")
+        set(CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG "-Wl,-rpath,")
+    endif()
+    if(NOT DEFINED CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG_SEP OR CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG_SEP STREQUAL "")
+        set(CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG_SEP ":")
+    endif()
+    if(NOT DEFINED CMAKE_SHARED_LIBRARY_SONAME_C_FLAG OR CMAKE_SHARED_LIBRARY_SONAME_C_FLAG STREQUAL "")
+        set(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG "-install_name")
+    endif()
+endif()
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
@@ -16,8 +52,20 @@ find_package(jsoncpp REQUIRED)
 find_package(PahoMqttCpp REQUIRED)
 find_package(ZXing REQUIRED)
 
+get_filename_component(HONEYCOMB_QT_PREFIX "${Qt6_DIR}/../../.." ABSOLUTE)
+set(HONEYCOMB_QT_LIB_DIR "${HONEYCOMB_QT_PREFIX}/lib")
+set(HONEYCOMB_APP_DISPLAY_NAME "蜂巢工具箱")
+set(HONEYCOMB_INFO_PLIST "${CMAKE_CURRENT_BINARY_DIR}/Honeycomb-Info.plist")
+
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Info.plist.in"
+    "${HONEYCOMB_INFO_PLIST}"
+    @ONLY
+)
 
 qt_standard_project_setup(REQUIRES 6.8)
+
+set_source_files_properties(logo.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
 
 qt_add_executable(appHoneycomb
@@ -178,12 +226,29 @@ qt_add_qml_module(appHoneycomb
 # explicit, fixed bundle identifier manually though.
 set_target_properties(appHoneycomb PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER com.yourcompany.appHoneycomb
+    MACOSX_BUNDLE_BUNDLE_NAME "${HONEYCOMB_APP_DISPLAY_NAME}"
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_COPYRIGHT "Honeycomb"
+    MACOSX_BUNDLE_INFO_PLIST "${HONEYCOMB_INFO_PLIST}"
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE_ICON_FILE logo
     MACOSX_BUNDLE TRUE
+    MACOSX_RPATH TRUE
     WIN32_EXECUTABLE TRUE
 )
+
+if(APPLE)
+    set_target_properties(appHoneycomb PROPERTIES
+        BUILD_RPATH "@executable_path/../Frameworks;${HONEYCOMB_QT_LIB_DIR}"
+        INSTALL_RPATH "@executable_path/../Frameworks;${HONEYCOMB_QT_LIB_DIR}"
+        INSTALL_RPATH_USE_LINK_PATH TRUE
+    )
+
+    target_link_options(appHoneycomb PRIVATE
+        "LINKER:-rpath,@executable_path/../Frameworks"
+        "LINKER:-rpath,${HONEYCOMB_QT_LIB_DIR}"
+    )
+endif()
 
 target_link_libraries(appHoneycomb
     PRIVATE

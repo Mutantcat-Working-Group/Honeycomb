@@ -4,6 +4,7 @@
         "conan": {}
     },
     "include": [
-        "build/CMakePresets.json"
+        "build/Qt_6_11_0_for_macOS-Debug/conan-dependencies/build/conan/CMakePresets.json",
+        "build/Qt_6_11_0_for_macOS-Release/conan-dependencies/build/conan/CMakePresets.json"
     ]
 }
