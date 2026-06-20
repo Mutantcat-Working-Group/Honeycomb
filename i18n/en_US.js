@@ -99,6 +99,8 @@ function getEnLang() {
         toolManifestDesc: "Manifest reference",
         toolHarmonyPermission: "Harmony Permissions",
         toolHarmonyPermissionDesc: "HarmonyOS permissions reference",
+        toolPermissionMatrix: "Permission Matrix Table",
+        toolPermissionMatrixDesc: "UNIX file permission matrix",
         toolHttpStatus: "HTTP Status Codes",
         toolHttpStatusDesc: "HTTP status code list",
         toolContentType: "Content-Type",

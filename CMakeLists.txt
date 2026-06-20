@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
-if(APPLE AND (NOT DEFINED CMAKE_OSX_SYSROOT OR CMAKE_OSX_SYSROOT STREQUAL ""))
-    if(DEFINED ENV{SDKROOT} AND NOT "$ENV{SDKROOT}" STREQUAL "")
+if(APPLE AND (NOT DEFINED CMAKE_OSX_SYSROOT OR CMAKE_OSX_SYSROOT STREQUAL "" OR NOT EXISTS "${CMAKE_OSX_SYSROOT}"))
+    if(DEFINED ENV{SDKROOT} AND NOT "$ENV{SDKROOT}" STREQUAL "" AND EXISTS "$ENV{SDKROOT}")
         set(CMAKE_OSX_SYSROOT "$ENV{SDKROOT}" CACHE STRING "macOS SDK path" FORCE)
     else()
         execute_process(
@@ -11,7 +11,7 @@ if(APPLE AND (NOT DEFINED CMAKE_OSX_SYSROOT OR CMAKE_OSX_SYSROOT STREQUAL ""))
             ERROR_QUIET
         )
 
-        if(detected_macos_sdk)
+        if(detected_macos_sdk AND EXISTS "${detected_macos_sdk}")
             set(CMAKE_OSX_SYSROOT "${detected_macos_sdk}" CACHE STRING "macOS SDK path" FORCE)
         endif()
     endif()
@@ -114,6 +114,7 @@ qt_add_qml_module(appHoneycomb
         windows/HtaccessNginxWindow.qml
         windows/ManifestWindow.qml
         windows/HarmonyPermissionWindow.qml
+        windows/PermissionMatrixWindow.qml
         windows/HttpStatusWindow.qml
         windows/ContentTypeWindow.qml
         windows/HtmlCharWindow.qml

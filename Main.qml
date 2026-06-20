@@ -53,6 +53,7 @@ ApplicationWindow {
         "htaccess转nginx": "qrc:/qt/qml/Honeycomb/windows/HtaccessNginxWindow.qml",
         "Android权限": "qrc:/qt/qml/Honeycomb/windows/ManifestWindow.qml",
         "Harmony权限": "qrc:/qt/qml/Honeycomb/windows/HarmonyPermissionWindow.qml",
+        "权限矩阵": "qrc:/qt/qml/Honeycomb/windows/PermissionMatrixWindow.qml",
         "HTTP状态码": "qrc:/qt/qml/Honeycomb/windows/HttpStatusWindow.qml",
         "Content-Type": "qrc:/qt/qml/Honeycomb/windows/ContentTypeWindow.qml",
         "HTML特殊字符": "qrc:/qt/qml/Honeycomb/windows/HtmlCharWindow.qml",
@@ -208,6 +209,7 @@ ApplicationWindow {
             {title: I18n.t("toolHtaccess"), subtitle: I18n.t("toolHtaccessDesc"), key: "htaccess转nginx"},
             {title: I18n.t("toolManifest"), subtitle: I18n.t("toolManifestDesc"), key: "Android权限"},
             {title: I18n.t("toolHarmonyPermission"), subtitle: I18n.t("toolHarmonyPermissionDesc"), key: "Harmony权限"},
+            {title: I18n.t("toolPermissionMatrix"), subtitle: I18n.t("toolPermissionMatrixDesc"), key: "权限矩阵"},
             {title: I18n.t("toolHttpStatus"), subtitle: I18n.t("toolHttpStatusDesc"), key: "HTTP状态码"},
             {title: I18n.t("toolContentType"), subtitle: I18n.t("toolContentTypeDesc"), key: "Content-Type"},
             {title: I18n.t("toolHtmlChar"), subtitle: I18n.t("toolHtmlCharDesc"), key: "HTML特殊字符"}

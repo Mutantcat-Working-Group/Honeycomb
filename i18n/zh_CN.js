@@ -99,6 +99,8 @@ function getZhLang() {
         toolManifestDesc: "Manifest参照表",
         toolHarmonyPermission: "Harmony权限",
         toolHarmonyPermissionDesc: "HarmonyOS权限参照表",
+        toolPermissionMatrix: "权限矩阵",
+        toolPermissionMatrixDesc: "UNIX文件权限矩阵",
         toolHttpStatus: "HTTP状态码",
         toolHttpStatusDesc: "HTTP状态码大全",
         toolContentType: "Content-Type",
