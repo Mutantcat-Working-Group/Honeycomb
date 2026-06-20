@@ -163,8 +163,11 @@ Window {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 86
                     radius: 10
-                    color: "#ffffff"
-                    border.color: "#d9dee8"
+                    color: numericCard.hovered ? "#f8fbff" : "#ffffff"
+                    border.color: numericCard.hovered ? "#1976d2" : "#d9dee8"
+
+                    id: numericCard
+                    property bool hovered: false
 
                     Column {
                         anchors.centerIn: parent
@@ -185,14 +188,26 @@ Window {
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
                     }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        hoverEnabled: true
+                        onEntered: numericCard.hovered = true
+                        onExited: numericCard.hovered = false
+                        onClicked: copyToClipboard(numericMode())
+                    }
                 }
 
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 86
                     radius: 10
-                    color: "#ffffff"
-                    border.color: "#d9dee8"
+                    color: symbolicCard.hovered ? "#f8fbff" : "#ffffff"
+                    border.color: symbolicCard.hovered ? "#1976d2" : "#d9dee8"
+
+                    id: symbolicCard
+                    property bool hovered: false
 
                     Column {
                         anchors.centerIn: parent
@@ -213,6 +228,15 @@ Window {
                             color: "#667085"
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        hoverEnabled: true
+                        onEntered: symbolicCard.hovered = true
+                        onExited: symbolicCard.hovered = false
+                        onClicked: copyToClipboard(symbolicMode())
                     }
                 }
             }
