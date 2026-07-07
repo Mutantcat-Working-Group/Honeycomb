@@ -11,7 +11,6 @@
 - 软件功能还在不断拓展，软件版本会按需打包
 - 已转为Qt实现，轻量、快速、稳定、兼容
 
-
 ### 二、功能列表
 
 #### 编码工具
@@ -48,10 +47,11 @@
 - htaccess转nginx
 - Android权限
 - Harmony权限
+- 权限矩阵（UNIX chmod）
+- Cron表达式解析
 - HTTP状态码
 - Content-Type
 - HTML特殊字符
-- 权限矩阵
 
 #### 加密工具
 - Windows加密
@@ -76,6 +76,7 @@
 - RESTful测试
 - MQTT监听
 - MQTT广播
+- DNS查询
 - 子网掩码计算器
 - RTSP预览
 - 文件夹映射
@@ -92,7 +93,7 @@
 - AI提示词
 - Agent协同
 - 对照降AI
-- 上下文飘窗
+- 上下文飘窗（支持预设插入）
 - OpenAI API测试
 - NN对照表
 - Layer对照表
