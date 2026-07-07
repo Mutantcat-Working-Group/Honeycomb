@@ -48,6 +48,20 @@ Window {
         clipboardArea.text = ""
         copyFeedback.show()
     }
+
+    function pathFromDrop(drop) {
+        var value = ""
+        if (drop.urls && drop.urls.length > 0) {
+            value = drop.urls[0].toString()
+        } else if (drop.text && drop.text.length > 0) {
+            value = drop.text.trim()
+        }
+
+        if (value.indexOf("file://") === 0) {
+            value = value.replace(/^file:\/\//, "")
+        }
+        return decodeURIComponent(value).replace(/\r?\n/g, "")
+    }
     
     TextArea {
         id: clipboardArea
@@ -154,18 +168,41 @@ Window {
                     Layout.fillWidth: true
                     spacing: 10
                     
-                    TextField {
-                        id: filePathInput
+                    Rectangle {
                         Layout.fillWidth: true
-                        placeholderText: I18n.t("winEncryptFilePlaceholder") || "请输入文件完整路径..."
-                        text: filePath
-                        onTextChanged: filePath = text
-                        
-                        background: Rectangle {
-                            color: "white"
-                            border.color: filePathInput.activeFocus ? "#1976d2" : "#e0e0e0"
-                            border.width: filePathInput.activeFocus ? 2 : 1
-                            radius: 4
+                        Layout.preferredHeight: 36
+                        color: "white"
+                        border.color: fileDropArea.containsDrag ? "#1976d2" : (filePathInput.activeFocus ? "#1976d2" : "#e0e0e0")
+                        border.width: (fileDropArea.containsDrag || filePathInput.activeFocus) ? 2 : 1
+                        radius: 4
+
+                        TextField {
+                            id: filePathInput
+                            anchors.fill: parent
+                            anchors.leftMargin: 1
+                            anchors.rightMargin: 1
+                            anchors.topMargin: 1
+                            anchors.bottomMargin: 1
+                            placeholderText: fileDropArea.containsDrag
+                                             ? (I18n.t("winEncryptDropTip") || "松开后填入文件路径")
+                                             : (I18n.t("winEncryptFilePlaceholder") || "请输入文件完整路径...")
+                            text: filePath
+                            onTextChanged: filePath = text
+
+                            background: null
+                        }
+
+                        DropArea {
+                            id: fileDropArea
+                            anchors.fill: parent
+                            onDropped: function(drop) {
+                                var droppedPath = pathFromDrop(drop)
+                                if (droppedPath.length > 0) {
+                                    filePathInput.text = droppedPath
+                                    filePath = droppedPath
+                                }
+                                drop.accept()
+                            }
                         }
                     }
                     
