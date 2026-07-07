@@ -1,0 +1,16 @@
+module QtQuick.Controls.iOS.impl
+linktarget Qt6::qtquickcontrols2iosstyleimplplugin
+optional plugin qtquickcontrols2iosstyleimplplugin
+classname QtQuick_Controls_iOS_implPlugin
+typeinfo plugins.qmltypes
+prefer :/qt-project.org/imports/QtQuick/Controls/iOS/impl/
+CopyAction 6.11 CopyAction.qml
+CursorDelegate 6.0 CursorDelegate.qml
+CutAction 6.11 CutAction.qml
+DeleteAction 6.11 DeleteAction.qml
+DialogButtonBoxDelegate 6.0 DialogButtonBoxDelegate.qml
+PasteAction 6.11 PasteAction.qml
+SelectAllAction 6.11 SelectAllAction.qml
+TextEditingContextMenu 6.11 TextEditingContextMenu.qml
+depends QtQuick
+

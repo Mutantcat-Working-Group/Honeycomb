@@ -147,12 +147,54 @@ Window {
         }
     }
 
-    Menu {
+    Popup {
         id: insertMenu
+        width: 180
+        height: 42
+        padding: 0
+        modal: false
+        focus: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
-        MenuItem {
-            text: insertPresets[0].title
-            onTriggered: insertAtEnd(insertPresets[0].content)
+        background: Rectangle {
+            color: "white"
+            border.color: "#d0d0d0"
+            border.width: 1
+            radius: 4
+        }
+
+        contentItem: Rectangle {
+            color: "transparent"
+
+            Rectangle {
+                id: insertPresetItem
+                anchors.fill: parent
+                anchors.margins: 1
+                radius: 3
+                color: insertPresetMouse.containsMouse ? "#f5f5f5" : "white"
+
+                Text {
+                    anchors.fill: parent
+                    anchors.leftMargin: 12
+                    anchors.rightMargin: 12
+                    text: insertPresets[0].title
+                    font.pixelSize: 13
+                    color: "#333333"
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+
+                MouseArea {
+                    id: insertPresetMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        insertAtEnd(insertPresets[0].content)
+                        insertMenu.close()
+                    }
+                }
+            }
         }
     }
     
@@ -217,7 +259,12 @@ Window {
                     Layout.preferredWidth: 90
                     Layout.preferredHeight: 32
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                    onClicked: insertMenu.popup()
+                    onClicked: {
+                        var point = insertBtn.mapToItem(contextFloatWindow.contentItem, 0, insertBtn.height + 4)
+                        insertMenu.x = point.x
+                        insertMenu.y = point.y
+                        insertMenu.open()
+                    }
 
                     background: Rectangle {
                         color: parent.hovered ? "#fff0f0" : "#e8e8e8"

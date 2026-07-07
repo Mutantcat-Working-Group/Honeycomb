@@ -55,7 +55,7 @@ Window {
                     spacing: 12
 
                     Text {
-                        text: "查询设置"
+                        text: I18n.t("dnsSettings") || "查询设置"
                         font.pixelSize: 16
                         font.bold: true
                         color: "#333333"
@@ -74,6 +74,13 @@ Window {
                             selectByMouse: true
                             onTextChanged: dnsTool.domain = text
                             onAccepted: dnsTool.lookup()
+
+                            background: Rectangle {
+                                color: "white"
+                                border.color: domainInput.focus ? "#1976d2" : "#e0e0e0"
+                                border.width: domainInput.focus ? 2 : 1
+                                radius: 4
+                            }
                         }
 
                         ComboBox {
@@ -82,14 +89,35 @@ Window {
                             model: ["A", "AAAA", "CNAME", "MX", "NS", "TXT", "PTR", "SRV"]
                             onActivated: dnsTool.recordType = currentText
                             Component.onCompleted: dnsTool.recordType = currentText
+
+                            background: Rectangle {
+                                color: "white"
+                                border.color: recordTypeCombo.focus ? "#1976d2" : "#e0e0e0"
+                                border.width: recordTypeCombo.focus ? 2 : 1
+                                radius: 4
+                            }
                         }
 
                         Button {
-                            text: dnsTool.isLoading ? "查询中..." : (I18n.t("searchBtn") || "查询")
+                            text: dnsTool.isLoading ? (I18n.t("querying") || "查询中...") : (I18n.t("searchBtn") || "查询")
                             enabled: !dnsTool.isLoading
                             Layout.preferredWidth: 96
                             Layout.preferredHeight: 36
                             onClicked: dnsTool.lookup()
+
+                            background: Rectangle {
+                                color: parent.enabled ? (parent.pressed ? "#1565c0" : (parent.hovered ? "#1e88e5" : "#1976d2")) : "#cccccc"
+                                radius: 4
+                            }
+
+                            contentItem: Text {
+                                text: parent.text
+                                color: "white"
+                                font.pixelSize: 14
+                                font.bold: true
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
                         }
 
                         Button {
@@ -97,11 +125,26 @@ Window {
                             Layout.preferredWidth: 82
                             Layout.preferredHeight: 36
                             onClicked: dnsTool.clear()
+
+                            background: Rectangle {
+                                color: parent.pressed ? "#f0f0f0" : (parent.hovered ? "#f5f5f5" : "white")
+                                border.color: "#e0e0e0"
+                                border.width: 1
+                                radius: 4
+                            }
+
+                            contentItem: Text {
+                                text: parent.text
+                                color: "#666666"
+                                font.pixelSize: 14
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
                         }
                     }
 
                     Text {
-                        text: "支持 A、AAAA、CNAME、MX、NS、TXT、PTR、SRV 记录"
+                        text: I18n.t("dnsSupportTip") || "支持 A、AAAA、CNAME、MX、NS、TXT、PTR、SRV 记录"
                         font.pixelSize: 12
                         color: "#777777"
                     }
@@ -124,7 +167,7 @@ Window {
                         Layout.fillWidth: true
 
                         Text {
-                            text: "查询结果"
+                            text: I18n.t("dnsResult") || "查询结果"
                             font.pixelSize: 16
                             font.bold: true
                             color: "#333333"
@@ -170,7 +213,7 @@ Window {
                             wrapMode: TextArea.Wrap
                             font.family: "Menlo"
                             font.pixelSize: 13
-                            placeholderText: "点击查询后显示 DNS 记录"
+                            placeholderText: I18n.t("dnsResultPlaceholder") || "点击查询后显示 DNS 记录"
                         }
                     }
                 }

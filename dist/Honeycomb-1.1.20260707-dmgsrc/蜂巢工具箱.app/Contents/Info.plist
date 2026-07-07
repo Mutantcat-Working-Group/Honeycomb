@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "https://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string></string>
+    <key>CFBundleDisplayName</key>
+    <string>蜂巢工具箱</string>
+    <key>CFBundleExecutable</key>
+    <string>appHoneycomb</string>
+    <key>CFBundleIconFile</key>
+    <string>logo</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.yourcompany.appHoneycomb</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>蜂巢工具箱</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.1</string>
+    <key>CFBundleVersion</key>
+    <string>1.1.20260707</string>
+    <key>LSMinimumSystemVersion</key>
+    <string></string>
+    <key>NSHumanReadableCopyright</key>
+    <string>Honeycomb</string>
+    <key>NSPrincipalClass</key>
+    <string>NSApplication</string>
+</dict>
+</plist>

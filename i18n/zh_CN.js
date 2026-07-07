@@ -103,6 +103,11 @@ function getZhLang() {
         toolPermissionMatrixDesc: "UNIX文件权限矩阵",
         toolCronParser: "Cron表达式解析",
         toolCronParserDesc: "解析Cron并计算执行时间",
+        cronExpression: "Cron 表达式",
+        cronPlaceholder: "分 时 日 月 周，例如：*/5 9-18 * * MON-FRI",
+        cronSupportTip: "支持 *、逗号、范围、步进，例如：0 2 * * *、*/15 9-17 * * 1-5",
+        cronRecentRuns: "最近 10 次执行时间",
+        cronFieldDetails: "字段解析",
         toolHttpStatus: "HTTP状态码",
         toolHttpStatusDesc: "HTTP状态码大全",
         toolContentType: "Content-Type",
@@ -153,6 +158,10 @@ function getZhLang() {
         toolMqttPubDesc: "MQTT消息发布",
         toolDNSLookup: "DNS查询",
         toolDNSLookupDesc: "查询域名DNS记录",
+        dnsSettings: "查询设置",
+        dnsSupportTip: "支持 A、AAAA、CNAME、MX、NS、TXT、PTR、SRV 记录",
+        dnsResult: "查询结果",
+        dnsResultPlaceholder: "点击查询后显示 DNS 记录",
         toolSubnet: "子网掩码计算器",
         toolSubnetDesc: "IP地址与子网划分",
         toolRtsp: "RTSP预览",
@@ -311,7 +320,7 @@ function getZhLang() {
         aboutTitle: "关于蜂巢",
         aboutDesc: "蜂巢工具箱是一个离线工具箱，提供了一些常用的工具。",
         aboutWebsite: "官网：www.mutantcat.org",
-        aboutVersion: "版本：1.1.20260322",
+        aboutVersion: "版本：1.1.20260707",
 
         // 更新日志窗口
         changelogTitle: "更新日志",
@@ -322,6 +331,8 @@ function getZhLang() {
         changelogAIFeatureDesc: "新增Agent协同、OpenAI API测试等AI相关功能",
         changelogQtMigration: "迁移至Qt实现",
         changelogQtMigrationDesc: "全面重构UI框架，采用Qt/QML技术栈，提供更流畅的用户体验和跨平台支持",
+        changelog20260707: "新增开发与网络工具",
+        changelog20260707Desc: "新增UNIX权限矩阵、Cron表达式解析、DNS查询；优化上下文飘窗布局并支持插入AI八荣八耻",
         
         // 新增工具功能
         changelogNewTools: "新增工具功能",
@@ -341,6 +352,9 @@ function getZhLang() {
         clickToGenerate: "点击上方按钮生成",
         formatBtn: "格式化",
         clearBtn: "清空",
+        parseBtn: "解析",
+        searchBtn: "查询",
+        querying: "查询中...",
 
         // JSON 格式化工具
         jsonInputPlaceholder: "在此输入或粘贴 JSON 数据...",

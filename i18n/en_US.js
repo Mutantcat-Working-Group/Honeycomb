@@ -103,6 +103,11 @@ function getEnLang() {
         toolPermissionMatrixDesc: "UNIX file permission matrix",
         toolCronParser: "Cron Parser",
         toolCronParserDesc: "Parse cron and list run times",
+        cronExpression: "Cron Expression",
+        cronPlaceholder: "minute hour day month weekday, e.g. */5 9-18 * * MON-FRI",
+        cronSupportTip: "Supports *, comma, ranges, and steps, e.g. 0 2 * * * or */15 9-17 * * 1-5",
+        cronRecentRuns: "Next 10 Run Times",
+        cronFieldDetails: "Field Details",
         toolHttpStatus: "HTTP Status Codes",
         toolHttpStatusDesc: "HTTP status code list",
         toolContentType: "Content-Type",
@@ -153,6 +158,10 @@ function getEnLang() {
         toolMqttPubDesc: "MQTT message publish",
         toolDNSLookup: "DNS Lookup",
         toolDNSLookupDesc: "Query domain DNS records",
+        dnsSettings: "Query Settings",
+        dnsSupportTip: "Supports A, AAAA, CNAME, MX, NS, TXT, PTR, and SRV records",
+        dnsResult: "Query Result",
+        dnsResultPlaceholder: "DNS records will appear here after search",
         toolSubnet: "Subnet Calculator",
         toolSubnetDesc: "IP & subnet calculation",
         toolRtsp: "RTSP Preview",
@@ -311,7 +320,7 @@ function getEnLang() {
         aboutTitle: "About Honeycomb",
         aboutDesc: "Honeycomb is an offline toolbox that provides some commonly used tools.",
         aboutWebsite: "Website: www.mutantcat.org",
-        aboutVersion: "Version: 1.1.20260322",
+        aboutVersion: "Version: 1.1.20260707",
         
         // Changelog window
         changelogTitle: "Changelog",
@@ -322,6 +331,8 @@ function getEnLang() {
         changelogAIFeatureDesc: "Added Agent Collaboration, OpenAI API Test and other AI-related features",
         changelogQtMigration: "Migrated to Qt",
         changelogQtMigrationDesc: "Complete UI framework refactoring using Qt/QML technology stack, providing smoother user experience and cross-platform support",
+        changelog20260707: "Added Developer and Network Tools",
+        changelog20260707Desc: "Added UNIX Permission Matrix, Cron Parser, DNS Lookup; improved Context Float layout and AI Eight Honors insertion",
         
         // New tools
         changelogNewTools: "New Tools Added",
@@ -341,6 +352,9 @@ function getEnLang() {
         clickToGenerate: "Click button above to generate",
         formatBtn: "Format",
         clearBtn: "Clear",
+        parseBtn: "Parse",
+        searchBtn: "Search",
+        querying: "Searching...",
         
         // JSON Format tool
         jsonInputPlaceholder: "Enter or paste JSON data here...",

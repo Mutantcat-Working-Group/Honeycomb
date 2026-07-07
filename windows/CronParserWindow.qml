@@ -188,7 +188,7 @@ Window {
                     spacing: 12
 
                     Text {
-                        text: "Cron 表达式"
+                        text: I18n.t("cronExpression") || "Cron 表达式"
                         font.pixelSize: 16
                         font.bold: true
                         color: "#333333"
@@ -202,10 +202,17 @@ Window {
                             id: cronInput
                             Layout.fillWidth: true
                             text: "*/5 9-18 * * MON-FRI"
-                            placeholderText: "分 时 日 月 周，例如：*/5 9-18 * * MON-FRI"
+                            placeholderText: I18n.t("cronPlaceholder") || "分 时 日 月 周，例如：*/5 9-18 * * MON-FRI"
                             font.pixelSize: 14
                             selectByMouse: true
                             onAccepted: parseCron()
+
+                            background: Rectangle {
+                                color: "white"
+                                border.color: cronInput.focus ? "#1976d2" : "#e0e0e0"
+                                border.width: cronInput.focus ? 2 : 1
+                                radius: 4
+                            }
                         }
 
                         Button {
@@ -213,11 +220,25 @@ Window {
                             Layout.preferredWidth: 96
                             Layout.preferredHeight: 36
                             onClicked: parseCron()
+
+                            background: Rectangle {
+                                color: parent.pressed ? "#1565c0" : (parent.hovered ? "#1e88e5" : "#1976d2")
+                                radius: 4
+                            }
+
+                            contentItem: Text {
+                                text: parent.text
+                                color: "white"
+                                font.pixelSize: 14
+                                font.bold: true
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
                         }
                     }
 
                     Text {
-                        text: "支持 *、逗号、范围、步进，例如：0 2 * * *、*/15 9-17 * * 1-5"
+                        text: I18n.t("cronSupportTip") || "支持 *、逗号、范围、步进，例如：0 2 * * *、*/15 9-17 * * 1-5"
                         font.pixelSize: 12
                         color: "#777777"
                     }
@@ -242,7 +263,7 @@ Window {
                         spacing: 10
 
                         Text {
-                            text: "最近 10 次执行时间"
+                            text: I18n.t("cronRecentRuns") || "最近 10 次执行时间"
                             font.pixelSize: 16
                             font.bold: true
                             color: "#333333"
@@ -276,7 +297,7 @@ Window {
                         spacing: 10
 
                         Text {
-                            text: "字段解析"
+                            text: I18n.t("cronFieldDetails") || "字段解析"
                             font.pixelSize: 16
                             font.bold: true
                             color: "#333333"

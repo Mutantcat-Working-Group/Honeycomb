@@ -45,6 +45,59 @@ Window {
                 ColumnLayout {
                     width: changelogWindow.width - 60
                     spacing: 15
+
+                    // 更新条目 - 1.1.20260707
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 92
+                        color: "white"
+                        border.color: "#e0e0e0"
+                        border.width: 1
+                        radius: 8
+                        
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 15
+                            spacing: 15
+                            
+                            // 日期标签
+                            Rectangle {
+                                Layout.preferredWidth: 120
+                                Layout.preferredHeight: 40
+                                color: "#9c27b0"
+                                radius: 6
+                                
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "1.1.20260707"
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    color: "white"
+                                }
+                            }
+                            
+                            // 更新内容
+                            Column {
+                                Layout.fillWidth: true
+                                spacing: 5
+                                
+                                Text {
+                                    text: I18n.t("changelog20260707") || "新增开发与网络工具"
+                                    font.pixelSize: 16
+                                    font.bold: true
+                                    color: "#333"
+                                }
+                                
+                                Text {
+                                    text: I18n.t("changelog20260707Desc") || "新增UNIX权限矩阵、Cron表达式解析、DNS查询；优化上下文飘窗布局并支持插入AI八荣八耻"
+                                    width: parent.width
+                                    font.pixelSize: 14
+                                    color: "#666"
+                                    wrapMode: Text.WordWrap
+                                }
+                            }
+                        }
+                    }
                     
                     // 更新条目 - 1.1.20260322
                     Rectangle {
