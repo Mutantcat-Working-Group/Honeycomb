@@ -46,7 +46,7 @@ if(MSVC)
     add_compile_options(/utf-8)
 endif()
 
-find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 Widgets WebSockets Multimedia)
+find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 Widgets WebSockets Multimedia Network)
 find_package(yaml-cpp REQUIRED)
 find_package(jsoncpp REQUIRED)
 find_package(PahoMqttCpp REQUIRED)
@@ -115,6 +115,7 @@ qt_add_qml_module(appHoneycomb
         windows/ManifestWindow.qml
         windows/HarmonyPermissionWindow.qml
         windows/PermissionMatrixWindow.qml
+        windows/CronParserWindow.qml
         windows/HttpStatusWindow.qml
         windows/ContentTypeWindow.qml
         windows/HtmlCharWindow.qml
@@ -131,6 +132,7 @@ qt_add_qml_module(appHoneycomb
         windows/RestfulTestWindow.qml
         windows/MQTTListenerWindow.qml
         windows/MQTTPublisherWindow.qml
+        windows/DNSLookupWindow.qml
         windows/SubnetCalculatorWindow.qml
         windows/RTSPViewerWindow.qml
         windows/RegisterRangeWindow.qml
@@ -220,6 +222,8 @@ qt_add_qml_module(appHoneycomb
         src/OpenAIClient.cpp
         src/AgentPromptManager.h
         src/AgentPromptManager.cpp
+        src/DNSLookupTool.h
+        src/DNSLookupTool.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -258,6 +262,7 @@ target_link_libraries(appHoneycomb
         Qt6::Widgets
         Qt6::WebSockets
         Qt6::Multimedia
+        Qt6::Network
         yaml-cpp::yaml-cpp
         JsonCpp::JsonCpp
         PahoMqttCpp::paho-mqttpp3-static

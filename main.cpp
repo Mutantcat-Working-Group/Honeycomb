@@ -34,6 +34,7 @@
 #include "src/AESCrypto.h"
 #include "src/OpenAIClient.h"
 #include "src/AgentPromptManager.h"
+#include "src/DNSLookupTool.h"
 
 int main(int argc, char *argv[])
 {
@@ -83,6 +84,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<AESCrypto>("Honeycomb", 1, 0, "AESCrypto");
     qmlRegisterType<OpenAIClient>("Honeycomb", 1, 0, "OpenAIClient");
     qmlRegisterType<AgentPromptManager>("Honeycomb", 1, 0, "AgentPromptManager");
+    qmlRegisterType<DNSLookupTool>("Honeycomb", 1, 0, "DNSLookupTool");
 
     QQmlApplicationEngine engine;
     

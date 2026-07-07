@@ -24,6 +24,12 @@ Window {
     property var redoStack: []
     property bool isUndoRedo: false
     property int maxUndoSteps: 50
+    property var insertPresets: [
+        {
+            title: I18n.t("contextFloatInsertEightHonors"),
+            content: "### 荣辱观\n以认真查阅为荣，以暗猜接口为耻；\n以寻求确认为荣，以模糊执行为耻；\n以人类确认为荣，以盲想业务为耻；\n以复用现有为荣，以创造接口为耻；\n以主动测试为荣，以跳过验证为耻；\n以遵循规范为荣，以破坏架构为耻；\n以诚实无知为荣，以假装理解为耻；\n以谨慎重构为荣，以盲目修改为耻。"
+        }
+    ]
     
     // 默认内容
     property string defaultContent: "牢记项目目标和基本要求，执行当前操作！每句话的时候我都会提醒你，请严格！
@@ -117,6 +123,14 @@ Window {
     function resetToDefault() {
         contextTextArea.text = defaultContent
     }
+
+    // 插入预设内容到文本末尾
+    function insertAtEnd(text) {
+        var prefix = contextTextArea.text.length > 0 && !contextTextArea.text.endsWith("\n") ? "\n\n" : ""
+        contextTextArea.text = contextTextArea.text + prefix + text
+        contextTextArea.cursorPosition = contextTextArea.length
+        contextTextArea.forceActiveFocus()
+    }
     
     Timer {
         id: copyTimer
@@ -130,6 +144,15 @@ Window {
         interval: 500
         onTriggered: {
             pushUndo(contextTextArea.text)
+        }
+    }
+
+    Menu {
+        id: insertMenu
+
+        MenuItem {
+            text: insertPresets[0].title
+            onTriggered: insertAtEnd(insertPresets[0].content)
         }
     }
     
@@ -172,6 +195,7 @@ Window {
                 spacing: 15
                 
                 Column {
+                    Layout.fillWidth: true
                     spacing: 5
                     Text {
                         text: I18n.t("toolContextFloat")
@@ -186,14 +210,37 @@ Window {
                     }
                 }
                 
-                Item { Layout.fillWidth: true }
+                // 插入按钮
+                Button {
+                    id: insertBtn
+                    text: I18n.t("contextFloatInsert")
+                    Layout.preferredWidth: 90
+                    Layout.preferredHeight: 32
+                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                    onClicked: insertMenu.popup()
+
+                    background: Rectangle {
+                        color: parent.hovered ? "#fff0f0" : "#e8e8e8"
+                        radius: 4
+                        border.color: parent.hovered ? "#ff6b6b" : "#ccc"
+                        border.width: 1
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        font.pixelSize: 13
+                        color: parent.hovered ? "#d32f2f" : "#333"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
                 
                 // 置顶按钮
                 Button {
                     id: pinBtn
                     text: alwaysOnTop ? I18n.t("contextFloatUnpin") : I18n.t("contextFloatPin")
-                    width: 90
-                    height: 32
+                    Layout.preferredWidth: 90
+                    Layout.preferredHeight: 32
+                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                     onClicked: toggleAlwaysOnTop()
                     
                     background: Rectangle {
@@ -224,16 +271,21 @@ Window {
                 
                 Text {
                     text: "💡 " + I18n.t("contextFloatTip")
+                    Layout.fillWidth: true
                     font.pixelSize: 12
                     color: "#888"
+                    wrapMode: Text.WordWrap
+                    elide: Text.ElideRight
+                    maximumLineCount: 2
                 }
-                
-                Item { Layout.fillWidth: true }
                 
                 Text {
                     text: I18n.t("contextFloatCharCount") + ": " + contextTextArea.length
+                    Layout.preferredWidth: 120
+                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                     font.pixelSize: 12
                     color: "#888"
+                    horizontalAlignment: Text.AlignRight
                 }
             }
             
@@ -292,8 +344,8 @@ Window {
                 }
                 
                 Rectangle {
-                    width: 150
-                    height: 32
+                    Layout.preferredWidth: 150
+                    Layout.preferredHeight: 32
                     color: "white"
                     border.color: tagInput.activeFocus ? "#0078d4" : "#d0d0d0"
                     border.width: tagInput.activeFocus ? 2 : 1
@@ -335,8 +387,9 @@ Window {
                 // 重置按钮
                 Button {
                     text: I18n.t("contextFloatReset")
-                    width: 70
-                    height: 32
+                    Layout.preferredWidth: 70
+                    Layout.preferredHeight: 32
+                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                     onClicked: resetDialog.open()
                     
                     background: Rectangle {
@@ -358,8 +411,9 @@ Window {
                 Button {
                     id: copyBtn
                     text: I18n.t("contextFloatCopyAll")
-                    width: 90
-                    height: 32
+                    Layout.preferredWidth: 90
+                    Layout.preferredHeight: 32
+                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                     enabled: contextTextArea.length > 0
                     onClicked: copyAll()
                     
