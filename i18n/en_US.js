@@ -335,6 +335,8 @@ function getEnLang() {
         contextFloatTagPlaceholder: "Enter tag...",
         contextFloatResetTitle: "Confirm Reset",
         contextFloatResetConfirm: "Are you sure to reset to default content? Current content will be lost.",
+        contextFloatCancel: "Cancel",
+        contextFloatConfirm: "OK",
         
         // About window
         aboutTitle: "About Honeycomb",

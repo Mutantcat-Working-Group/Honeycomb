@@ -335,6 +335,8 @@ function getZhLang() {
         contextFloatTagPlaceholder: "输入标签...",
         contextFloatResetTitle: "确认重置",
         contextFloatResetConfirm: "确定要重置为默认内容吗？当前内容将会丢失。",
+        contextFloatCancel: "取消",
+        contextFloatConfirm: "确定",
 
         // 关于窗口
         aboutTitle: "关于蜂巢",
