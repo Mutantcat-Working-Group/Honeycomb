@@ -342,7 +342,7 @@ function getZhLang() {
         aboutTitle: "关于蜂巢",
         aboutDesc: "蜂巢工具箱是一个离线工具箱，提供了一些常用的工具。",
         aboutWebsite: "官网：www.mutantcat.org",
-        aboutVersion: "版本：1.1.20260707",
+        aboutVersion: "版本：1.1.20260711",
 
         // 更新日志窗口
         changelogTitle: "更新日志",
@@ -353,6 +353,8 @@ function getZhLang() {
         changelogAIFeatureDesc: "新增Agent协同、OpenAI API测试等AI相关功能",
         changelogQtMigration: "迁移至Qt实现",
         changelogQtMigrationDesc: "全面重构UI框架，采用Qt/QML技术栈，提供更流畅的用户体验和跨平台支持",
+        changelog20260711: "处理 issue",
+        changelog20260711Desc: "处理 issue：#31、#32、#33",
         changelog20260707: "新增开发与网络工具",
         changelog20260707Desc: "新增UNIX权限矩阵、Cron表达式解析、DNS查询；优化上下文飘窗布局并支持插入AI八荣八耻",
         

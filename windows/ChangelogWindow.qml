@@ -46,6 +46,59 @@ Window {
                     width: changelogWindow.width - 60
                     spacing: 15
 
+                    // 更新条目 - 1.1.20260711
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 92
+                        color: "white"
+                        border.color: "#e0e0e0"
+                        border.width: 1
+                        radius: 8
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 15
+                            spacing: 15
+
+                            // 日期标签
+                            Rectangle {
+                                Layout.preferredWidth: 120
+                                Layout.preferredHeight: 40
+                                color: "#ff006e"
+                                radius: 6
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "1.1.20260711"
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    color: "white"
+                                }
+                            }
+
+                            // 更新内容
+                            Column {
+                                Layout.fillWidth: true
+                                spacing: 5
+
+                                Text {
+                                    text: I18n.t("changelog20260711") || "处理 issue"
+                                    font.pixelSize: 16
+                                    font.bold: true
+                                    color: "#333"
+                                }
+
+                                Text {
+                                    text: I18n.t("changelog20260711Desc") || "处理 issue：#31、#32、#33"
+                                    width: parent.width
+                                    font.pixelSize: 14
+                                    color: "#666"
+                                    wrapMode: Text.WordWrap
+                                }
+                            }
+                        }
+                    }
+
                     // 更新条目 - 1.1.20260707
                     Rectangle {
                         Layout.fillWidth: true
