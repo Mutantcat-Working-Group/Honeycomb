@@ -4,6 +4,6 @@
         "conan": {}
     },
     "include": [
-        "../honeycomb_build_release/CMakePresets.json"
+        "build/Qt_6_11_0_for_macOS-Release/conan-dependencies/build/conan/CMakePresets.json"
     ]
 }
