@@ -369,6 +369,49 @@ Window {
                                 undoTimer.restart()
                             }
                         }
+
+                        ContextMenu.menu: Menu {
+                            MenuItem {
+                                text: I18n.t("contextFloatUndo")
+                                enabled: undoStack.length > 1
+                                onTriggered: undo()
+                            }
+                            MenuItem {
+                                text: I18n.t("contextFloatRedo")
+                                enabled: redoStack.length > 0
+                                onTriggered: redo()
+                            }
+
+                            MenuSeparator {}
+
+                            MenuItem {
+                                text: I18n.t("contextFloatCut")
+                                enabled: contextTextArea.selectedText.length > 0
+                                onTriggered: contextTextArea.cut()
+                            }
+                            MenuItem {
+                                text: I18n.t("contextFloatCopy")
+                                enabled: contextTextArea.selectedText.length > 0
+                                onTriggered: contextTextArea.copy()
+                            }
+                            MenuItem {
+                                text: I18n.t("contextFloatPaste")
+                                onTriggered: contextTextArea.paste()
+                            }
+                            MenuItem {
+                                text: I18n.t("contextFloatDelete")
+                                enabled: contextTextArea.selectedText.length > 0
+                                onTriggered: contextTextArea.remove(contextTextArea.selectionStart, contextTextArea.selectionEnd)
+                            }
+
+                            MenuSeparator {}
+
+                            MenuItem {
+                                text: I18n.t("contextFloatSelectAll")
+                                enabled: contextTextArea.length > 0
+                                onTriggered: contextTextArea.selectAll()
+                            }
+                        }
                     }
                     
                     ScrollBar.vertical: ScrollBar {
