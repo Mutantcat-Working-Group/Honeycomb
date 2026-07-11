@@ -538,49 +538,54 @@ Window {
             wrapMode: Text.WordWrap
         }
 
-        footer: RowLayout {
-            spacing: 8
-            padding: 12
+        footer: Item {
+            implicitHeight: 60
 
-            Button {
-                text: I18n.t("contextFloatCancel")
-                Layout.fillWidth: true
-                Layout.preferredHeight: 36
-                onClicked: resetDialog.close()
+            RowLayout {
+                anchors.fill: parent
+                anchors.margins: 12
+                spacing: 8
 
-                background: Rectangle {
-                    color: parent.hovered ? "#e9e9e9" : "#f5f5f5"
-                    border.color: "#d0d0d0"
-                    radius: 4
-                }
-                contentItem: Text {
-                    text: parent.text
-                    font.pixelSize: 13
-                    color: "#333"
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-            }
+                Button {
+                    text: I18n.t("contextFloatCancel")
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 36
+                    onClicked: resetDialog.close()
 
-            Button {
-                text: I18n.t("contextFloatConfirm")
-                Layout.fillWidth: true
-                Layout.preferredHeight: 36
-                onClicked: {
-                    resetDialog.close()
-                    resetToDefault()
+                    background: Rectangle {
+                        color: parent.hovered ? "#e9e9e9" : "#f5f5f5"
+                        border.color: "#d0d0d0"
+                        radius: 4
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        font.pixelSize: 13
+                        color: "#333"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
                 }
 
-                background: Rectangle {
-                    color: parent.hovered ? "#006cbd" : "#0078d4"
-                    radius: 4
-                }
-                contentItem: Text {
-                    text: parent.text
-                    font.pixelSize: 13
-                    color: "white"
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
+                Button {
+                    text: I18n.t("contextFloatConfirm")
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 36
+                    onClicked: {
+                        resetDialog.close()
+                        resetToDefault()
+                    }
+
+                    background: Rectangle {
+                        color: parent.hovered ? "#006cbd" : "#0078d4"
+                        radius: 4
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        font.pixelSize: 13
+                        color: "white"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
                 }
             }
         }
