@@ -35,6 +35,7 @@
 #include "src/OpenAIClient.h"
 #include "src/AgentPromptManager.h"
 #include "src/DNSLookupTool.h"
+#include "src/FileHashCalculator.h"
 
 int main(int argc, char *argv[])
 {
@@ -85,6 +86,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<OpenAIClient>("Honeycomb", 1, 0, "OpenAIClient");
     qmlRegisterType<AgentPromptManager>("Honeycomb", 1, 0, "AgentPromptManager");
     qmlRegisterType<DNSLookupTool>("Honeycomb", 1, 0, "DNSLookupTool");
+    qmlRegisterType<FileHashCalculator>("Honeycomb", 1, 0, "FileHashCalculator");
 
     QQmlApplicationEngine engine;
     

@@ -486,14 +486,60 @@ Window {
         title: I18n.t("contextFloatResetTitle")
         modal: true
         anchors.centerIn: parent
-        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: 320
         
-        Text {
+        contentItem: Text {
             text: I18n.t("contextFloatResetConfirm")
             font.pixelSize: 14
             color: "#333"
+            wrapMode: Text.WordWrap
         }
-        
-        onAccepted: resetToDefault()
+
+        footer: RowLayout {
+            spacing: 8
+            padding: 12
+
+            Button {
+                text: I18n.t("contextFloatCancel")
+                Layout.fillWidth: true
+                Layout.preferredHeight: 36
+                onClicked: resetDialog.close()
+
+                background: Rectangle {
+                    color: parent.hovered ? "#e9e9e9" : "#f5f5f5"
+                    border.color: "#d0d0d0"
+                    radius: 4
+                }
+                contentItem: Text {
+                    text: parent.text
+                    font.pixelSize: 13
+                    color: "#333"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+            }
+
+            Button {
+                text: I18n.t("contextFloatConfirm")
+                Layout.fillWidth: true
+                Layout.preferredHeight: 36
+                onClicked: {
+                    resetDialog.close()
+                    resetToDefault()
+                }
+
+                background: Rectangle {
+                    color: parent.hovered ? "#006cbd" : "#0078d4"
+                    radius: 4
+                }
+                contentItem: Text {
+                    text: parent.text
+                    font.pixelSize: 13
+                    color: "white"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+            }
+        }
     }
 }
