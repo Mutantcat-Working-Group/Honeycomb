@@ -363,6 +363,8 @@ function getZhLang() {
         contextFloatInsert: "插入",
         contextFloatInsertEightHonors: "AI八荣八耻",
         contextFloatInsertChineseAnswer: "用中文回答",
+        contextFloatInsertLocalTools: "自动检查本地工具",
+        contextFloatInsertEnterpriseImportance: "企业级重要性",
         contextFloatUndo: "撤销",
         contextFloatRedo: "重做",
         contextFloatCut: "剪切",

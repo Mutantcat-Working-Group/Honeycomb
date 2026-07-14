@@ -32,6 +32,14 @@ Window {
         {
             title: I18n.t("contextFloatInsertChineseAnswer"),
             content: "### 用中文回答\n- 思考过程使用中文显示\n- 选项询问使用中文询问\n- 结果使用中文总结\n- 只要是需要用户看懂的地方都使用中文回答"
+        },
+        {
+            title: I18n.t("contextFloatInsertLocalTools"),
+            content: "### 自动检查本地工具\n- 开始执行前先检查当前可用的本地工具、Skill、MCP、插件和项目脚本\n- 优先使用项目已有工具链和本地能力，不要盲目手写重复实现\n- 如果存在更适合的专用工具，先说明用途再调用\n- 工具不可用或权限不足时，明确说明原因并选择稳妥替代方案"
+        },
+        {
+            title: I18n.t("contextFloatInsertEnterpriseImportance"),
+            content: "### 企业级重要性\n- 这是线上项目，任何修改都要按生产级标准处理\n- 优先保证稳定性、兼容性、数据安全和可回滚性\n- 不做无关重构，不引入未经确认的破坏性变更\n- 修改后必须进行必要验证，并清楚说明验证结果和残余风险"
         }
     ]
     

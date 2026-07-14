@@ -363,6 +363,8 @@ function getEnLang() {
         contextFloatInsert: "Insert",
         contextFloatInsertEightHonors: "AI Eight Honors",
         contextFloatInsertChineseAnswer: "Answer in Chinese",
+        contextFloatInsertLocalTools: "Check Local Tools",
+        contextFloatInsertEnterpriseImportance: "Enterprise Importance",
         contextFloatUndo: "Undo",
         contextFloatRedo: "Redo",
         contextFloatCut: "Cut",
