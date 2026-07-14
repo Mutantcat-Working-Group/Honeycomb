@@ -1,4 +1,4 @@
-# Build directories
+﻿# Build directories
 build/
 debug/
 release/
@@ -68,3 +68,4 @@ Thumbs.db
 *.backup
 *.tmp
 *.temp
+dist/
