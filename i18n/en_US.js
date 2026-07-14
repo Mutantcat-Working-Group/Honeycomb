@@ -435,6 +435,12 @@ function getEnLang() {
         aboutDesc: "Honeycomb is an offline toolbox that provides some commonly used tools.",
         aboutWebsite: "Website: www.mutantcat.org",
         aboutVersion: "Version: 1.1.20260714",
+        aboutCheckUpdate: "Check for Updates",
+        aboutChecking: "Checking for updates...",
+        aboutLatest: "You are up to date",
+        aboutUpdateAvailable: "New version available: {0}",
+        aboutCheckFailed: "Unable to check for updates. Please try again later.",
+        aboutOpenDownload: "Open Download Page",
         
         // Changelog window
         changelogTitle: "Changelog",

@@ -26,6 +26,8 @@ endif()
 
 project(Honeycomb VERSION 1.1.20260714 LANGUAGES C CXX)
 
+include(CTest)
+
 if(APPLE)
     if(NOT DEFINED CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG OR CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG STREQUAL "")
         set(CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG "-Wl,-rpath,")
@@ -248,6 +250,8 @@ qt_add_qml_module(appHoneycomb
         src/FileHashCalculator.cpp
         src/FileUtilityTool.h
         src/FileUtilityTool.cpp
+        src/UpdateChecker.h
+        src/UpdateChecker.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -268,6 +272,7 @@ set_target_properties(appHoneycomb PROPERTIES
 
 if(APPLE)
     set_target_properties(appHoneycomb PROPERTIES
+        OUTPUT_NAME "${HONEYCOMB_APP_DISPLAY_NAME}"
         BUILD_RPATH "@executable_path/../Frameworks;${HONEYCOMB_QT_LIB_DIR}"
         INSTALL_RPATH "@executable_path/../Frameworks;${HONEYCOMB_QT_LIB_DIR}"
         INSTALL_RPATH_USE_LINK_PATH TRUE
@@ -292,6 +297,18 @@ target_link_libraries(appHoneycomb
         PahoMqttCpp::paho-mqttpp3-static
         ZXing::ZXing
 )
+
+target_compile_definitions(appHoneycomb PRIVATE HONEYCOMB_VERSION="${PROJECT_VERSION}")
+
+if(BUILD_TESTING)
+    qt_add_executable(update_checker_test
+        tests/UpdateCheckerTest.cpp
+        src/UpdateChecker.h
+        src/UpdateChecker.cpp
+    )
+    target_link_libraries(update_checker_test PRIVATE Qt6::Core Qt6::Network)
+    add_test(NAME UpdateCheckerTest COMMAND update_checker_test)
+endif()
 
 include(GNUInstallDirs)
 install(TARGETS appHoneycomb

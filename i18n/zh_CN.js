@@ -435,6 +435,12 @@ function getZhLang() {
         aboutDesc: "蜂巢工具箱是一个离线工具箱，提供了一些常用的工具。",
         aboutWebsite: "官网：www.mutantcat.org",
         aboutVersion: "版本：1.1.20260714",
+        aboutCheckUpdate: "检查更新",
+        aboutChecking: "正在检查更新...",
+        aboutLatest: "当前已是最新版本",
+        aboutUpdateAvailable: "发现新版本：{0}",
+        aboutCheckFailed: "检查更新失败，请稍后再试",
+        aboutOpenDownload: "打开下载页",
 
         // 更新日志窗口
         changelogTitle: "更新日志",
