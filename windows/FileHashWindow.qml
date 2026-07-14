@@ -38,7 +38,12 @@ Window {
         if (value.indexOf("file://") === 0) {
             value = value.replace(/^file:\/\//, "")
         }
-        return decodeURIComponent(value).replace(/\r?\n/g, "")
+
+        value = decodeURIComponent(value).replace(/\r?\n/g, "")
+        if (/^\/[A-Za-z]:\//.test(value)) {
+            value = value.substring(1)
+        }
+        return value
     }
 
     function acceptFilePath(path) {
