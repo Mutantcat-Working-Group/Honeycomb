@@ -434,7 +434,7 @@ function getEnLang() {
         aboutTitle: "About Honeycomb",
         aboutDesc: "Honeycomb is an offline toolbox that provides some commonly used tools.",
         aboutWebsite: "Website: www.mutantcat.org",
-        aboutVersion: "Version: 1.1.20260712",
+        aboutVersion: "Version: 1.1.20260714",
         
         // Changelog window
         changelogTitle: "Changelog",
@@ -445,6 +445,8 @@ function getEnLang() {
         changelogAIFeatureDesc: "Added Agent Collaboration, OpenAI API Test and other AI-related features",
         changelogQtMigration: "Migrated to Qt",
         changelogQtMigrationDesc: "Complete UI framework refactoring using Qt/QML technology stack, providing smoother user experience and cross-platform support",
+        changelog20260714: "Fixes and UX Improvements",
+        changelog20260714Desc: "Fixed macOS process/port manager data display and PATH Viewer button overflow",
         changelog20260712: "Fixed Window Launch Issues",
         changelog20260712Desc: "Fixed some feature pages failing to open",
         changelog20260711: "Issue Fixes",
