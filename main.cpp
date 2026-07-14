@@ -36,6 +36,7 @@
 #include "src/AgentPromptManager.h"
 #include "src/DNSLookupTool.h"
 #include "src/FileHashCalculator.h"
+#include "src/FileUtilityTool.h"
 
 int main(int argc, char *argv[])
 {
@@ -87,6 +88,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<AgentPromptManager>("Honeycomb", 1, 0, "AgentPromptManager");
     qmlRegisterType<DNSLookupTool>("Honeycomb", 1, 0, "DNSLookupTool");
     qmlRegisterType<FileHashCalculator>("Honeycomb", 1, 0, "FileHashCalculator");
+    qmlRegisterType<FileUtilityTool>("Honeycomb", 1, 0, "FileUtilityTool");
 
     QQmlApplicationEngine engine;
     

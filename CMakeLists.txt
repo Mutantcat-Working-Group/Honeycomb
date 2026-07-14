@@ -122,10 +122,13 @@ qt_add_qml_module(appHoneycomb
         windows/HtmlCharWindow.qml
         windows/WinEncryptWindow.qml
         windows/MD5Window.qml
+        windows/FileChecksumWindow.qml
         windows/FileHashWindow.qml
         windows/FileMD5Window.qml
         windows/FileSHA1Window.qml
         windows/FileSHA256Window.qml
+        windows/FileBase64Window.qml
+        windows/ImageCompressWindow.qml
         windows/SHA1Window.qml
         windows/SHA256Window.qml
         windows/PasswordStrengthWindow.qml
@@ -231,6 +234,8 @@ qt_add_qml_module(appHoneycomb
         src/DNSLookupTool.cpp
         src/FileHashCalculator.h
         src/FileHashCalculator.cpp
+        src/FileUtilityTool.h
+        src/FileUtilityTool.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

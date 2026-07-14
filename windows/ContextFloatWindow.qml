@@ -28,6 +28,10 @@ Window {
         {
             title: I18n.t("contextFloatInsertEightHonors"),
             content: "### 荣辱观\n以认真查阅为荣，以暗猜接口为耻；\n以寻求确认为荣，以模糊执行为耻；\n以人类确认为荣，以盲想业务为耻；\n以复用现有为荣，以创造接口为耻；\n以主动测试为荣，以跳过验证为耻；\n以遵循规范为荣，以破坏架构为耻；\n以诚实无知为荣，以假装理解为耻；\n以谨慎重构为荣，以盲目修改为耻。"
+        },
+        {
+            title: I18n.t("contextFloatInsertChineseAnswer"),
+            content: "### 用中文回答\n- 思考过程使用中文显示\n- 选项询问使用中文询问\n- 结果使用中文总结\n- 只要是需要用户看懂的地方都使用中文回答"
         }
     ]
     
@@ -150,7 +154,7 @@ Window {
     Popup {
         id: insertMenu
         width: 180
-        height: 42
+        height: insertPresets.length * 42
         padding: 0
         modal: false
         focus: true
@@ -166,32 +170,40 @@ Window {
         contentItem: Rectangle {
             color: "transparent"
 
-            Rectangle {
-                id: insertPresetItem
+            Column {
                 anchors.fill: parent
                 anchors.margins: 1
-                radius: 3
-                color: insertPresetMouse.containsMouse ? "#f5f5f5" : "white"
 
-                Text {
-                    anchors.fill: parent
-                    anchors.leftMargin: 12
-                    anchors.rightMargin: 12
-                    text: insertPresets[0].title
-                    font.pixelSize: 13
-                    color: "#333333"
-                    verticalAlignment: Text.AlignVCenter
-                    elide: Text.ElideRight
-                }
+                Repeater {
+                    model: insertPresets
 
-                MouseArea {
-                    id: insertPresetMouse
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        insertAtEnd(insertPresets[0].content)
-                        insertMenu.close()
+                    Rectangle {
+                        width: parent.width
+                        height: 40
+                        radius: 3
+                        color: insertPresetMouse.containsMouse ? "#f5f5f5" : "white"
+
+                        Text {
+                            anchors.fill: parent
+                            anchors.leftMargin: 12
+                            anchors.rightMargin: 12
+                            text: modelData.title
+                            font.pixelSize: 13
+                            color: "#333333"
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+
+                        MouseArea {
+                            id: insertPresetMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                insertAtEnd(modelData.content)
+                                insertMenu.close()
+                            }
+                        }
                     }
                 }
             }
