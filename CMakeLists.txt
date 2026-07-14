@@ -307,7 +307,18 @@ if(BUILD_TESTING)
         src/UpdateChecker.cpp
     )
     target_link_libraries(update_checker_test PRIVATE Qt6::Core Qt6::Network)
+    if(APPLE)
+        set_target_properties(update_checker_test PROPERTIES
+            BUILD_RPATH "${HONEYCOMB_QT_LIB_DIR}"
+        )
+    endif()
     add_test(NAME UpdateCheckerTest COMMAND update_checker_test)
+    add_test(
+        NAME AboutWindowLayoutTest
+        COMMAND ${CMAKE_COMMAND}
+            -DABOUT_QML=${CMAKE_CURRENT_SOURCE_DIR}/windows/AboutWindow.qml
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/AboutWindowLayoutTest.cmake
+    )
 endif()
 
 include(GNUInstallDirs)

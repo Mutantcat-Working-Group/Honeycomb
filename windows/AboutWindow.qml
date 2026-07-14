@@ -47,11 +47,25 @@ Window {
                 Layout.fillWidth: true
             }
 
-            Button {
+            // 官网
+            Text {
                 Layout.alignment: Qt.AlignHCenter
-                text: updateChecker.checking ? I18n.t("aboutChecking") : I18n.t("aboutCheckUpdate")
-                enabled: !updateChecker.checking
-                onClicked: updateChecker.checkForUpdates()
+                text: I18n.t("aboutWebsite")
+                font.pixelSize: 14
+                color: "#666"
+            }
+            
+            // 版本号
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                text: I18n.t("aboutVersion")
+                font.pixelSize: 14
+                color: "#666"
+            }
+
+            Item {
+                id: bottomSpacer
+                Layout.fillHeight: true
             }
 
             Text {
@@ -68,36 +82,56 @@ Window {
                     return I18n.t("aboutCheckFailed")
                 }
                 font.pixelSize: 14
-                color: updateChecker.status === "available" ? "#0984e3" : "#666"
+                color: updateChecker.status === "available" ? "#0078d4" : "#666"
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
             }
 
             Button {
                 Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: 110
+                Layout.preferredHeight: 36
                 visible: updateChecker.status === "available" && updateChecker.downloadUrl.toString() !== ""
                 text: I18n.t("aboutOpenDownload")
                 onClicked: Qt.openUrlExternally(updateChecker.downloadUrl)
+
+                background: Rectangle {
+                    color: parent.hovered ? "#f5f5f5" : "white"
+                    border.color: "#d0d0d0"
+                    border.width: 1
+                    radius: 4
+                }
+                contentItem: Text {
+                    text: parent.text
+                    color: "#333"
+                    font.pixelSize: 13
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
             }
-            
-            // 官网
-            Text {
+
+            Button {
+                id: checkUpdateButton
                 Layout.alignment: Qt.AlignHCenter
-                text: I18n.t("aboutWebsite")
-                font.pixelSize: 14
-                color: "#666"
-            }
-            
-            // 版本号
-            Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: I18n.t("aboutVersion")
-                font.pixelSize: 14
-                color: "#666"
-            }
-            
-            Item {
-                Layout.fillHeight: true
+                Layout.preferredWidth: 110
+                Layout.preferredHeight: 36
+                text: updateChecker.checking ? I18n.t("aboutChecking") : I18n.t("aboutCheckUpdate")
+                enabled: !updateChecker.checking
+                onClicked: updateChecker.checkForUpdates()
+
+                background: Rectangle {
+                    color: parent.enabled
+                           ? (parent.pressed ? "#005a9e" : (parent.hovered ? "#006cbd" : "#0078d4"))
+                           : "#c8c8c8"
+                    radius: 4
+                }
+                contentItem: Text {
+                    text: parent.text
+                    color: "white"
+                    font.pixelSize: 13
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
             }
         }
     }
