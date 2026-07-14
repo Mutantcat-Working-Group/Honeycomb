@@ -17,6 +17,9 @@
 - 条形码生成
 - 二维码生成
 - 识别二维码
+- 文件转Base64
+- Base64图片预览
+- 图片压缩
 - 时间戳转换
 - 颜色值转换
 - 中文转Unicode
@@ -44,6 +47,13 @@
 - 常用HTML颜色
 - 回车转br标签
 - 常用浏览器UA
+- PATH查看器
+- Docker命令速查
+- Docker Compose转换
+- SQL格式化
+- 快捷LDD
+- 进程管理
+- 端口管理
 - Go交叉编译
 - htaccess转nginx
 - Android权限
@@ -57,9 +67,11 @@
 #### 加密工具
 - Windows加密
 - MD5加密
+- 文件校验
 - 文件MD5
 - 文件SHA1
 - 文件SHA256
+- 文件信息查看
 - SHA1加密
 - SHA256加密
 - 密码强度分析

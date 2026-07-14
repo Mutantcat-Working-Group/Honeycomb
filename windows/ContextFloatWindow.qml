@@ -28,6 +28,18 @@ Window {
         {
             title: I18n.t("contextFloatInsertEightHonors"),
             content: "### 荣辱观\n以认真查阅为荣，以暗猜接口为耻；\n以寻求确认为荣，以模糊执行为耻；\n以人类确认为荣，以盲想业务为耻；\n以复用现有为荣，以创造接口为耻；\n以主动测试为荣，以跳过验证为耻；\n以遵循规范为荣，以破坏架构为耻；\n以诚实无知为荣，以假装理解为耻；\n以谨慎重构为荣，以盲目修改为耻。"
+        },
+        {
+            title: I18n.t("contextFloatInsertChineseAnswer"),
+            content: "### 用中文回答\n- 思考过程使用中文显示\n- 选项询问使用中文询问\n- 结果使用中文总结\n- 只要是需要用户看懂的地方都使用中文回答"
+        },
+        {
+            title: I18n.t("contextFloatInsertLocalTools"),
+            content: "### 自动检查本地工具\n- 开始执行前先检查当前可用的本地工具、Skill、MCP、插件和项目脚本\n- 优先使用项目已有工具链和本地能力，不要盲目手写重复实现\n- 如果存在更适合的专用工具，先说明用途再调用\n- 工具不可用或权限不足时，明确说明原因并选择稳妥替代方案"
+        },
+        {
+            title: I18n.t("contextFloatInsertEnterpriseImportance"),
+            content: "### 企业级重要性\n- 这是线上项目，任何修改都要按生产级标准处理\n- 优先保证稳定性、兼容性、数据安全和可回滚性\n- 不做无关重构，不引入未经确认的破坏性变更\n- 修改后必须进行必要验证，并清楚说明验证结果和残余风险"
         }
     ]
     
@@ -124,11 +136,19 @@ Window {
         contextTextArea.text = defaultContent
     }
 
-    // 插入预设内容到文本末尾
-    function insertAtEnd(text) {
-        var prefix = contextTextArea.text.length > 0 && !contextTextArea.text.endsWith("\n") ? "\n\n" : ""
-        contextTextArea.text = contextTextArea.text + prefix + text
-        contextTextArea.cursorPosition = contextTextArea.length
+    // 插入预设内容到当前光标位置；有选区时替换选区
+    function insertAtCursor(text) {
+        var originalText = contextTextArea.text
+        var hasSelection = contextTextArea.selectionStart !== contextTextArea.selectionEnd
+        var start = hasSelection ? Math.min(contextTextArea.selectionStart, contextTextArea.selectionEnd) : contextTextArea.cursorPosition
+        var end = hasSelection ? Math.max(contextTextArea.selectionStart, contextTextArea.selectionEnd) : contextTextArea.cursorPosition
+        var before = originalText.slice(0, start)
+        var after = originalText.slice(end)
+        var prefix = before.length > 0 && !before.endsWith("\n") ? "\n\n" : ""
+        var suffix = after.length > 0 && !after.startsWith("\n") ? "\n\n" : ""
+
+        contextTextArea.text = before + prefix + text + suffix + after
+        contextTextArea.cursorPosition = before.length + prefix.length + text.length
         contextTextArea.forceActiveFocus()
     }
     
@@ -150,7 +170,7 @@ Window {
     Popup {
         id: insertMenu
         width: 180
-        height: 42
+        height: insertPresets.length * 42
         padding: 0
         modal: false
         focus: true
@@ -166,32 +186,40 @@ Window {
         contentItem: Rectangle {
             color: "transparent"
 
-            Rectangle {
-                id: insertPresetItem
+            Column {
                 anchors.fill: parent
                 anchors.margins: 1
-                radius: 3
-                color: insertPresetMouse.containsMouse ? "#f5f5f5" : "white"
 
-                Text {
-                    anchors.fill: parent
-                    anchors.leftMargin: 12
-                    anchors.rightMargin: 12
-                    text: insertPresets[0].title
-                    font.pixelSize: 13
-                    color: "#333333"
-                    verticalAlignment: Text.AlignVCenter
-                    elide: Text.ElideRight
-                }
+                Repeater {
+                    model: insertPresets
 
-                MouseArea {
-                    id: insertPresetMouse
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        insertAtEnd(insertPresets[0].content)
-                        insertMenu.close()
+                    Rectangle {
+                        width: parent.width
+                        height: 40
+                        radius: 3
+                        color: insertPresetMouse.containsMouse ? "#f5f5f5" : "white"
+
+                        Text {
+                            anchors.fill: parent
+                            anchors.leftMargin: 12
+                            anchors.rightMargin: 12
+                            text: modelData.title
+                            font.pixelSize: 13
+                            color: "#333333"
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+
+                        MouseArea {
+                            id: insertPresetMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                insertAtCursor(modelData.content)
+                                insertMenu.close()
+                            }
+                        }
                     }
                 }
             }

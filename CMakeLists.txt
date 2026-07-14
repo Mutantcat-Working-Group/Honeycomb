@@ -24,7 +24,7 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND (NOT DEFINED CMAKE_MAKE_PROGRAM OR CMAKE
     endif()
 endif()
 
-project(Honeycomb VERSION 1.1.20260712 LANGUAGES C CXX)
+project(Honeycomb VERSION 1.1.20260714 LANGUAGES C CXX)
 
 if(APPLE)
     if(NOT DEFINED CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG OR CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG STREQUAL "")
@@ -111,6 +111,12 @@ qt_add_qml_module(appHoneycomb
         windows/HtmlColorWindow.qml
         windows/BrTagWindow.qml
         windows/UserAgentWindow.qml
+        windows/EnvironmentPathWindow.qml
+        windows/DockerToolWindow.qml
+        windows/SqlFormatWindow.qml
+        windows/LddQuickWindow.qml
+        windows/ProcessManagerWindow.qml
+        windows/PortManagerWindow.qml
         windows/GoCrossWindow.qml
         windows/HtaccessNginxWindow.qml
         windows/ManifestWindow.qml
@@ -122,10 +128,15 @@ qt_add_qml_module(appHoneycomb
         windows/HtmlCharWindow.qml
         windows/WinEncryptWindow.qml
         windows/MD5Window.qml
+        windows/FileChecksumWindow.qml
         windows/FileHashWindow.qml
         windows/FileMD5Window.qml
         windows/FileSHA1Window.qml
         windows/FileSHA256Window.qml
+        windows/FileBase64Window.qml
+        windows/FileInfoWindow.qml
+        windows/Base64ImagePreviewWindow.qml
+        windows/ImageCompressWindow.qml
         windows/SHA1Window.qml
         windows/SHA256Window.qml
         windows/PasswordStrengthWindow.qml
@@ -229,8 +240,14 @@ qt_add_qml_module(appHoneycomb
         src/AgentPromptManager.cpp
         src/DNSLookupTool.h
         src/DNSLookupTool.cpp
+        src/EnvironmentPathTool.h
+        src/EnvironmentPathTool.cpp
+        src/ProcessManagerTool.h
+        src/ProcessManagerTool.cpp
         src/FileHashCalculator.h
         src/FileHashCalculator.cpp
+        src/FileUtilityTool.h
+        src/FileUtilityTool.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

@@ -57,10 +57,21 @@ Window {
             value = drop.text.trim()
         }
 
-        if (value.indexOf("file://") === 0) {
-            value = value.replace(/^file:\/\//, "")
+        value = value.replace(/\r?\n/g, "")
+        try {
+            value = decodeURIComponent(value)
+        } catch (error) {
+            // 文件名可以包含裸 %，解码失败时保留原路径。
         }
-        return decodeURIComponent(value).replace(/\r?\n/g, "")
+
+        // file:///C:/、file:/C:/ 和 file:///C:\ 均归一为 Windows 本地路径。
+        // 仅移除 file:，这样 file://server/share 仍会保留 UNC 的 //server/share。
+        value = value.replace(/^file:\/\/localhost(?=\/)/i, "")
+        value = value.replace(/^file:/i, "")
+        if (/^\/+[A-Za-z]:[\\/]/.test(value)) {
+            value = value.replace(/^\/+/, "")
+        }
+        return value
     }
     
     TextArea {

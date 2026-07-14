@@ -5,26 +5,17 @@ import Honeycomb
 import "../i18n/i18n.js" as I18n
 
 Window {
-    id: fileHashWindow
-    width: 760
-    height: 560
-    minimumWidth: 680
-    minimumHeight: 480
-    title: algorithm + " " + (I18n.t("fileHash") || "文件哈希")
+    id: checksumWindow
+    width: 900
+    height: 680
+    minimumWidth: 760
+    minimumHeight: 560
+    title: I18n.t("toolFileChecksum") || "文件校验"
     flags: Qt.Window
     modality: Qt.NonModal
 
-    property string algorithm: "MD5"
-
-    FileHashCalculator {
-        id: calculator
-        algorithm: fileHashWindow.algorithm
-
-        onUppercaseChanged: {
-            if (result.length > 0) {
-                calculate()
-            }
-        }
+    FileUtilityTool {
+        id: fileTool
     }
 
     function pathFromDrop(drop) {
@@ -38,12 +29,7 @@ Window {
         value = value.replace(/\r?\n/g, "")
         try {
             value = decodeURIComponent(value)
-        } catch (error) {
-            // 文件名可以包含裸 %，解码失败时保留原路径。
-        }
-
-        // file:///C:/、file:/C:/ 和 file:///C:\ 均归一为 Windows 本地路径。
-        // 仅移除 file:，这样 file://server/share 仍会保留 UNC 的 //server/share。
+        } catch (error) {}
         value = value.replace(/^file:\/\/localhost(?=\/)/i, "")
         value = value.replace(/^file:/i, "")
         if (/^\/+[A-Za-z]:[\\/]/.test(value)) {
@@ -57,8 +43,8 @@ Window {
             return
         }
         filePathInput.text = path
-        calculator.filePath = path
-        calculator.calculate()
+        fileTool.filePath = path
+        fileTool.calculateAllHashes()
     }
 
     function copyToClipboard(text) {
@@ -67,6 +53,15 @@ Window {
         clipboardArea.copy()
         clipboardArea.text = ""
         copyFeedback.show()
+    }
+
+    function copyAllHashes() {
+        var text = "MD5: " + fileTool.md5 + "\n"
+                 + "SHA1: " + fileTool.sha1 + "\n"
+                 + "SHA256: " + fileTool.sha256 + "\n"
+                 + "SHA384: " + fileTool.sha384 + "\n"
+                 + "SHA512: " + fileTool.sha512
+        copyToClipboard(text)
     }
 
     TextArea {
@@ -88,14 +83,14 @@ Window {
                 spacing: 5
 
                 Text {
-                    text: algorithm + " " + (I18n.t("fileHash") || "文件哈希")
+                    text: I18n.t("toolFileChecksum") || "文件校验"
                     font.pixelSize: 22
                     font.bold: true
                     color: "#333"
                 }
 
                 Text {
-                    text: I18n.t("fileHashDesc") || "拖入文件或输入路径后计算文件哈希"
+                    text: I18n.t("toolFileChecksumDesc") || "拖入文件一次计算多种哈希并支持比对"
                     font.pixelSize: 13
                     color: "#666"
                 }
@@ -126,26 +121,26 @@ Window {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 42
                         color: "white"
-                        border.color: fileDropArea.containsDrag ? "#1976d2" : (filePathInput.activeFocus ? "#1976d2" : "#e0e0e0")
-                        border.width: (fileDropArea.containsDrag || filePathInput.activeFocus) ? 2 : 1
+                        border.color: checksumDropArea.containsDrag ? "#1976d2" : (filePathInput.activeFocus ? "#1976d2" : "#e0e0e0")
+                        border.width: (checksumDropArea.containsDrag || filePathInput.activeFocus) ? 2 : 1
                         radius: 4
 
                         TextField {
                             id: filePathInput
                             anchors.fill: parent
                             anchors.margins: 1
-                            placeholderText: fileDropArea.containsDrag
-                                             ? (I18n.t("fileHashDropTip") || "松开后计算文件哈希")
+                            placeholderText: checksumDropArea.containsDrag
+                                             ? (I18n.t("fileChecksumDropTip") || "松开后计算所有哈希")
                                              : (I18n.t("filePathPlaceholder") || "请输入文件完整路径，或拖入文件...")
                             font.pixelSize: 14
                             selectByMouse: true
-                            onTextChanged: calculator.filePath = text
-                            onAccepted: calculator.calculate()
+                            onTextChanged: fileTool.filePath = text
+                            onAccepted: fileTool.calculateAllHashes()
                             background: null
                         }
 
                         DropArea {
-                            id: fileDropArea
+                            id: checksumDropArea
                             anchors.fill: parent
                             onDropped: function(drop) {
                                 acceptFilePath(pathFromDrop(drop))
@@ -158,7 +153,7 @@ Window {
                         text: I18n.t("calculateBtn") || "计算"
                         Layout.preferredWidth: 90
                         Layout.preferredHeight: 38
-                        onClicked: calculator.calculate()
+                        onClicked: fileTool.calculateAllHashes()
 
                         background: Rectangle {
                             color: parent.pressed ? "#1565c0" : (parent.hovered ? "#1e88e5" : "#1976d2")
@@ -180,7 +175,8 @@ Window {
                         Layout.preferredHeight: 38
                         onClicked: {
                             filePathInput.text = ""
-                            calculator.clear()
+                            fileTool.filePath = ""
+                            fileTool.clearHashes()
                         }
 
                         background: Rectangle {
@@ -191,7 +187,7 @@ Window {
                         }
                         contentItem: Text {
                             text: parent.text
-                            color: "#666666"
+                            color: "#666"
                             font.pixelSize: 14
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -200,16 +196,13 @@ Window {
                 }
             }
 
-            RowLayout {
+            Text {
                 Layout.fillWidth: true
-
-                CheckBox {
-                    text: I18n.t("uppercase") || "大写输出"
-                    checked: false
-                    onCheckedChanged: calculator.uppercase = checked
-                }
-
-                Item { Layout.fillWidth: true }
+                text: fileTool.errorMessage
+                visible: fileTool.errorMessage.length > 0
+                font.pixelSize: 13
+                color: "#c62828"
+                wrapMode: Text.WordWrap
             }
 
             Rectangle {
@@ -229,7 +222,7 @@ Window {
                         Layout.fillWidth: true
 
                         Text {
-                            text: algorithm + " " + (I18n.t("resultLabel") || "结果") + ":"
+                            text: I18n.t("fileChecksumResult") || "校验结果"
                             font.pixelSize: 14
                             font.bold: true
                             color: "#333"
@@ -238,46 +231,40 @@ Window {
                         Item { Layout.fillWidth: true }
 
                         Button {
-                            text: I18n.t("copyBtn") || "复制"
-                            visible: calculator.result.length > 0
-                            onClicked: copyToClipboard(calculator.result)
+                            text: I18n.t("copyAll") || "复制全部"
+                            enabled: fileTool.md5.length > 0
+                            onClicked: copyAllHashes()
 
                             background: Rectangle {
-                                color: parent.pressed ? "#1565c0" : (parent.hovered ? "#1e88e5" : "#1976d2")
+                                color: parent.enabled ? (parent.hovered ? "#006cbd" : "#0078d4") : "#ccc"
                                 radius: 4
-                                implicitWidth: 80
+                                implicitWidth: 90
                                 implicitHeight: 32
                             }
                             contentItem: Text {
                                 text: parent.text
-                                font.pixelSize: 12
                                 color: "white"
+                                font.pixelSize: 12
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
                             }
                         }
                     }
 
-                    Rectangle {
+                    ScrollView {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        color: "#f8f9fa"
-                        border.color: "#e9ecef"
-                        border.width: 1
-                        radius: 4
+                        clip: true
 
-                        TextArea {
-                            anchors.fill: parent
-                            anchors.margins: 12
-                            text: calculator.errorMessage.length > 0 ? calculator.errorMessage : calculator.result
-                            readOnly: true
-                            font.pixelSize: 14
-                            font.family: "Consolas, Monaco, monospace"
-                            color: calculator.errorMessage.length > 0 ? "#c62828" : "#495057"
-                            selectByMouse: true
-                            wrapMode: TextArea.Wrap
-                            placeholderText: I18n.t("fileHashResultPlaceholder") || "拖入文件或点击计算后显示结果"
-                            background: null
+                        ColumnLayout {
+                            width: parent.width
+                            spacing: 8
+
+                            HashRow { label: "MD5"; hashValue: fileTool.md5 }
+                            HashRow { label: "SHA1"; hashValue: fileTool.sha1 }
+                            HashRow { label: "SHA256"; hashValue: fileTool.sha256 }
+                            HashRow { label: "SHA384"; hashValue: fileTool.sha384 }
+                            HashRow { label: "SHA512"; hashValue: fileTool.sha512 }
                         }
                     }
                 }
@@ -288,8 +275,8 @@ Window {
     Rectangle {
         id: copyFeedback
         anchors.centerIn: parent
-        width: 120
-        height: 50
+        width: 140
+        height: 48
         color: "#333333"
         radius: 6
         opacity: 0
@@ -298,7 +285,7 @@ Window {
         Text {
             anchors.centerIn: parent
             text: I18n.t("copySuccess") || "已复制到剪贴板"
-            font.pixelSize: 14
+            font.pixelSize: 13
             color: "white"
         }
 
@@ -311,6 +298,94 @@ Window {
             id: feedbackTimer
             interval: 1500
             onTriggered: copyFeedback.opacity = 0
+        }
+    }
+
+    component HashRow: Rectangle {
+        id: hashRow
+        property string label: ""
+        property string hashValue: ""
+
+        Layout.fillWidth: true
+        Layout.preferredHeight: 82
+        color: "#f8f9fa"
+        border.color: "#e9ecef"
+        border.width: 1
+        radius: 4
+
+        RowLayout {
+            anchors.fill: parent
+            anchors.margins: 10
+            spacing: 10
+
+            Text {
+                text: hashRow.label
+                Layout.preferredWidth: 62
+                font.pixelSize: 13
+                font.bold: true
+                color: "#333"
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            TextArea {
+                text: hashRow.hashValue
+                readOnly: true
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                font.pixelSize: 12
+                font.family: "Consolas, Monaco, monospace"
+                color: "#495057"
+                selectByMouse: true
+                wrapMode: TextArea.Wrap
+                placeholderText: I18n.t("fileChecksumPending") || "等待计算"
+                background: null
+            }
+
+            ColumnLayout {
+                Layout.preferredWidth: 240
+                Layout.fillHeight: true
+                spacing: 6
+
+                TextField {
+                    id: compareInput
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 30
+                    placeholderText: I18n.t("fileChecksumComparePlaceholder") || "粘贴用于比对的值"
+                    font.pixelSize: 12
+                    selectByMouse: true
+                }
+
+                Text {
+                    Layout.fillWidth: true
+                    text: compareInput.text.trim().length === 0
+                          ? (I18n.t("fileChecksumCompareTip") || "输入后自动比对")
+                          : (compareInput.text.trim().toLowerCase() === hashRow.hashValue.toLowerCase()
+                             ? (I18n.t("fileChecksumMatch") || "匹配")
+                             : (I18n.t("fileChecksumMismatch") || "不匹配"))
+                    font.pixelSize: 12
+                    color: compareInput.text.trim().length === 0 ? "#888" : (compareInput.text.trim().toLowerCase() === hashRow.hashValue.toLowerCase() ? "#2e7d32" : "#c62828")
+                }
+            }
+
+            Button {
+                text: I18n.t("copyBtn") || "复制"
+                enabled: hashRow.hashValue.length > 0
+                Layout.preferredWidth: 70
+                Layout.preferredHeight: 32
+                onClicked: copyToClipboard(hashRow.hashValue)
+
+                background: Rectangle {
+                    color: parent.enabled ? (parent.hovered ? "#006cbd" : "#0078d4") : "#ccc"
+                    radius: 4
+                }
+                contentItem: Text {
+                    text: parent.text
+                    color: "white"
+                    font.pixelSize: 12
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+            }
         }
     }
 }
