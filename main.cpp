@@ -39,6 +39,7 @@
 #include "src/ProcessManagerTool.h"
 #include "src/FileHashCalculator.h"
 #include "src/FileUtilityTool.h"
+#include "src/UpdateChecker.h"
 
 int main(int argc, char *argv[])
 {
@@ -93,6 +94,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<ProcessManagerTool>("Honeycomb", 1, 0, "ProcessManagerTool");
     qmlRegisterType<FileHashCalculator>("Honeycomb", 1, 0, "FileHashCalculator");
     qmlRegisterType<FileUtilityTool>("Honeycomb", 1, 0, "FileUtilityTool");
+    qmlRegisterType<UpdateChecker>("Honeycomb", 1, 0, "UpdateChecker");
 
     QQmlApplicationEngine engine;
     
