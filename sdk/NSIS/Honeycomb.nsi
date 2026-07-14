@@ -37,8 +37,8 @@ RequestExecutionLevel admin
 !include "MUI2.nsh"
 
 !define MUI_ABORTWARNING
-!define MUI_ICON   "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
-!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
+!define MUI_ICON   "E:\Projects\Honeycomb\logo.ico"
+!define MUI_UNICON "E:\Projects\Honeycomb\logo.ico"
 
 ; 欢迎页正文（厂商 / 官网 / 邮箱）
 !define MUI_WELCOMEPAGE_TITLE_3LINES
