@@ -1,0 +1,13 @@
+system          > 
+system          > ConTeXt  ver: 2025.02.28 18:12 LMTX  fmt: 2026.7.14  int: english/english
+system          > 
+system          > 'cont-new.mkxl' loaded
+open source     > level 1, order 1, name 'D:/Softwares/texlive/2025/texmf-dist/tex/context/base/mkxl/cont-new.mkxl'
+system          > beware: some patches loaded from cont-new.mkiv
+close source    > level 1, order 1, name 'D:/Softwares/texlive/2025/texmf-dist/tex/context/base/mkxl/cont-new.mkxl'
+system          > 'cont-sys.mkxl' loaded
+open source     > level 1, order 2, name 'D:/Softwares/texlive/2025/texmf-dist/tex/context/texlive/cont-sys.mkxl'
+close source    > level 1, order 2, name 'D:/Softwares/texlive/2025/texmf-dist/tex/context/texlive/cont-sys.mkxl'
+system          > files > jobname './1,1', input './1,1.tex', result './1,1'
+fonts           > latin modern fonts are not preloaded
+languages       > language 'en' is active
