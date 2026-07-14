@@ -2,10 +2,10 @@
 ; 命令行参数覆盖示例:
 ;   makensis.exe /DVERSION=1.1.20260714 /DSTAGING=E:\Projects\Honeycomb_1.1.20260714_msvc2022_64 Honeycomb.nsi
 !ifndef VERSION
-  !define VERSION "1.1.20260712"
+  !define VERSION "1.1.20260714"
 !endif
 !ifndef STAGING_DIR
-  !define STAGING_DIR "E:\Projects\Honeycomb_1.1.20260712_msvc2022_64"
+  !define STAGING_DIR "E:\Projects\Honeycomb_1.1.20260714_msvc2022_64"
 !endif
 !define PRODUCT_NAME    "蜂巢工具箱"
 !define PRODUCT_NAME_EN "Honeycomb"
@@ -30,6 +30,7 @@ OutFile "${INSTALLER_NAME}"
 InstallDir "$PROGRAMFILES\${PRODUCT_NAME_EN}"
 InstallDirRegKey HKCU "${REG_KEY}" "InstallLocation"
 RequestExecutionLevel admin
+BrandingText "蜂巢工具箱 v${VERSION}"
 
 ;============================================================================
 ; 现代界面 (MUI2)
