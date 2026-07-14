@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QVariantMap>
 
 class FileUtilityTool : public QObject
 {
@@ -50,6 +51,7 @@ public:
     Q_INVOKABLE bool compressImage(const QString &outputPath, const QString &format, int quality, int maxWidth, int maxHeight);
     Q_INVOKABLE QString defaultCompressedImagePath(const QString &format) const;
     Q_INVOKABLE QString formatFileSize(qint64 bytes) const;
+    Q_INVOKABLE QVariantMap fileInfo();
     Q_INVOKABLE QStringList supportedReadImageFormats() const;
     Q_INVOKABLE QStringList supportedWriteImageFormats() const;
 

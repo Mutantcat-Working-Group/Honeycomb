@@ -136,11 +136,19 @@ Window {
         contextTextArea.text = defaultContent
     }
 
-    // 插入预设内容到文本末尾
-    function insertAtEnd(text) {
-        var prefix = contextTextArea.text.length > 0 && !contextTextArea.text.endsWith("\n") ? "\n\n" : ""
-        contextTextArea.text = contextTextArea.text + prefix + text
-        contextTextArea.cursorPosition = contextTextArea.length
+    // 插入预设内容到当前光标位置；有选区时替换选区
+    function insertAtCursor(text) {
+        var originalText = contextTextArea.text
+        var hasSelection = contextTextArea.selectionStart !== contextTextArea.selectionEnd
+        var start = hasSelection ? Math.min(contextTextArea.selectionStart, contextTextArea.selectionEnd) : contextTextArea.cursorPosition
+        var end = hasSelection ? Math.max(contextTextArea.selectionStart, contextTextArea.selectionEnd) : contextTextArea.cursorPosition
+        var before = originalText.slice(0, start)
+        var after = originalText.slice(end)
+        var prefix = before.length > 0 && !before.endsWith("\n") ? "\n\n" : ""
+        var suffix = after.length > 0 && !after.startsWith("\n") ? "\n\n" : ""
+
+        contextTextArea.text = before + prefix + text + suffix + after
+        contextTextArea.cursorPosition = before.length + prefix.length + text.length
         contextTextArea.forceActiveFocus()
     }
     
@@ -208,7 +216,7 @@ Window {
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
-                                insertAtEnd(modelData.content)
+                                insertAtCursor(modelData.content)
                                 insertMenu.close()
                             }
                         }

@@ -9,6 +9,7 @@
 #include <QImageIOHandler>
 #include <QImageReader>
 #include <QImageWriter>
+#include <QMimeDatabase>
 #include <QtGlobal>
 
 FileUtilityTool::FileUtilityTool(QObject *parent)
@@ -238,6 +239,37 @@ QString FileUtilityTool::formatFileSize(qint64 bytes) const
         ++unitIndex;
     }
     return QStringLiteral("%1 %2").arg(QString::number(value, 'f', unitIndex == 0 ? 0 : 2), units[unitIndex]);
+}
+
+QVariantMap FileUtilityTool::fileInfo()
+{
+    QVariantMap infoMap;
+    if (!validateReadableFile()) {
+        return infoMap;
+    }
+
+    QFileInfo info(m_filePath);
+    QMimeDatabase mimeDatabase;
+    const QMimeType mime = mimeDatabase.mimeTypeForFile(info);
+
+    infoMap.insert(QStringLiteral("name"), info.fileName());
+    infoMap.insert(QStringLiteral("baseName"), info.completeBaseName());
+    infoMap.insert(QStringLiteral("suffix"), info.suffix());
+    infoMap.insert(QStringLiteral("absolutePath"), info.absoluteFilePath());
+    infoMap.insert(QStringLiteral("directory"), info.absolutePath());
+    infoMap.insert(QStringLiteral("size"), info.size());
+    infoMap.insert(QStringLiteral("sizeText"), formatFileSize(info.size()));
+    infoMap.insert(QStringLiteral("mime"), mime.name());
+    infoMap.insert(QStringLiteral("lastModified"), info.lastModified().toString(QStringLiteral("yyyy-MM-dd HH:mm:ss")));
+    infoMap.insert(QStringLiteral("created"), info.birthTime().isValid() ? info.birthTime().toString(QStringLiteral("yyyy-MM-dd HH:mm:ss")) : QString());
+    infoMap.insert(QStringLiteral("readable"), info.isReadable());
+    infoMap.insert(QStringLiteral("writable"), info.isWritable());
+    infoMap.insert(QStringLiteral("executable"), info.isExecutable());
+    infoMap.insert(QStringLiteral("md5"), hashFile(QCryptographicHash::Md5));
+    infoMap.insert(QStringLiteral("sha1"), hashFile(QCryptographicHash::Sha1));
+    infoMap.insert(QStringLiteral("sha256"), hashFile(QCryptographicHash::Sha256));
+    setErrorMessage(QString());
+    return infoMap;
 }
 
 QStringList FileUtilityTool::supportedReadImageFormats() const

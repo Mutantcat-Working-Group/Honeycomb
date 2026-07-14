@@ -111,6 +111,10 @@ qt_add_qml_module(appHoneycomb
         windows/HtmlColorWindow.qml
         windows/BrTagWindow.qml
         windows/UserAgentWindow.qml
+        windows/EnvironmentPathWindow.qml
+        windows/DockerToolWindow.qml
+        windows/SqlFormatWindow.qml
+        windows/LddQuickWindow.qml
         windows/GoCrossWindow.qml
         windows/HtaccessNginxWindow.qml
         windows/ManifestWindow.qml
@@ -128,6 +132,8 @@ qt_add_qml_module(appHoneycomb
         windows/FileSHA1Window.qml
         windows/FileSHA256Window.qml
         windows/FileBase64Window.qml
+        windows/FileInfoWindow.qml
+        windows/Base64ImagePreviewWindow.qml
         windows/ImageCompressWindow.qml
         windows/SHA1Window.qml
         windows/SHA256Window.qml
@@ -232,6 +238,8 @@ qt_add_qml_module(appHoneycomb
         src/AgentPromptManager.cpp
         src/DNSLookupTool.h
         src/DNSLookupTool.cpp
+        src/EnvironmentPathTool.h
+        src/EnvironmentPathTool.cpp
         src/FileHashCalculator.h
         src/FileHashCalculator.cpp
         src/FileUtilityTool.h

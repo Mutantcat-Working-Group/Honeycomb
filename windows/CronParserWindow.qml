@@ -15,6 +15,25 @@ Window {
 
     property var monthNames: ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     property var weekNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    property var cronPresets: [
+        { label: "每5分钟 工作时间", value: "*/5 9-18 * * MON-FRI" },
+        { label: "每小时", value: "@hourly" },
+        { label: "每天 00:00", value: "@daily" },
+        { label: "每周一 00:00", value: "0 0 * * MON" },
+        { label: "每月1日 00:00", value: "@monthly" },
+        { label: "每年1月1日", value: "@yearly" }
+    ]
+    property var runCounts: [10, 20, 50]
+
+    function expandMacro(expression) {
+        var macro = expression.trim().toLowerCase()
+        if (macro === "@hourly") return "0 * * * *"
+        if (macro === "@daily" || macro === "@midnight") return "0 0 * * *"
+        if (macro === "@weekly") return "0 0 * * 0"
+        if (macro === "@monthly") return "0 0 1 * *"
+        if (macro === "@yearly" || macro === "@annually") return "0 0 1 1 *"
+        return expression
+    }
 
     function parseField(text, min, max, aliases) {
         var values = {}
@@ -96,11 +115,11 @@ Window {
     }
 
     function parseCron() {
-        var expression = cronInput.text.trim().replace(/\s+/g, " ")
+        var expression = expandMacro(cronInput.text.trim().replace(/\s+/g, " "))
         var fields = expression.split(" ")
         if (fields.length !== 5) {
             resultText.text = ""
-            detailText.text = "错误：请输入 5 段 Cron 表达式（分 时 日 月 周）"
+            detailText.text = "错误：请输入 5 段 Cron 表达式（分 时 日 月 周），或使用 @hourly/@daily/@weekly/@monthly/@yearly"
             return
         }
 
@@ -125,7 +144,8 @@ Window {
             cursor.setMinutes(cursor.getMinutes() + 1)
 
             var maxChecks = 525600 * 2
-            for (var i = 0; i < maxChecks && hits.length < 10; i++) {
+            var targetCount = runCounts[countBox.currentIndex]
+            for (var i = 0; i < maxChecks && hits.length < targetCount; i++) {
                 var minute = cursor.getMinutes()
                 var hour = cursor.getHours()
                 var day = cursor.getDate()
@@ -138,7 +158,8 @@ Window {
                 cursor.setMinutes(cursor.getMinutes() + 1)
             }
 
-            detailText.text = "分钟: " + fieldValues(minutes)
+            detailText.text = "展开表达式: " + expression
+                    + "\n分钟: " + fieldValues(minutes)
                     + "\n小时: " + fieldValues(hours)
                     + "\n日期: " + fieldValues(days)
                     + "\n月份: " + fieldValues(months)
@@ -198,6 +219,17 @@ Window {
                         Layout.fillWidth: true
                         spacing: 10
 
+                        ComboBox {
+                            id: presetBox
+                            Layout.preferredWidth: 165
+                            Layout.preferredHeight: 36
+                            model: cronPresets.map(function(item) { return item.label })
+                            onActivated: function(index) {
+                                cronInput.text = cronPresets[index].value
+                                parseCron()
+                            }
+                        }
+
                         TextField {
                             id: cronInput
                             Layout.fillWidth: true
@@ -235,10 +267,19 @@ Window {
                                 verticalAlignment: Text.AlignVCenter
                             }
                         }
+
+                        ComboBox {
+                            id: countBox
+                            Layout.preferredWidth: 78
+                            Layout.preferredHeight: 36
+                            model: runCounts
+                            currentIndex: 0
+                            onActivated: parseCron()
+                        }
                     }
 
                     Text {
-                        text: I18n.t("cronSupportTip") || "支持 *、逗号、范围、步进，例如：0 2 * * *、*/15 9-17 * * 1-5"
+                        text: I18n.t("cronSupportTip") || "支持 *、逗号、范围、步进、英文月份/星期和 @hourly/@daily/@weekly/@monthly/@yearly"
                         font.pixelSize: 12
                         color: "#777777"
                     }
@@ -262,11 +303,24 @@ Window {
                         anchors.margins: 15
                         spacing: 10
 
-                        Text {
-                            text: I18n.t("cronRecentRuns") || "最近 10 次执行时间"
-                            font.pixelSize: 16
-                            font.bold: true
-                            color: "#333333"
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Text {
+                                text: I18n.t("cronRecentRuns") || "最近执行时间"
+                                font.pixelSize: 16
+                                font.bold: true
+                                color: "#333333"
+                            }
+                            Item { Layout.fillWidth: true }
+                            Button {
+                                text: I18n.t("copyBtn") || "复制"
+                                Layout.preferredWidth: 70
+                                onClicked: {
+                                    resultText.selectAll()
+                                    resultText.copy()
+                                    resultText.deselect()
+                                }
+                            }
                         }
 
                         ScrollView {
@@ -296,11 +350,24 @@ Window {
                         anchors.margins: 15
                         spacing: 10
 
-                        Text {
-                            text: I18n.t("cronFieldDetails") || "字段解析"
-                            font.pixelSize: 16
-                            font.bold: true
-                            color: "#333333"
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Text {
+                                text: I18n.t("cronFieldDetails") || "字段解析"
+                                font.pixelSize: 16
+                                font.bold: true
+                                color: "#333333"
+                            }
+                            Item { Layout.fillWidth: true }
+                            Button {
+                                text: I18n.t("copyBtn") || "复制"
+                                Layout.preferredWidth: 70
+                                onClicked: {
+                                    detailText.selectAll()
+                                    detailText.copy()
+                                    detailText.deselect()
+                                }
+                            }
                         }
 
                         ScrollView {
