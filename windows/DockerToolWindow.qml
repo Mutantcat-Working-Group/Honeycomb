@@ -154,7 +154,14 @@ Window {
                                             Layout.fillWidth: true
                                             Text { text: modelData[0]; Layout.preferredWidth: 120; font.pixelSize: 13; color: "#333" }
                                             Text { text: modelData[1]; Layout.fillWidth: true; font.pixelSize: 13; font.family: "Consolas, Monaco, monospace"; color: "#444"; elide: Text.ElideMiddle }
-                                            Button { text: I18n.t("copyBtn") || "复制"; Layout.preferredWidth: 64; onClicked: copyToClipboard(modelData[1]) }
+                                            Button {
+                                                text: I18n.t("copyBtn") || "复制"
+                                                Layout.preferredWidth: 64
+                                                Layout.preferredHeight: 30
+                                                onClicked: copyToClipboard(modelData[1])
+                                                background: Rectangle { color: parent.hovered ? "#006cbd" : "#0078d4"; radius: 4 }
+                                                contentItem: Text { text: parent.text; color: "white"; font.pixelSize: 12; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
+                                            }
                                         }
                                     }
                                 }
@@ -163,31 +170,64 @@ Window {
                     }
                 }
 
-                RowLayout {
-                    spacing: 14
-                    TextArea {
-                        id: dockerInput
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        placeholderText: "docker run -d --name web -p 8080:80 -v ./html:/usr/share/nginx/html nginx:latest"
-                        selectByMouse: true
-                        wrapMode: TextArea.Wrap
-                    }
-                    ColumnLayout {
-                        Layout.preferredWidth: 150
-                        Button { text: "run -> compose"; Layout.fillWidth: true; onClicked: dockerOutput.text = runToCompose(dockerInput.text) }
-                        Button { text: "compose -> run"; Layout.fillWidth: true; onClicked: dockerOutput.text = composeToRun(dockerInput.text) }
-                        Button { text: I18n.t("copyBtn") || "复制"; Layout.fillWidth: true; onClicked: copyToClipboard(dockerOutput.text) }
-                        Item { Layout.fillHeight: true }
-                    }
-                    TextArea {
-                        id: dockerOutput
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        readOnly: true
-                        selectByMouse: true
-                        wrapMode: TextArea.Wrap
-                        font.family: "Consolas, Monaco, monospace"
+                Rectangle {
+                    color: "white"
+                    border.color: "#e0e0e0"
+                    border.width: 1
+                    radius: 6
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 14
+                        spacing: 14
+                        TextArea {
+                            id: dockerInput
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            placeholderText: "docker run -d --name web -p 8080:80 -v ./html:/usr/share/nginx/html nginx:latest"
+                            selectByMouse: true
+                            wrapMode: TextArea.Wrap
+                            font.family: "Consolas, Monaco, Microsoft YaHei, monospace"
+                            background: Rectangle { color: "#fbfbfb"; border.color: dockerInput.activeFocus ? "#0078d4" : "#edf0f2"; border.width: dockerInput.activeFocus ? 2 : 1; radius: 4 }
+                        }
+                        ColumnLayout {
+                            Layout.preferredWidth: 150
+                            Button {
+                                text: "run -> compose"
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 34
+                                onClicked: dockerOutput.text = runToCompose(dockerInput.text)
+                                background: Rectangle { color: parent.hovered ? "#006cbd" : "#0078d4"; radius: 4 }
+                                contentItem: Text { text: parent.text; color: "white"; font.pixelSize: 12; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
+                            }
+                            Button {
+                                text: "compose -> run"
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 34
+                                onClicked: dockerOutput.text = composeToRun(dockerInput.text)
+                                background: Rectangle { color: parent.hovered ? "#006cbd" : "#0078d4"; radius: 4 }
+                                contentItem: Text { text: parent.text; color: "white"; font.pixelSize: 12; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
+                            }
+                            Button {
+                                text: I18n.t("copyBtn") || "复制"
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 34
+                                onClicked: copyToClipboard(dockerOutput.text)
+                                background: Rectangle { color: parent.hovered ? "#f5f5f5" : "white"; border.color: "#d0d0d0"; border.width: 1; radius: 4 }
+                                contentItem: Text { text: parent.text; color: "#333"; font.pixelSize: 12; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
+                            }
+                            Item { Layout.fillHeight: true }
+                        }
+                        TextArea {
+                            id: dockerOutput
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            readOnly: true
+                            selectByMouse: true
+                            wrapMode: TextArea.Wrap
+                            font.family: "Consolas, Monaco, Microsoft YaHei, monospace"
+                            background: Rectangle { color: "#fbfbfb"; border.color: "#edf0f2"; border.width: 1; radius: 4 }
+                        }
                     }
                 }
             }

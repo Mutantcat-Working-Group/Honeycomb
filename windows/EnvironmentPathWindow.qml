@@ -324,105 +324,113 @@ Window {
                     border.color: "#e0e0e0"
                     border.width: 1
                     radius: 6
+                    clip: true
 
-                    ColumnLayout {
+                    ScrollView {
                         anchors.fill: parent
                         anchors.margins: 12
-                        spacing: 12
+                        clip: true
+                        contentWidth: availableWidth
+                        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
-                        Text {
-                            text: I18n.t("envPathCommandRef") || "设置命令参考"
-                            font.pixelSize: 14
-                            font.bold: true
-                            color: "#333"
-                        }
+                        ColumnLayout {
+                            width: parent.availableWidth
+                            spacing: 9
 
-                        TextField {
-                            id: pathToAddInput
-                            Layout.fillWidth: true
-                            placeholderText: I18n.t("envPathAddPlaceholder") || "输入要添加的目录..."
-                            selectByMouse: true
-                            font.pixelSize: 13
-                        }
-
-                        ComboBox {
-                            id: shellBox
-                            Layout.fillWidth: true
-                            model: shellOptions
-                            currentIndex: pathTool.platformName === "Windows" ? 2 : 0
-                        }
-
-                        TextArea {
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: 92
-                            text: pathTool.commandForShell(shellOptions[shellBox.currentIndex], pathToAddInput.text)
-                            readOnly: true
-                            selectByMouse: true
-                            wrapMode: TextArea.Wrap
-                            font.pixelSize: 12
-                            font.family: "Consolas, Monaco, Microsoft YaHei, monospace"
-                            background: Rectangle {
-                                color: "#f8f9fa"
-                                border.color: "#edf0f2"
-                                radius: 4
-                            }
-                        }
-
-                        Button {
-                            text: I18n.t("envPathCopyCommand") || "复制命令"
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: 34
-                            onClicked: copyToClipboard(pathTool.commandForShell(shellOptions[shellBox.currentIndex], pathToAddInput.text))
-
-                            background: Rectangle {
-                                color: parent.hovered ? "#006cbd" : "#0078d4"
-                                radius: 4
-                            }
-                            contentItem: Text {
-                                text: parent.text
-                                color: "white"
-                                font.pixelSize: 13
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
-                        }
-
-                        Rectangle {
-                            Layout.fillWidth: true
-                            height: 1
-                            color: "#e0e0e0"
-                        }
-
-                        Text {
-                            Layout.fillWidth: true
-                            text: I18n.t("envPathTip") || "提示：应用读取的是当前进程环境变量，修改系统PATH后可能需要重启应用才能看到最新值。"
-                            font.pixelSize: 12
-                            color: "#888"
-                            wrapMode: Text.WordWrap
-                        }
-
-                        Button {
-                            text: I18n.t("envPathCopyClean") || "复制去重可用PATH"
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: 34
-                            onClicked: copyToClipboard(pathTool.uniqueExistingPathText())
-
-                            background: Rectangle {
-                                color: parent.hovered ? "#f5f5f5" : "white"
-                                border.color: "#d0d0d0"
-                                border.width: 1
-                                radius: 4
-                            }
-                            contentItem: Text {
-                                text: parent.text
+                            Text {
+                                text: I18n.t("envPathCommandRef") || "设置命令参考"
+                                font.pixelSize: 14
+                                font.bold: true
                                 color: "#333"
+                            }
+
+                            TextField {
+                                id: pathToAddInput
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 36
+                                placeholderText: I18n.t("envPathAddPlaceholder") || "输入要添加的目录..."
+                                selectByMouse: true
                                 font.pixelSize: 13
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            ComboBox {
+                                id: shellBox
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 36
+                                model: shellOptions
+                                currentIndex: pathTool.platformName === "Windows" ? 2 : 0
+                            }
+
+                            TextArea {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 76
+                                text: pathTool.commandForShell(shellOptions[shellBox.currentIndex], pathToAddInput.text)
+                                readOnly: true
+                                selectByMouse: true
+                                wrapMode: TextArea.Wrap
+                                font.pixelSize: 12
+                                font.family: "Consolas, Monaco, Microsoft YaHei, monospace"
+                                background: Rectangle {
+                                    color: "#f8f9fa"
+                                    border.color: "#edf0f2"
+                                    radius: 4
+                                }
+                            }
+
+                            Button {
+                                text: I18n.t("envPathCopyCommand") || "复制命令"
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 34
+                                onClicked: copyToClipboard(pathTool.commandForShell(shellOptions[shellBox.currentIndex], pathToAddInput.text))
+
+                                background: Rectangle {
+                                    color: parent.hovered ? "#006cbd" : "#0078d4"
+                                    radius: 4
+                                }
+                                contentItem: Text {
+                                    text: parent.text
+                                    color: "white"
+                                    font.pixelSize: 13
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                            }
+
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 1
+                                color: "#e0e0e0"
+                            }
+
+                            Text {
+                                Layout.fillWidth: true
+                                text: I18n.t("envPathTip") || "提示：应用读取的是当前进程环境变量，修改系统PATH后可能需要重启应用才能看到最新值。"
+                                font.pixelSize: 12
+                                color: "#888"
+                                wrapMode: Text.WordWrap
+                            }
+
+                            Button {
+                                text: I18n.t("envPathCopyClean") || "复制去重可用PATH"
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 34
+                                onClicked: copyToClipboard(pathTool.uniqueExistingPathText())
+
+                                background: Rectangle {
+                                    color: parent.hovered ? "#f5f5f5" : "white"
+                                    border.color: "#d0d0d0"
+                                    border.width: 1
+                                    radius: 4
+                                }
+                                contentItem: Text {
+                                    text: parent.text
+                                    color: "#333"
+                                    font.pixelSize: 13
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
                             }
                         }
-
-                        Item { Layout.fillHeight: true }
                     }
                 }
             }

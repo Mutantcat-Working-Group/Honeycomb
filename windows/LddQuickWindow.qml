@@ -15,7 +15,15 @@ Window {
             anchors.fill: parent; anchors.margins: 25; spacing: 18
             Text { text: I18n.t("toolLddQuick") || "快捷LDD"; font.pixelSize: 22; font.bold: true; color: "#333"; Layout.alignment: Qt.AlignHCenter }
             Text { text: I18n.t("toolLddQuickDesc") || "Linux/macOS动态库依赖查看命令"; font.pixelSize: 13; color: "#666"; Layout.alignment: Qt.AlignHCenter }
-            TextField { id: fileInput; Layout.fillWidth: true; placeholderText: "/path/to/binary-or-library"; selectByMouse: true }
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 58
+                color: "white"
+                border.color: "#e0e0e0"
+                border.width: 1
+                radius: 6
+                TextField { id: fileInput; anchors.fill: parent; anchors.margins: 10; placeholderText: "/path/to/binary-or-library"; selectByMouse: true; background: null }
+            }
             Repeater {
                 model: [
                     ["Linux 查看依赖", "ldd \"" + (fileInput.text || "/path/to/app") + "\""],
@@ -26,7 +34,20 @@ Window {
                 ]
                 Rectangle {
                     Layout.fillWidth: true; Layout.preferredHeight: 58; color: "white"; border.color: "#e0e0e0"; radius: 6
-                    RowLayout { anchors.fill: parent; anchors.margins: 12; Text { text: modelData[0]; Layout.preferredWidth: 130; color: "#333"; font.bold: true } Text { text: modelData[1]; Layout.fillWidth: true; font.family: "Consolas, Monaco, monospace"; elide: Text.ElideMiddle } Button { text: I18n.t("copyBtn") || "复制"; onClicked: copyToClipboard(modelData[1]) } }
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 12
+                        Text { text: modelData[0]; Layout.preferredWidth: 130; color: "#333"; font.bold: true }
+                        Text { text: modelData[1]; Layout.fillWidth: true; font.family: "Consolas, Monaco, monospace"; elide: Text.ElideMiddle }
+                        Button {
+                            text: I18n.t("copyBtn") || "复制"
+                            Layout.preferredWidth: 70
+                            Layout.preferredHeight: 30
+                            onClicked: copyToClipboard(modelData[1])
+                            background: Rectangle { color: parent.hovered ? "#006cbd" : "#0078d4"; radius: 4 }
+                            contentItem: Text { text: parent.text; color: "white"; font.pixelSize: 12; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
+                        }
+                    }
                 }
             }
             Text { Layout.fillWidth: true; text: "说明：此工具只提供 Linux/macOS 命令参考，不在 Windows 上执行 ldd。"; color: "#888"; wrapMode: Text.WordWrap }

@@ -52,6 +52,8 @@
 - Docker Compose转换
 - SQL格式化
 - 快捷LDD
+- 进程管理
+- 端口管理
 - Go交叉编译
 - htaccess转nginx
 - Android权限

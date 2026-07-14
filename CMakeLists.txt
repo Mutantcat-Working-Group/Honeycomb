@@ -115,6 +115,8 @@ qt_add_qml_module(appHoneycomb
         windows/DockerToolWindow.qml
         windows/SqlFormatWindow.qml
         windows/LddQuickWindow.qml
+        windows/ProcessManagerWindow.qml
+        windows/PortManagerWindow.qml
         windows/GoCrossWindow.qml
         windows/HtaccessNginxWindow.qml
         windows/ManifestWindow.qml
@@ -240,6 +242,8 @@ qt_add_qml_module(appHoneycomb
         src/DNSLookupTool.cpp
         src/EnvironmentPathTool.h
         src/EnvironmentPathTool.cpp
+        src/ProcessManagerTool.h
+        src/ProcessManagerTool.cpp
         src/FileHashCalculator.h
         src/FileHashCalculator.cpp
         src/FileUtilityTool.h
