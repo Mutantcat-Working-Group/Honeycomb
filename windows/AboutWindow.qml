@@ -8,6 +8,8 @@ Window {
     id: aboutWindow
     width: 500
     height: 460
+    minimumWidth: 420
+    minimumHeight: 460
     title: I18n.t("aboutTitle")
     flags: Qt.Window
     modality: Qt.NonModal
@@ -21,8 +23,13 @@ Window {
         color: "#f9f9f9"
         
         ColumnLayout {
-            anchors.fill: parent
-            anchors.margins: 40
+            id: aboutContent
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.topMargin: 40
+            anchors.leftMargin: 40
+            anchors.rightMargin: 40
             spacing: 20
             
             // Logo图片
@@ -63,10 +70,17 @@ Window {
                 color: "#666"
             }
 
-            Item {
-                id: bottomSpacer
-                Layout.fillHeight: true
-            }
+        }
+
+        ColumnLayout {
+            id: bottomActionArea
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.leftMargin: 40
+            anchors.rightMargin: 40
+            anchors.bottomMargin: 40
+            spacing: 12
 
             Text {
                 Layout.alignment: Qt.AlignHCenter

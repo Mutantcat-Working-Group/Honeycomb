@@ -319,6 +319,13 @@ if(BUILD_TESTING)
             -DABOUT_QML=${CMAKE_CURRENT_SOURCE_DIR}/windows/AboutWindow.qml
             -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/AboutWindowLayoutTest.cmake
     )
+    add_test(
+        NAME ManagerTableScrollTest
+        COMMAND ${CMAKE_COMMAND}
+            -DPROCESS_QML=${CMAKE_CURRENT_SOURCE_DIR}/windows/ProcessManagerWindow.qml
+            -DPORT_QML=${CMAKE_CURRENT_SOURCE_DIR}/windows/PortManagerWindow.qml
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/ManagerTableScrollTest.cmake
+    )
 endif()
 
 include(GNUInstallDirs)

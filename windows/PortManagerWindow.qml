@@ -116,10 +116,17 @@ Window {
                     }
 
                     ListView {
+                        id: portTableView
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         clip: true
+                        boundsBehavior: Flickable.StopAtBounds
                         model: visiblePorts
+
+                        ScrollBar.vertical: ScrollBar {
+                            policy: ScrollBar.AsNeeded
+                        }
+
                         delegate: Rectangle {
                             width: ListView.view.width
                             height: 42

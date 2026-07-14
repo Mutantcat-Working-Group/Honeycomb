@@ -120,10 +120,16 @@ Window {
                     }
 
                     ListView {
+                        id: processTableView
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         clip: true
+                        boundsBehavior: Flickable.StopAtBounds
                         model: visibleProcesses
+
+                        ScrollBar.vertical: ScrollBar {
+                            policy: ScrollBar.AsNeeded
+                        }
 
                         delegate: Rectangle {
                             width: ListView.view.width
