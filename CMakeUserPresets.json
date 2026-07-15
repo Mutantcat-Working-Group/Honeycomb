@@ -5,6 +5,7 @@
     },
     "include": [
         "build/Qt_6_11_0_for_macOS-Release/conan-dependencies/CMakePresets.json",
-        "build/Qt_6_11_0_for_macOS-x86_64-Release/conan-dependencies/CMakePresets.json"
+        "build/Qt_6_11_0_for_macOS-x86_64-Release/conan-dependencies/CMakePresets.json",
+        "honeycomb_build_release/CMakePresets.json"
     ]
 }

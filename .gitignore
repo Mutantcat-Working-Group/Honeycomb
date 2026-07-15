@@ -2,6 +2,8 @@
 build/
 debug/
 release/
+build_release/
+honeycomb_build_release*/
 *.build/
 
 # CMake generated files
