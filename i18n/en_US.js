@@ -524,6 +524,7 @@ function getEnLang() {
         batchBarcodeSuccessTitle: "Completed",
         batchBarcodePartialTitle: "Partial",
         batchBarcodeRetry: "Run again",
+        batchBarcodeProgressLabel: "Progress",
 
         // QR Code tool
         qrcodeInput: "Input",

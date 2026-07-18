@@ -524,6 +524,7 @@ function getZhLang() {
         batchBarcodeSuccessTitle: "生成完成",
         batchBarcodePartialTitle: "部分完成",
         batchBarcodeRetry: "再次生成",
+        batchBarcodeProgressLabel: "生成进度",
 
         // 二维码工具
         qrcodeInput: "输入内容",

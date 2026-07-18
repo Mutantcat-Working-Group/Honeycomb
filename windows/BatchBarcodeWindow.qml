@@ -40,9 +40,8 @@ Window {
                 succeeded: !isFail
             }
             progressCard.state = "done"
-            if (!isFail) {
-                showFeedback(I18n.t("saveSuccess") || "保存成功", "success")
-            } else {
+            // 成功时不弹 Toast —— 结果卡片已经显示成功/失败数
+            if (isFail) {
                 showFeedback(batchGen.batchLastError || "已取消", "warn")
             }
         }
@@ -308,7 +307,7 @@ Window {
                     anchors.margins: 18
                     spacing: 14
 
-                    // === 第一段:进度数字 + 进度条 ===
+                    // === 第一段:进度标签 + 进度条 + 数字 ===
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 8
@@ -316,7 +315,7 @@ Window {
                         RowLayout {
                             Layout.fillWidth: true
                             Text {
-                                text: I18n.t("fileChecksumResult") || "生成进度"
+                                text: I18n.t("batchBarcodeProgressLabel") || "生成进度"
                                 font.pixelSize: 13
                                 font.bold: true
                                 color: "#37474f"
@@ -340,22 +339,31 @@ Window {
                         }
                     }
 
-                    // === 第二段:操作按钮(一行,两端对齐) ===
+                    // === 第二段:操作按钮 ===
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 1
                         color: "#f0f3f5"
                     }
 
+                    // 操作按钮行(空状态居中,运行/done 状态两端对齐)
                     RowLayout {
+                        id: actionRow
                         Layout.fillWidth: true
                         spacing: 12
+                        Layout.alignment: progressCard.state === "idle" ? Qt.AlignHCenter : Qt.AlignLeft
+
+                        Item {
+                            Layout.fillWidth: true
+                            visible: progressCard.state !== "idle"
+                        }
 
                         Button {
                             id: startButton
                             text: I18n.t("batchBarcodeStartBtn") || "开始生成"
                             Layout.preferredWidth: 132
                             Layout.preferredHeight: 40
+                            visible: progressCard.state !== "done"
                             enabled: !batchGen.batchRunning
                                   && startInput.text.length > 0
                                   && endInput.text.length > 0
@@ -409,31 +417,9 @@ Window {
                             onClicked: batchGen.cancelBatch()
                         }
 
-                        Item { Layout.fillWidth: true }
-
-                        Button {
-                            id: retryButton
-                            text: I18n.t("batchBarcodeRetry") || "再次生成"
-                            Layout.preferredHeight: 40
-                            Layout.preferredWidth: 96
-                            visible: !batchGen.batchRunning && progressCard.state === "done"
-                            background: Rectangle {
-                                color: parent.pressed ? "#e3f2fd" : (parent.hovered ? "#f5f7fa" : "white")
-                                border.color: "#1976d2"
-                                border.width: 1
-                                radius: 6
-                            }
-                            contentItem: Text {
-                                text: parent.text
-                                color: "#1976d2"
-                                font.pixelSize: 13
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
-                            onClicked: {
-                                progressCard.state = "idle"
-                                batchGen.clearBatch()
-                            }
+                        Item {
+                            Layout.fillWidth: true
+                            visible: progressCard.state !== "idle"
                         }
                     }
 
@@ -451,30 +437,13 @@ Window {
 
                         ColumnLayout {
                             anchors.fill: parent
-                            spacing: 10
+                            spacing: 12
 
-                            // 顶部小标题行
+                            // 用时小标签(右对齐独立显示,因为"生成完成"标题被去掉了)
                             RowLayout {
                                 Layout.fillWidth: true
                                 spacing: 8
-
-                                Rectangle {
-                                    width: 4
-                                    height: 14
-                                    color: batchWindow.lastResult.succeeded ? "#2e7d32" : "#ef6c00"
-                                    radius: 2
-                                }
-
-                                Text {
-                                    text: batchWindow.lastResult.succeeded
-                                          ? (I18n.t("batchBarcodeSuccessTitle") || "生成完成")
-                                          : (I18n.t("batchBarcodePartialTitle") || "部分完成")
-                                    font.pixelSize: 13
-                                    font.bold: true
-                                    color: batchWindow.lastResult.succeeded ? "#2e7d32" : "#ef6c00"
-                                }
-
-                                Item { Layout.fillWidth: true }
+                                Layout.alignment: Qt.AlignRight
 
                                 Text {
                                     text: formatDuration(batchWindow.lastResult.durationMs)
@@ -535,6 +504,37 @@ Window {
                                         font.family: "Consolas, Monaco, monospace"
                                         elide: Text.ElideMiddle
                                         wrapMode: Text.NoWrap
+                                    }
+                                }
+                            }
+
+                            // 再次生成按钮(底部水平居中)
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Layout.alignment: Qt.AlignHCenter
+                                spacing: 12
+
+                                Button {
+                                    text: I18n.t("batchBarcodeRetry") || "再次生成"
+                                    Layout.preferredHeight: 40
+                                    Layout.preferredWidth: 132
+                                    background: Rectangle {
+                                        color: parent.pressed ? "#e3f2fd" : (parent.hovered ? "#f5f7fa" : "white")
+                                        border.color: "#1976d2"
+                                        border.width: 1
+                                        radius: 6
+                                    }
+                                    contentItem: Text {
+                                        text: parent.text
+                                        color: "#1976d2"
+                                        font.pixelSize: 14
+                                        font.bold: true
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+                                    onClicked: {
+                                        progressCard.state = "idle"
+                                        batchGen.clearBatch()
                                     }
                                 }
                             }
@@ -629,6 +629,7 @@ Window {
                 font.pixelSize: 11
                 color: "#78909c"
                 Layout.fillWidth: true
+                horizontalAlignment: Text.AlignHCenter
             }
 
             Text {
