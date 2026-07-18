@@ -48,7 +48,7 @@ if(MSVC)
     add_compile_options(/utf-8)
 endif()
 
-find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 Widgets WebSockets Multimedia Network)
+find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 Widgets WebSockets Multimedia Network SerialPort)
 find_package(yaml-cpp REQUIRED)
 find_package(jsoncpp REQUIRED)
 find_package(PahoMqttCpp REQUIRED)
@@ -172,6 +172,7 @@ qt_add_qml_module(appHoneycomb
         windows/SettingsWindow.qml
         windows/AgentPromptWindow.qml
         windows/AiTextReducerWindow.qml
+        windows/SerialPortWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
@@ -253,6 +254,8 @@ qt_add_qml_module(appHoneycomb
         src/FileUtilityTool.cpp
         src/UpdateChecker.h
         src/UpdateChecker.cpp
+        src/SerialPortTool.h
+        src/SerialPortTool.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -293,6 +296,7 @@ target_link_libraries(appHoneycomb
         Qt6::WebSockets
         Qt6::Multimedia
         Qt6::Network
+        Qt6::SerialPort
         yaml-cpp::yaml-cpp
         JsonCpp::JsonCpp
         PahoMqttCpp::paho-mqttpp3-static

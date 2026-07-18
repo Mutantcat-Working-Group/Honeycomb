@@ -95,6 +95,7 @@ ApplicationWindow {
         "Fake API": "qrc:/qt/qml/Honeycomb/windows/FakeApiWindow.qml",
         "寄存器寻址范围": "qrc:/qt/qml/Honeycomb/windows/RegisterRangeWindow.qml",
         "电阻阻值计算": "qrc:/qt/qml/Honeycomb/windows/ResistorCalculatorWindow.qml",
+        "串口调试": "qrc:/qt/qml/Honeycomb/windows/SerialPortWindow.qml",
         "RISC-V指令集模块": "qrc:/qt/qml/Honeycomb/windows/RISCVInstructionWindow.qml",
         "通用寄存器速查": "qrc:/qt/qml/Honeycomb/windows/RegisterRefWindow.qml",
         "汇编速查": "qrc:/qt/qml/Honeycomb/windows/AsmRefWindow.qml",
@@ -283,6 +284,7 @@ ApplicationWindow {
         7: [ // 硬件工具
             {title: I18n.t("toolRegister"), subtitle: I18n.t("toolRegisterDesc"), key: "寄存器寻址范围"},
             {title: I18n.t("toolResistor"), subtitle: I18n.t("toolResistorDesc"), key: "电阻阻值计算"},
+            {title: I18n.t("toolSerialPort"), subtitle: I18n.t("toolSerialPortDesc"), key: "串口调试"},
             {title: I18n.t("toolRiscv"), subtitle: I18n.t("toolRiscvDesc"), key: "RISC-V指令集模块"},
             {title: I18n.t("toolRegisterRef"), subtitle: I18n.t("toolRegisterRefDesc"), key: "通用寄存器速查"},
             {title: I18n.t("toolAsm"), subtitle: I18n.t("toolAsmDesc"), key: "汇编速查"}

@@ -40,6 +40,7 @@
 #include "src/FileHashCalculator.h"
 #include "src/FileUtilityTool.h"
 #include "src/UpdateChecker.h"
+#include "src/SerialPortTool.h"
 
 int main(int argc, char *argv[])
 {
@@ -95,6 +96,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<FileHashCalculator>("Honeycomb", 1, 0, "FileHashCalculator");
     qmlRegisterType<FileUtilityTool>("Honeycomb", 1, 0, "FileUtilityTool");
     qmlRegisterType<UpdateChecker>("Honeycomb", 1, 0, "UpdateChecker");
+    qmlRegisterType<SerialPortTool>("Honeycomb", 1, 0, "SerialPortTool");
 
     QQmlApplicationEngine engine;
     
