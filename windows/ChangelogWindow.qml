@@ -46,7 +46,7 @@ Window {
                     width: changelogWindow.width - 60
                     spacing: 15
 
-                    // 更新条目 - 1.0.20260718
+                    // 更新条目 - 1.1.20260718
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 92
@@ -69,7 +69,7 @@ Window {
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: "1.0.20260718"
+                                    text: "1.1.20260718"
                                     font.pixelSize: 14
                                     font.bold: true
                                     color: "white"
