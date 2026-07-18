@@ -105,6 +105,24 @@ Window {
         return "docker run -d --name " + name + " " + args.join(" ") + " " + image
     }
 
+    // 共享样式:复制按钮(扁平 + 蓝色)
+    component CopyButton: Button {
+        property string copyText: ""
+        Layout.preferredHeight: 32
+        Layout.preferredWidth: 72
+        background: Rectangle {
+            color: parent.pressed ? "#006cbd" : (parent.hovered ? "#1e88e5" : "#1976d2")
+            radius: 4
+        }
+        contentItem: Text {
+            text: parent.text
+            color: "white"
+            font.pixelSize: 12
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+        }
+    }
+
     TextArea { id: clipboardArea; visible: false }
 
     Rectangle {
@@ -112,11 +130,24 @@ Window {
         color: "#f9f9f9"
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 25
-            spacing: 18
+            anchors.margins: 24
+            spacing: 14
 
-            Text { text: I18n.t("toolDocker") || "Docker工具"; font.pixelSize: 22; font.bold: true; color: "#333"; Layout.alignment: Qt.AlignHCenter }
-            Text { text: I18n.t("toolDockerDesc") || "Docker命令速查与Compose转换"; font.pixelSize: 13; color: "#666"; Layout.alignment: Qt.AlignHCenter }
+            Text {
+                text: I18n.t("toolDocker") || "Docker工具"
+                font.pixelSize: 22
+                font.bold: true
+                color: "#1a1a1a"
+                Layout.alignment: Qt.AlignHCenter
+            }
+            Text {
+                text: I18n.t("toolDockerDesc") || "Docker命令速查与Compose转换"
+                font.pixelSize: 13
+                color: "#777"
+                Layout.alignment: Qt.AlignHCenter
+            }
+
+            Rectangle { Layout.fillWidth: true; height: 1; color: "#e8e8e8" }
 
             TabBar {
                 id: tabs
@@ -130,38 +161,107 @@ Window {
                 Layout.fillHeight: true
                 currentIndex: tabs.currentIndex
 
-                ScrollView {
+                // === Tab 1: 命令速查 ===
+                // 用 ListView 替代 ScrollView+Repeater+ColumnLayout 嵌套,彻底避免 layout 塌缩
+                ListView {
+                    id: cheatsheetList
                     clip: true
-                    ColumnLayout {
-                        width: dockerWindow.width - 70
-                        spacing: 14
-                        Repeater {
-                            model: commandGroups
-                            Rectangle {
-                                Layout.fillWidth: true
-                                Layout.preferredHeight: modelData.rows.length * 46 + 50
-                                color: "white"
-                                border.color: "#e0e0e0"
-                                radius: 6
-                                ColumnLayout {
-                                    anchors.fill: parent
-                                    anchors.margins: 12
-                                    spacing: 8
-                                    Text { text: modelData.name; font.pixelSize: 15; font.bold: true; color: "#333" }
-                                    Repeater {
-                                        model: modelData.rows
-                                        RowLayout {
-                                            Layout.fillWidth: true
-                                            Text { text: modelData[0]; Layout.preferredWidth: 120; font.pixelSize: 13; color: "#333" }
-                                            Text { text: modelData[1]; Layout.fillWidth: true; font.pixelSize: 13; font.family: "Consolas, Monaco, monospace"; color: "#444"; elide: Text.ElideMiddle }
-                                            Button {
-                                                text: I18n.t("copyBtn") || "复制"
-                                                Layout.preferredWidth: 64
-                                                Layout.preferredHeight: 30
-                                                onClicked: copyToClipboard(modelData[1])
-                                                background: Rectangle { color: parent.hovered ? "#006cbd" : "#0078d4"; radius: 4 }
-                                                contentItem: Text { text: parent.text; color: "white"; font.pixelSize: 12; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
-                                            }
+                    spacing: 14
+                    model: commandGroups
+                    boundsBehavior: Flickable.StopAtBounds
+
+                    ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
+
+                    delegate: Rectangle {
+                        id: groupCard
+                        width: cheatsheetList.width
+                        // 高度由内部 ColumnLayout 通过 implicitHeight 自动算出
+                        implicitHeight: groupColumn.implicitHeight + 28  // 14x2 padding
+                        height: implicitHeight
+                        color: "white"
+                        border.color: "#e8e8e8"
+                        border.width: 1
+                        radius: 8
+
+                        property var groupData: modelData
+
+                        Column {
+                            id: groupColumn
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: 14
+                            spacing: 8
+
+                            // 标题
+                            Text {
+                                width: parent.width
+                                text: groupCard.groupData.name
+                                font.pixelSize: 15
+                                font.bold: true
+                                color: "#1a1a1a"
+                                height: 22
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            // 命令行 Repeater(用 Item 子元素,不用 RowLayout)
+                            Repeater {
+                                model: groupCard.groupData.rows
+                                Item {
+                                    width: groupColumn.width
+                                    height: 32
+
+                                    Rectangle {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 0
+                                        anchors.rightMargin: 0
+                                        color: index % 2 === 0 ? "transparent" : "#fafbfc"
+                                        radius: 4
+                                    }
+
+                                    Text {
+                                        id: nameLabel
+                                        anchors.left: parent.left
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        width: 120
+                                        text: modelData[0]
+                                        font.pixelSize: 13
+                                        color: "#37474f"
+                                    }
+
+                                    Text {
+                                        id: cmdLabel
+                                        anchors.left: nameLabel.right
+                                        anchors.leftMargin: 12
+                                        anchors.right: copyBtn.left
+                                        anchors.rightMargin: 12
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: modelData[1]
+                                        font.pixelSize: 13
+                                        font.family: "Consolas, Monaco, monospace"
+                                        color: "#455a64"
+                                        elide: Text.ElideMiddle
+                                    }
+
+                                    Button {
+                                        id: copyBtn
+                                        anchors.right: parent.right
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: I18n.t("copyBtn") || "复制"
+                                        width: 72
+                                        height: 30
+                                        onClicked: copyToClipboard(modelData[1])
+                                        background: Rectangle {
+                                            color: copyBtn.pressed ? "#006cbd"
+                                                 : (copyBtn.hovered ? "#1e88e5" : "#1976d2")
+                                            radius: 4
+                                        }
+                                        contentItem: Text {
+                                            text: copyBtn.text
+                                            color: "white"
+                                            font.pixelSize: 12
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
                                         }
                                     }
                                 }
@@ -170,63 +270,175 @@ Window {
                     }
                 }
 
+                // === Tab 2: Compose 转换(上下三段布局) ===
                 Rectangle {
                     color: "white"
-                    border.color: "#e0e0e0"
+                    border.color: "#e8e8e8"
                     border.width: 1
-                    radius: 6
+                    radius: 8
 
-                    RowLayout {
+                    ColumnLayout {
                         anchors.fill: parent
                         anchors.margins: 14
-                        spacing: 14
-                        TextArea {
-                            id: dockerInput
+                        spacing: 10
+
+                        // 输入区
+                        ColumnLayout {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            placeholderText: "docker run -d --name web -p 8080:80 -v ./html:/usr/share/nginx/html nginx:latest"
-                            selectByMouse: true
-                            wrapMode: TextArea.Wrap
-                            font.family: "Consolas, Monaco, Microsoft YaHei, monospace"
-                            background: Rectangle { color: "#fbfbfb"; border.color: dockerInput.activeFocus ? "#0078d4" : "#edf0f2"; border.width: dockerInput.activeFocus ? 2 : 1; radius: 4 }
-                        }
-                        ColumnLayout {
-                            Layout.preferredWidth: 150
-                            Button {
-                                text: "run -> compose"
+                            spacing: 6
+
+                            RowLayout {
                                 Layout.fillWidth: true
+                                Text {
+                                    text: "输入"
+                                    font.pixelSize: 12
+                                    font.bold: true
+                                    color: "#546e7a"
+                                }
+                                Item { Layout.fillWidth: true }
+                                Text {
+                                    text: dockerInput.text.length + " 字符"
+                                    font.pixelSize: 11
+                                    color: "#90a4ae"
+                                    font.family: "Consolas, Monaco, monospace"
+                                }
+                            }
+
+                            TextArea {
+                                id: dockerInput
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                placeholderText: "docker run -d --name web -p 8080:80 -v ./html:/usr/share/nginx/html nginx:latest"
+                                selectByMouse: true
+                                wrapMode: TextArea.Wrap
+                                font.family: "Consolas, Monaco, Microsoft YaHei, monospace"
+                                font.pixelSize: 13
+                                background: Rectangle {
+                                    color: "#fbfbfb"
+                                    border.color: dockerInput.activeFocus ? "#1976d2" : "#e8e8e8"
+                                    border.width: dockerInput.activeFocus ? 2 : 1
+                                    radius: 4
+                                }
+                            }
+                        }
+
+                        // 中间一排:转换按钮组(水平居中)
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Layout.alignment: Qt.AlignHCenter
+                            spacing: 12
+
+                            Button {
+                                text: "run → compose"
+                                Layout.preferredWidth: 130
                                 Layout.preferredHeight: 34
                                 onClicked: dockerOutput.text = runToCompose(dockerInput.text)
-                                background: Rectangle { color: parent.hovered ? "#006cbd" : "#0078d4"; radius: 4 }
-                                contentItem: Text { text: parent.text; color: "white"; font.pixelSize: 12; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
+                                background: Rectangle {
+                                    color: parent.pressed ? "#1565c0" : (parent.hovered ? "#1e88e5" : "#1976d2")
+                                    radius: 6
+                                }
+                                contentItem: Text {
+                                    text: parent.text
+                                    color: "white"
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
                             }
+
                             Button {
-                                text: "compose -> run"
-                                Layout.fillWidth: true
+                                text: "compose → run"
+                                Layout.preferredWidth: 140
                                 Layout.preferredHeight: 34
                                 onClicked: dockerOutput.text = composeToRun(dockerInput.text)
-                                background: Rectangle { color: parent.hovered ? "#006cbd" : "#0078d4"; radius: 4 }
-                                contentItem: Text { text: parent.text; color: "white"; font.pixelSize: 12; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
+                                background: Rectangle {
+                                    color: parent.pressed ? "#1565c0" : (parent.hovered ? "#1e88e5" : "#1976d2")
+                                    radius: 6
+                                }
+                                contentItem: Text {
+                                    text: parent.text
+                                    color: "white"
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
                             }
+
                             Button {
-                                text: I18n.t("copyBtn") || "复制"
-                                Layout.fillWidth: true
+                                text: I18n.t("copyBtn") || "复制结果"
+                                Layout.preferredWidth: 110
                                 Layout.preferredHeight: 34
+                                enabled: dockerOutput.text.length > 0
                                 onClicked: copyToClipboard(dockerOutput.text)
-                                background: Rectangle { color: parent.hovered ? "#f5f5f5" : "white"; border.color: "#d0d0d0"; border.width: 1; radius: 4 }
-                                contentItem: Text { text: parent.text; color: "#333"; font.pixelSize: 12; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
+                                background: Rectangle {
+                                    color: parent.enabled
+                                         ? (parent.pressed ? "#006cbd" : (parent.hovered ? "#1e88e5" : "#1976d2"))
+                                         : "#cfd8dc"
+                                    radius: 6
+                                }
+                                contentItem: Text {
+                                    text: parent.text
+                                    color: parent.parent.enabled ? "white" : "#999"
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
                             }
-                            Item { Layout.fillHeight: true }
                         }
-                        TextArea {
-                            id: dockerOutput
+
+                        // 输出区
+                        ColumnLayout {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            readOnly: true
-                            selectByMouse: true
-                            wrapMode: TextArea.Wrap
-                            font.family: "Consolas, Monaco, Microsoft YaHei, monospace"
-                            background: Rectangle { color: "#fbfbfb"; border.color: "#edf0f2"; border.width: 1; radius: 4 }
+                            spacing: 6
+
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Text {
+                                    text: "输出"
+                                    font.pixelSize: 12
+                                    font.bold: true
+                                    color: "#546e7a"
+                                }
+                                Item { Layout.fillWidth: true }
+                                Text {
+                                    text: dockerOutput.text.length + " 字符"
+                                    font.pixelSize: 11
+                                    color: "#90a4ae"
+                                    font.family: "Consolas, Monaco, monospace"
+                                }
+                            }
+
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                color: "#263238"
+                                radius: 4
+
+                                ScrollView {
+                                    anchors.fill: parent
+                                    anchors.margins: 1
+                                    clip: true
+                                    ScrollBar.vertical.policy: ScrollBar.AsNeeded
+                                    ScrollBar.horizontal.policy: ScrollBar.AsNeeded
+
+                                    TextArea {
+                                        id: dockerOutput
+                                        Layout.fillWidth: true
+                                        readOnly: true
+                                        selectByMouse: true
+                                        wrapMode: TextArea.Wrap
+                                        color: "#eceff1"
+                                        font.family: "Consolas, Monaco, Microsoft YaHei, monospace"
+                                        font.pixelSize: 13
+                                        background: null
+                                    }
+                                }
+                            }
                         }
                     }
                 }
