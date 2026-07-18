@@ -255,9 +255,9 @@ Window {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         clip: true
+                        contentWidth: availableWidth
 
                         ColumnLayout {
-                            width: parent.width
                             spacing: 8
 
                             HashRow { label: "MD5"; hashValue: fileTool.md5 }
@@ -332,17 +332,20 @@ Window {
                 readOnly: true
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                Layout.minimumWidth: 200
                 font.pixelSize: 12
                 font.family: "Consolas, Monaco, monospace"
                 color: "#495057"
                 selectByMouse: true
-                wrapMode: TextArea.Wrap
+                wrapMode: TextArea.NoWrap
                 placeholderText: I18n.t("fileChecksumPending") || "等待计算"
                 background: null
             }
 
             ColumnLayout {
                 Layout.preferredWidth: 240
+                Layout.minimumWidth: 180
+                Layout.maximumWidth: 260
                 Layout.fillHeight: true
                 spacing: 6
 

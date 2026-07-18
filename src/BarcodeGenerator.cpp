@@ -4,6 +4,9 @@
 #include <QPainter>
 #include <QFileInfo>
 #include <QDir>
+#include <QCoreApplication>
+#include <QEventLoop>
+#include <QElapsedTimer>
 
 // 全局图像提供器实例
 BarcodeImageProvider *g_barcodeImageProvider = nullptr;
@@ -46,6 +49,12 @@ BarcodeGenerator::BarcodeGenerator(QObject *parent)
     : QObject(parent)
     , m_text("")
     , m_imageId(0)
+    , m_batchProgress(0)
+    , m_batchTotal(0)
+    , m_batchRunning(false)
+    , m_cancelRequested(false)
+    , m_batchStartMs(0)
+    , m_batchDurationMs(0)
 {
 }
 
@@ -115,14 +124,10 @@ int BarcodeGenerator::calculateChecksum(const QVector<int> &values) const
     return sum % 103;
 }
 
-void BarcodeGenerator::generate()
+QImage BarcodeGenerator::renderBarcodeImage(const QString &text) const
 {
-    if (m_text.isEmpty()) {
-        m_barcodeImage = QImage();
-        m_imageSource = "";
-        emit imageSourceChanged();
-        emit hasBarcodeChanged();
-        return;
+    if (text.isEmpty()) {
+        return QImage();
     }
 
     QVector<QString> patterns = getCode128Patterns();
@@ -134,7 +139,7 @@ void BarcodeGenerator::generate()
     barcodePattern += patterns[104];
 
     // 编码每个字符
-    for (QChar ch : m_text) {
+    for (QChar ch : text) {
         int asciiValue = ch.toLatin1();
         if (asciiValue >= 32 && asciiValue <= 127) {
             int code128Value = asciiValue - 32;
@@ -155,7 +160,7 @@ void BarcodeGenerator::generate()
     int height = 100;      // 条形码高度
     int quietZone = 20;    // 两侧空白区域
     int textHeight = 25;   // 文字区域高度
-    
+
     int barcodeWidth = barcodePattern.length() * moduleWidth;
     int totalWidth = barcodeWidth + quietZone * 2;
     int totalHeight = height + textHeight;
@@ -180,18 +185,30 @@ void BarcodeGenerator::generate()
     QFont font("Arial", 12);
     painter.setFont(font);
     QRect textRect(0, height + 5, totalWidth, textHeight - 5);
-    painter.drawText(textRect, Qt::AlignCenter, m_text);
+    painter.drawText(textRect, Qt::AlignCenter, text);
 
     painter.end();
 
-    m_barcodeImage = image;
+    return image;
+}
+
+void BarcodeGenerator::generate()
+{
+    m_barcodeImage = renderBarcodeImage(m_text);
+
+    if (m_barcodeImage.isNull()) {
+        m_imageSource = "";
+        emit imageSourceChanged();
+        emit hasBarcodeChanged();
+        return;
+    }
 
     // 更新图像提供器
     QString imageId = QString("barcode_%1").arg(++m_imageId);
     if (g_barcodeImageProvider) {
         g_barcodeImageProvider->setImage(imageId, m_barcodeImage);
     }
-    
+
     m_imageSource = QString("image://barcode/%1").arg(imageId);
     emit imageSourceChanged();
     emit hasBarcodeChanged();
@@ -235,4 +252,143 @@ void BarcodeGenerator::copyToClipboard()
     QClipboard *clipboard = QGuiApplication::clipboard();
     clipboard->setImage(m_barcodeImage);
     emit copySuccess();
+}
+
+int BarcodeGenerator::batchProgress() const
+{
+    return m_batchProgress;
+}
+
+int BarcodeGenerator::batchTotal() const
+{
+    return m_batchTotal;
+}
+
+bool BarcodeGenerator::batchRunning() const
+{
+    return m_batchRunning;
+}
+
+QString BarcodeGenerator::batchLastError() const
+{
+    return m_batchLastError;
+}
+
+QString BarcodeGenerator::batchOutputDir() const
+{
+    return m_batchOutputDir;
+}
+
+int BarcodeGenerator::batchDurationMs() const
+{
+    return m_batchDurationMs;
+}
+
+void BarcodeGenerator::cancelBatch()
+{
+    m_cancelRequested = true;
+}
+
+void BarcodeGenerator::clearBatch()
+{
+    m_batchProgress = 0;
+    m_batchTotal = 0;
+    m_batchDurationMs = 0;
+    m_batchLastError.clear();
+    m_batchOutputDir.clear();
+    emit batchProgressChanged();
+    emit batchDurationChanged();
+}
+
+bool BarcodeGenerator::generateBatch(const QString &prefix,
+                                     int startNumber,
+                                     int endNumber,
+                                     const QString &outputDir)
+{
+    // 已经有批量任务在跑,拒绝重入
+    if (m_batchRunning) {
+        return false;
+    }
+
+    // 输入校验
+    if (startNumber <= 0 || endNumber <= 0 || startNumber > endNumber) {
+        m_batchLastError = QStringLiteral("号段无效:起始 %1,结束 %2").arg(startNumber).arg(endNumber);
+        emit batchFinished(0, 0, QString());
+        return false;
+    }
+
+    const qint64 total = static_cast<qint64>(endNumber) - startNumber + 1;
+    if (total > 100000) {
+        m_batchLastError = QStringLiteral("批量上限 100000 张,当前 %1 张").arg(total);
+        emit batchFinished(0, 0, QString());
+        return false;
+    }
+
+    QString dirPath = outputDir;
+    if (dirPath.startsWith("file:///")) {
+        dirPath = dirPath.mid(8);
+    }
+    if (dirPath.isEmpty()) {
+        m_batchLastError = QStringLiteral("输出文件夹不能为空");
+        emit batchFinished(0, 0, QString());
+        return false;
+    }
+
+    QDir dir(dirPath);
+    if (!dir.exists() && !dir.mkpath(".")) {
+        m_batchLastError = QStringLiteral("无法创建输出文件夹: %1").arg(dirPath);
+        emit batchFinished(0, 0, QString());
+        return false;
+    }
+
+    // 初始化状态
+    m_batchRunning = true;
+    m_cancelRequested = false;
+    m_batchProgress = 0;
+    m_batchTotal = static_cast<int>(total);
+    m_batchLastError.clear();
+    m_batchOutputDir = dir.absolutePath();
+    m_batchDurationMs = 0;
+    QElapsedTimer elapsed;
+    elapsed.start();
+    emit batchRunningChanged();
+    emit batchProgressChanged();
+    emit batchDurationChanged();
+
+    // 按 endNumber 位数决定补零宽度,确保 AB00001 / AB00010 排序整齐
+    const int numberWidth = QString::number(endNumber).length();
+    const QString cleanPrefix = prefix; // 允许空前缀
+
+    int successCount = 0;
+    for (int num = startNumber; num <= endNumber; ++num) {
+        if (m_cancelRequested) {
+            m_batchLastError = QStringLiteral("已取消,完成 %1/%2").arg(successCount).arg(m_batchTotal);
+            break;
+        }
+
+        const QString finalCode = cleanPrefix + QString("%1").arg(num, numberWidth, 10, QChar('0'));
+        const QString filePath = QDir(m_batchOutputDir).absoluteFilePath(finalCode + QStringLiteral(".png"));
+
+        QImage image = renderBarcodeImage(finalCode);
+        if (!image.isNull() && image.save(filePath, "PNG")) {
+            ++successCount;
+        } else if (m_batchLastError.isEmpty()) {
+            m_batchLastError = QStringLiteral("写入失败: %1").arg(filePath);
+        }
+
+        ++m_batchProgress;
+        emit batchProgressChanged();
+
+        // 让 UI 响应 paint 与按钮点击 —— 同步循环下取消能成立的关键
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
+    }
+
+    m_batchDurationMs = static_cast<int>(elapsed.elapsed());
+    emit batchDurationChanged();
+
+    m_batchRunning = false;
+    emit batchRunningChanged();
+    emit batchFinished(successCount, m_batchTotal, m_batchOutputDir);
+
+    return m_cancelRequested ? false : (successCount == m_batchTotal);
 }

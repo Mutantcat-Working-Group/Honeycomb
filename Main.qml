@@ -25,6 +25,7 @@ ApplicationWindow {
         "随机字符串": "qrc:/qt/qml/Honeycomb/windows/RandomLetterWindow.qml",
         "随机混合串": "qrc:/qt/qml/Honeycomb/windows/RandomMixedWindow.qml",
         "条形码生成": "qrc:/qt/qml/Honeycomb/windows/BarcodeWindow.qml",
+        "批量条形码生成": "qrc:/qt/qml/Honeycomb/windows/BatchBarcodeWindow.qml",
         "二维码生成": "qrc:/qt/qml/Honeycomb/windows/QRCodeWindow.qml",
         "识别二维码": "qrc:/qt/qml/Honeycomb/windows/QRCodeScannerWindow.qml",
         "文件转Base64": "qrc:/qt/qml/Honeycomb/windows/FileBase64Window.qml",
@@ -195,6 +196,7 @@ ApplicationWindow {
         ],
         1: [ // 编码工具
             {title: I18n.t("toolBarcode"), subtitle: I18n.t("toolBarcodeDesc"), key: "条形码生成"},
+            {title: I18n.t("toolBatchBarcode"), subtitle: I18n.t("toolBatchBarcodeDesc"), key: "批量条形码生成"},
             {title: I18n.t("toolQrcode"), subtitle: I18n.t("toolQrcodeDesc"), key: "二维码生成"},
             {title: I18n.t("toolQRScanner"), subtitle: I18n.t("toolQRScannerDesc"), key: "识别二维码"},
             {title: I18n.t("toolFileBase64"), subtitle: I18n.t("toolFileBase64Desc"), key: "文件转Base64"},

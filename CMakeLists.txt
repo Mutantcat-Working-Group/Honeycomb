@@ -88,6 +88,7 @@ qt_add_qml_module(appHoneycomb
         windows/RandomLetterWindow.qml
         windows/RandomMixedWindow.qml
         windows/BarcodeWindow.qml
+        windows/BatchBarcodeWindow.qml
         windows/QRCodeWindow.qml
         windows/QRCodeScannerWindow.qml
         windows/TimestampWindow.qml
