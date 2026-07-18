@@ -84,6 +84,7 @@ Window {
                         ComboBox {
                             id: portCombo
                             Layout.preferredWidth: 160
+                            Layout.preferredHeight: 36
                             model: serial.availablePorts
                             enabled: !serial.isOpen
                             onActivated: serial.portName = currentText
@@ -96,7 +97,7 @@ Window {
                         Button {
                             text: I18n.t("serialRefresh") || "刷新"
                             Layout.preferredWidth: 60
-                            Layout.preferredHeight: 32
+                            Layout.preferredHeight: 36
                             enabled: !serial.isOpen
                             background: Rectangle {
                                 color: parent.pressed ? "#f0f0f0" : (parent.hovered ? "#f5f5f5" : "white")
@@ -125,6 +126,7 @@ Window {
                         ComboBox {
                             id: baudCombo
                             Layout.preferredWidth: 120
+                            Layout.preferredHeight: 36
                             editable: true
                             model: ["9600", "19200", "38400", "57600", "115200", "230400", "460800", "921600"]
                             currentIndex: 4
@@ -155,6 +157,7 @@ Window {
                         ComboBox {
                             id: dataBitsCombo
                             Layout.preferredWidth: 70
+                            Layout.preferredHeight: 36
                             model: ["5", "6", "7", "8"]
                             currentIndex: 3
                             enabled: !serial.isOpen
@@ -170,6 +173,7 @@ Window {
                         ComboBox {
                             id: stopBitsCombo
                             Layout.preferredWidth: 70
+                            Layout.preferredHeight: 36
                             model: ["1", "2"]
                             currentIndex: 0
                             enabled: !serial.isOpen
@@ -185,6 +189,7 @@ Window {
                         ComboBox {
                             id: parityCombo
                             Layout.preferredWidth: 100
+                            Layout.preferredHeight: 36
                             model: ["None", "Even", "Odd", "Mark", "Space"]
                             currentIndex: 0
                             enabled: !serial.isOpen
@@ -192,13 +197,13 @@ Window {
                             Component.onCompleted: serial.parity = currentText
                         }
 
-                        Item { Layout.preferredWidth: 8 }
+                        Item { Layout.fillWidth: true }
 
-                        // 状态灯
+                        // 状态灯 + 状态文本（紧凑靠右）
                         Rectangle {
-                            width: 12
-                            height: 12
-                            radius: 6
+                            width: 10
+                            height: 10
+                            radius: 5
                             color: serial.isOpen ? "#27ae60" : "#e74c3c"
                         }
                         Text {
@@ -206,16 +211,15 @@ Window {
                             font.pixelSize: 13
                             color: serial.isOpen ? "#27ae60" : "#999999"
                             elide: Text.ElideRight
-                            horizontalAlignment: Text.AlignRight
-                            Layout.fillWidth: true
-                            Layout.minimumWidth: 0
+                            Layout.maximumWidth: 160
+                            Layout.rightMargin: 4
                         }
 
                         Button {
                             text: serial.isOpen ? (I18n.t("serialClose") || "关闭") : (I18n.t("serialOpen") || "打开")
-                            Layout.preferredWidth: 80
-                            Layout.minimumWidth: 80
-                            Layout.preferredHeight: 32
+                            Layout.preferredWidth: 88
+                            Layout.minimumWidth: 88
+                            Layout.preferredHeight: 36
                             background: Rectangle {
                                 color: serial.isOpen
                                        ? (parent.pressed ? "#d32f2f" : (parent.hovered ? "#e53935" : "#f44336"))
