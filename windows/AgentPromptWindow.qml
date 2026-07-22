@@ -417,6 +417,206 @@ Window {
         }
     }
     
+    // Spec 小抄对话框（只读流程说明）
+    Dialog {
+        id: specCheatsheetDialog
+        title: I18n.t("agentSpecCheatsheetTitle") || "Spec 小抄 - OpenSpec 协同流程"
+        standardButtons: Dialog.Close
+        anchors.centerIn: parent
+        modal: true
+        width: 560
+        height: 540
+
+        contentItem: ScrollView {
+            clip: true
+
+            ColumnLayout {
+                width: parent.width
+                spacing: 14
+
+                // 流程图：Explore → Propose → Apply → Archive
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 48
+                    color: "#f5f9fd"
+                    border.color: "#bbdefb"
+                    border.width: 1
+                    radius: 6
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 8
+                        spacing: 4
+
+                        Repeater {
+                            model: [
+                                { tag: "Explore", color: "#1976d2" },
+                                { tag: "Propose", color: "#0288d1" },
+                                { tag: "Apply",   color: "#00897b" },
+                                { tag: "Archive", color: "#5e35b1" }
+                            ]
+
+                            delegate: Rectangle {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                color: modelData.color
+                                radius: 4
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: modelData.tag
+                                    font.pixelSize: 12
+                                    font.bold: true
+                                    color: "white"
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Step 1: Explore
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 4
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+                        Text {
+                            text: I18n.t("agentSpecStepExplore") || "1. Explore（探索）"
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: "#1976d2"
+                        }
+                        Item { Layout.fillWidth: true }
+                        Rectangle {
+                            Layout.alignment: Qt.AlignVCenter
+                            width: 8; height: 8; radius: 4
+                            color: "#1976d2"
+                        }
+                    }
+                    Text {
+                        Layout.fillWidth: true
+                        text: I18n.t("agentSpecStepExploreDesc") || "通过 /explore 描述当前行为、约束、相关代码与未知点。在动手前先把现状摸清楚。"
+                        font.pixelSize: 13
+                        color: "#333"
+                        wrapMode: Text.WordWrap
+                    }
+                }
+
+                // Step 2: Propose
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 4
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+                        Text {
+                            text: I18n.t("agentSpecStepPropose") || "2. Propose（提案）"
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: "#0288d1"
+                        }
+                        Item { Layout.fillWidth: true }
+                        Rectangle {
+                            Layout.alignment: Qt.AlignVCenter
+                            width: 8; height: 8; radius: 4
+                            color: "#0288d1"
+                        }
+                    }
+                    Text {
+                        Layout.fillWidth: true
+                        text: I18n.t("agentSpecStepProposeDesc") || "通过 /propose 把变更写成结构化提案：Why / What / Impact，明确新增/修改/移除的范围。"
+                        font.pixelSize: 13
+                        color: "#333"
+                        wrapMode: Text.WordWrap
+                    }
+                }
+
+                // Step 3: Apply
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 4
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+                        Text {
+                            text: I18n.t("agentSpecStepApply") || "3. Apply（实施）"
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: "#00897b"
+                        }
+                        Item { Layout.fillWidth: true }
+                        Rectangle {
+                            Layout.alignment: Qt.AlignVCenter
+                            width: 8; height: 8; radius: 4
+                            color: "#00897b"
+                        }
+                    }
+                    Text {
+                        Layout.fillWidth: true
+                        text: I18n.t("agentSpecStepApplyDesc") || "通过 /apply 按提案逐项落地代码与文档，每完成一个 Requirement 立即打勾验证。"
+                        font.pixelSize: 13
+                        color: "#333"
+                        wrapMode: Text.WordWrap
+                    }
+                }
+
+                // Step 4: Archive
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 4
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+                        Text {
+                            text: I18n.t("agentSpecStepArchive") || "4. Archive（归档）"
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: "#5e35b1"
+                        }
+                        Item { Layout.fillWidth: true }
+                        Rectangle {
+                            Layout.alignment: Qt.AlignVCenter
+                            width: 8; height: 8; radius: 4
+                            color: "#5e35b1"
+                        }
+                    }
+                    Text {
+                        Layout.fillWidth: true
+                        text: I18n.t("agentSpecStepArchiveDesc") || "通过 /archive 把已上线的能力从 changes/ 移到 archive/，保持工作区整洁。"
+                        font.pixelSize: 13
+                        color: "#333"
+                        wrapMode: Text.WordWrap
+                    }
+                }
+
+                // 底部提示
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 38
+                    color: "#fff8e1"
+                    border.color: "#ffe082"
+                    border.width: 1
+                    radius: 4
+
+                    Text {
+                        anchors.fill: parent
+                        anchors.margins: 8
+                        text: "💡 " + (I18n.t("agentSpecFlowTip") || "提示：每个阶段都必须停下来让 Agent 给出当前状态，再决定是否进入下一步；不要跳步。")
+                        font.pixelSize: 12
+                        color: "#7a5b00"
+                        wrapMode: Text.WordWrap
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+            }
+        }
+    }
+
     // 初始化骨架确认对话框
     Dialog {
         id: initConfirmDialog
@@ -515,7 +715,7 @@ Window {
                     // 标题和选择按钮
                     RowLayout {
                         Layout.fillWidth: true
-                        spacing: 10
+                        spacing: 8
 
                         Text {
                             text: "📁 " + (I18n.t("agentWorkspace") || "协同文件夹")
@@ -526,77 +726,52 @@ Window {
 
                         Item { Layout.fillWidth: true }
 
-                        // 合并的「选择 + 刷新」按钮组
-                        Rectangle {
-                            id: selectGroup
-                            Layout.preferredHeight: 28
-                            Layout.preferredWidth: 80
-                            color: selectPressed ? "#1565c0" : (selectHovered || refreshHovered ? "#1e88e5" : "#1976d2")
-                            radius: 4
+                        // 选择按钮（蓝色主操作）
+                        Button {
+                            text: I18n.t("agentSelectFolder") || "选择"
+                            implicitHeight: 28
 
-                            property bool selectPressed: selectMouse.pressed
-                            property bool selectHovered: selectMouse.containsMouse
-                            property bool refreshHovered: refreshMouse.containsMouse
-
-                            Row {
-                                anchors.fill: parent
-                                spacing: 0
-
-                                // 选择按钮区域
-                                Item {
-                                    id: selectBtn
-                                    width: 50
-                                    height: parent.height
-
-                                    Text {
-                                        anchors.centerIn: parent
-                                        text: "选择"
-                                        font.pixelSize: 12
-                                        color: "white"
-                                    }
-
-                                    MouseArea {
-                                        id: selectMouse
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: manager.selectRootFolder()
-                                    }
-                                }
-
-                                // 分隔线
-                                Rectangle {
-                                    width: 1
-                                    height: parent.height - 8
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    color: "white"
-                                    opacity: 0.4
-                                }
-
-                                // 刷新按钮区域
-                                Item {
-                                    id: refreshBtn
-                                    width: 28
-                                    height: parent.height
-                                    enabled: manager.rootPath !== ""
-
-                                    Text {
-                                        anchors.centerIn: parent
-                                        text: "⟳"
-                                        font.pixelSize: 14
-                                        color: parent.parent.enabled ? "white" : "#88ffffff"
-                                    }
-
-                                    MouseArea {
-                                        id: refreshMouse
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        enabled: parent.parent.enabled
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: manager.refreshTree()
-                                    }
-                                }
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 12
+                                color: "white"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                leftPadding: 14
+                                rightPadding: 14
                             }
+
+                            background: Rectangle {
+                                color: parent.pressed ? "#1565c0" : (parent.hovered ? "#1e88e5" : "#1976d2")
+                                radius: 4
+                            }
+
+                            onClicked: manager.selectRootFolder()
+                        }
+
+                        // 刷新按钮（独立的次要操作按钮）
+                        Button {
+                            text: "⟳"
+                            implicitWidth: 32
+                            implicitHeight: 28
+                            enabled: manager.rootPath !== ""
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 14
+                                color: parent.enabled ? "#666" : "#ccc"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            background: Rectangle {
+                                color: parent.pressed ? "#e0e0e0" : (parent.hovered ? "#f0f0f0" : "white")
+                                border.color: parent.enabled ? "#ddd" : "#e8e8e8"
+                                border.width: 1
+                                radius: 4
+                            }
+
+                            onClicked: manager.refreshTree()
                         }
                     }
                     
@@ -846,7 +1021,7 @@ Window {
                                 }
                                 Text {
                                     anchors.centerIn: parent
-                                    text: I18n.t("agentPreviewNormal") || "普通查看"
+                                    text: I18n.t("agentPreviewNormal") || "编辑查看"
                                     font.pixelSize: 12
                                     color: previewToggle.mode === "normal" ? "#1976d2" : "#666"
                                 }
@@ -888,27 +1063,6 @@ Window {
                         }
 
                         Button {
-                            text: "💾 保存"
-                            visible: !manager.isImageFolder && manager.currentFilePath !== ""
-                            implicitHeight: 30
-
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: 12
-                                color: "white"
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
-
-                            background: Rectangle {
-                                color: parent.pressed ? "#388e3c" : (parent.hovered ? "#4caf50" : "#43a047")
-                                radius: 4
-                            }
-
-                            onClicked: manager.saveCurrentFile()
-                        }
-
-                        Button {
                             text: "📂 打开目录"
                             visible: manager.currentFilePath !== ""
                             implicitHeight: 30
@@ -929,6 +1083,50 @@ Window {
                             }
 
                             onClicked: manager.openInExplorer(manager.currentFilePath)
+                        }
+
+                        Button {
+                            text: I18n.t("agentSpecCheatsheet") || "📋 Spec 小抄"
+                            visible: manager.rootPath !== ""
+                            implicitHeight: 30
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 12
+                                color: "#1976d2"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            background: Rectangle {
+                                color: parent.pressed ? "#bbdefb" : (parent.hovered ? "#e3f2fd" : "white")
+                                border.color: "#1976d2"
+                                border.width: 1
+                                radius: 4
+                            }
+
+                            onClicked: specCheatsheetDialog.open()
+                        }
+
+                        Button {
+                            text: "💾 保存"
+                            visible: !manager.isImageFolder && manager.currentFilePath !== ""
+                            implicitHeight: 30
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 12
+                                color: "white"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            background: Rectangle {
+                                color: parent.pressed ? "#388e3c" : (parent.hovered ? "#4caf50" : "#43a047")
+                                radius: 4
+                            }
+
+                            onClicked: manager.saveCurrentFile()
                         }
                     }
 
