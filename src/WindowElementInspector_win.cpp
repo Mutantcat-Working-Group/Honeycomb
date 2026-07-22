@@ -1,4 +1,4 @@
-// WindowElementInspector_win.cpp
+﻿// WindowElementInspector_win.cpp
 // Windows 后端：UI Automation (COM) + RegisterHotKey + PowerShell 脚本生成
 #include "WindowElementInspector.h"
 
@@ -8,10 +8,12 @@
 #include <QProcess>
 #include <QGuiApplication>
 #include <QAbstractNativeEventFilter>
+#include <QRect>
 
 #if defined(Q_OS_WIN)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <combaseapi.h>
 #include <UIAutomation.h>
 
 // ============================================================
