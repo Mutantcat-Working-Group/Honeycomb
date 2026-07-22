@@ -28,5 +28,7 @@
     <string>${MACOSX_BUNDLE_COPYRIGHT}</string>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
+    <key>NSAccessibilityUsageDescription</key>
+    <string>用于读取屏幕上的窗口组件信息，以便生成 AI 提示词。</string>
 </dict>
 </plist>

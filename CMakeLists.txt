@@ -26,6 +26,24 @@ endif()
 
 project(Honeycomb VERSION 1.1.20260718 LANGUAGES C CXX)
 
+# Toolchain files are loaded by project() and may replace an absolute SDK path
+# with the invalid literal "macosx". Normalize it again after toolchain setup.
+if(APPLE AND (CMAKE_OSX_SYSROOT STREQUAL "macosx" OR
+              CMAKE_OSX_SYSROOT STREQUAL "" OR
+              NOT EXISTS "${CMAKE_OSX_SYSROOT}"))
+    execute_process(
+        COMMAND xcrun --sdk macosx --show-sdk-path
+        OUTPUT_VARIABLE detected_macos_sdk
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_QUIET
+    )
+    if(detected_macos_sdk AND EXISTS "${detected_macos_sdk}")
+        set(CMAKE_OSX_SYSROOT "${detected_macos_sdk}" CACHE PATH "macOS SDK path" FORCE)
+    else()
+        message(FATAL_ERROR "Unable to resolve the macOS SDK path with xcrun")
+    endif()
+endif()
+
 include(CTest)
 
 if(APPLE)
@@ -48,7 +66,7 @@ if(MSVC)
     add_compile_options(/utf-8)
 endif()
 
-find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 Widgets WebSockets Multimedia Network SerialPort WebEngineQuick WebChannel)
+find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 Widgets WebSockets Multimedia Network SerialPort WebEngineQuick WebChannel DBus)
 find_package(yaml-cpp REQUIRED)
 find_package(jsoncpp REQUIRED)
 find_package(PahoMqttCpp REQUIRED)
@@ -174,6 +192,7 @@ qt_add_qml_module(appHoneycomb
         windows/AiTextReducerWindow.qml
         windows/WebInspectorWindow.qml
         windows/SerialPortWindow.qml
+        windows/WindowElementInspectorWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
@@ -257,13 +276,15 @@ qt_add_qml_module(appHoneycomb
         src/UpdateChecker.cpp
         src/SerialPortTool.h
         src/SerialPortTool.cpp
+        src/WindowElementInspector.h
+        src/WindowElementInspector.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 set_target_properties(appHoneycomb PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER com.yourcompany.appHoneycomb
+    MACOSX_BUNDLE_GUI_IDENTIFIER com.mutantcat.honeycomb
     MACOSX_BUNDLE_BUNDLE_NAME "${HONEYCOMB_APP_DISPLAY_NAME}"
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_COPYRIGHT "Honeycomb"
@@ -300,11 +321,39 @@ target_link_libraries(appHoneycomb
         Qt6::SerialPort
         Qt6::WebEngineQuick
         Qt6::WebChannel
+        Qt6::DBus
         yaml-cpp::yaml-cpp
         JsonCpp::JsonCpp
         PahoMqttCpp::paho-mqttpp3-static
         ZXing::ZXing
 )
+
+# ===== 窗口组件选取：平台特定依赖 =====
+if(APPLE)
+    target_sources(appHoneycomb PRIVATE src/WindowElementInspector_mac.mm)
+    # AXUIElement + AppKit 需链接这些 framework
+    find_library(APPKIT_FRAMEWORK AppKit)
+    find_library(APPSERVICES_FRAMEWORK ApplicationServices)
+    target_link_libraries(appHoneycomb PRIVATE ${APPKIT_FRAMEWORK} ${APPSERVICES_FRAMEWORK})
+    add_custom_command(TARGET appHoneycomb POST_BUILD
+        COMMAND /usr/bin/codesign --force --deep --sign - --identifier com.mutantcat.honeycomb --requirements "=designated => identifier \"com.mutantcat.honeycomb\"" "$<TARGET_BUNDLE_DIR:appHoneycomb>"
+        COMMENT "Applying a stable ad-hoc signature for macOS privacy permissions"
+        VERBATIM
+    )
+endif()
+if(WIN32)
+    target_sources(appHoneycomb PRIVATE src/WindowElementInspector_win.cpp)
+    # UI Automation COM
+    target_link_libraries(appHoneycomb PRIVATE ole32 oleaut32 uuid)
+endif()
+if(UNIX AND NOT APPLE)
+    target_sources(appHoneycomb PRIVATE src/WindowElementInspector_linux.cpp)
+    # AT-SPI2
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(AT_SPI2 REQUIRED atspi-2.0)
+    target_include_directories(appHoneycomb PRIVATE ${AT_SPI2_INCLUDE_DIRS})
+    target_link_libraries(appHoneycomb PRIVATE ${AT_SPI2_LIBRARIES})
+endif()
 
 target_compile_definitions(appHoneycomb PRIVATE HONEYCOMB_VERSION="${PROJECT_VERSION}")
 
@@ -333,6 +382,15 @@ if(BUILD_TESTING)
             -DPROCESS_QML=${CMAKE_CURRENT_SOURCE_DIR}/windows/ProcessManagerWindow.qml
             -DPORT_QML=${CMAKE_CURRENT_SOURCE_DIR}/windows/PortManagerWindow.qml
             -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/ManagerTableScrollTest.cmake
+    )
+    add_test(
+        NAME WindowElementInspectorIntegrationTest
+        COMMAND ${CMAKE_COMMAND}
+            -DQML_FILE=${CMAKE_CURRENT_SOURCE_DIR}/windows/WindowElementInspectorWindow.qml
+            -DCMAKE_FILE=${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+            -DCOMMON_BACKEND=${CMAKE_CURRENT_SOURCE_DIR}/src/WindowElementInspector.cpp
+            -DMAC_BACKEND=${CMAKE_CURRENT_SOURCE_DIR}/src/WindowElementInspector_mac.mm
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/WindowElementInspectorIntegrationTest.cmake
     )
 endif()
 

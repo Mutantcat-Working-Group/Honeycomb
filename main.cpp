@@ -42,6 +42,7 @@
 #include "src/FileUtilityTool.h"
 #include "src/UpdateChecker.h"
 #include "src/SerialPortTool.h"
+#include "src/WindowElementInspector.h"
 
 int main(int argc, char *argv[])
 {
@@ -99,6 +100,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<FileUtilityTool>("Honeycomb", 1, 0, "FileUtilityTool");
     qmlRegisterType<UpdateChecker>("Honeycomb", 1, 0, "UpdateChecker");
     qmlRegisterType<SerialPortTool>("Honeycomb", 1, 0, "SerialPortTool");
+    qmlRegisterType<WindowElementInspector>("Honeycomb", 1, 0, "WindowElementInspector");
 
     QQmlApplicationEngine engine;
     

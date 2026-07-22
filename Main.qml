@@ -110,7 +110,8 @@ ApplicationWindow {
         "软件设置": "qrc:/qt/qml/Honeycomb/windows/SettingsWindow.qml",
         "Agent协同": "qrc:/qt/qml/Honeycomb/windows/AgentPromptWindow.qml",
         "对照降AI": "qrc:/qt/qml/Honeycomb/windows/AiTextReducerWindow.qml",
-        "网页组件选取": "qrc:/qt/qml/Honeycomb/windows/WebInspectorWindow.qml"
+        "网页组件选取": "qrc:/qt/qml/Honeycomb/windows/WebInspectorWindow.qml",
+        "窗口组件选取": "qrc:/qt/qml/Honeycomb/windows/WindowElementInspectorWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
@@ -294,6 +295,7 @@ ApplicationWindow {
             {title: I18n.t("toolAIPrompt"), subtitle: I18n.t("toolAIPromptDesc"), key: "AI提示词"},
             {title: I18n.t("toolAgentPrompt"), subtitle: I18n.t("toolAgentPromptDesc"), key: "Agent协同"},
             {title: I18n.t("toolWebInspector"), subtitle: I18n.t("toolWebInspectorDesc"), key: "网页组件选取"},
+            {title: I18n.t("toolWindowInspector"), subtitle: I18n.t("toolWindowInspectorDesc"), key: "窗口组件选取"},
             {title: I18n.t("toolAiTextReducer"), subtitle: I18n.t("toolAiTextReducerDesc"), key: "对照降AI"},
             {title: I18n.t("toolContextFloat"), subtitle: I18n.t("toolContextFloatDesc"), key: "上下文飘窗"},
             {title: I18n.t("toolOpenAITest"), subtitle: I18n.t("toolOpenAITestDesc"), key: "OpenAI API测试"},
