@@ -48,7 +48,7 @@ if(MSVC)
     add_compile_options(/utf-8)
 endif()
 
-find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 Widgets WebSockets Multimedia Network SerialPort)
+find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 Widgets WebSockets Multimedia Network SerialPort WebEngineQuick WebChannel)
 find_package(yaml-cpp REQUIRED)
 find_package(jsoncpp REQUIRED)
 find_package(PahoMqttCpp REQUIRED)
@@ -172,6 +172,7 @@ qt_add_qml_module(appHoneycomb
         windows/SettingsWindow.qml
         windows/AgentPromptWindow.qml
         windows/AiTextReducerWindow.qml
+        windows/WebInspectorWindow.qml
         windows/SerialPortWindow.qml
     RESOURCES
         i18n/zh_CN.js
@@ -297,6 +298,8 @@ target_link_libraries(appHoneycomb
         Qt6::Multimedia
         Qt6::Network
         Qt6::SerialPort
+        Qt6::WebEngineQuick
+        Qt6::WebChannel
         yaml-cpp::yaml-cpp
         JsonCpp::JsonCpp
         PahoMqttCpp::paho-mqttpp3-static

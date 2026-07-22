@@ -3,6 +3,7 @@
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include <QtQml>
+#include <QtWebEngineQuick/QtWebEngineQuick>
 
 #include "src/RandomNumberGenerator.h"
 #include "src/RandomLetterGenerator.h"
@@ -44,6 +45,7 @@
 
 int main(int argc, char *argv[])
 {
+    QtWebEngineQuick::initialize();
     QApplication app(argc, argv);
     
     // 设置应用程序图标
