@@ -12,6 +12,16 @@ Window {
     minimumWidth: 900
     minimumHeight: 600
     title: I18n.t("toolAgentPrompt") || "Agent提示词"
+
+    // 右侧预览模式：normal = 普通查看（可编辑）  markdown = MD 预览（只读渲染）
+    property string previewMode: "normal"
+
+    // 是否为 md 文件（仅 md 文件显示模式切换）
+    function isMarkdownFile(path) {
+        if (!path) return false
+        var lower = path.toLowerCase()
+        return lower.endsWith(".md") || lower.endsWith(".markdown")
+    }
     
     AgentPromptManager {
         id: manager
@@ -128,36 +138,48 @@ Window {
     // 生成提示词对话框
     Dialog {
         id: promptGeneratorDialog
-        title: "生成提示词"
-        standardButtons: Dialog.Ok | Dialog.Cancel
+        title: I18n.t("agentPromptGenerateTitle") || "生成提示词"
         anchors.centerIn: parent
         modal: true
         width: 600
         height: 500
-        
+
         property var selectedFiles: []
         property var fileList: []
-        
+
+        footer: DialogButtonBox {
+            Button {
+                text: I18n.t("contextFloatCancel") || "取消"
+                DialogButtonBox.buttonRole: DialogButtonBox.RejectRole
+                onClicked: promptGeneratorDialog.reject()
+            }
+            Button {
+                text: I18n.t("contextFloatConfirm") || "确定"
+                DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
+                onClicked: promptGeneratorDialog.accept()
+            }
+        }
+
         contentItem: ColumnLayout {
             spacing: 12
-            
+
             Text {
                 Layout.fillWidth: true
-                text: "请勾选需要包含在提示词中的文件："
+                text: I18n.t("agentPromptSelectFiles") || "请勾选需要包含在提示词中的文件："
                 font.pixelSize: 14
                 color: "#333"
             }
-            
+
             // 全选/取消全选按钮
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 10
-                
+
                 Button {
-                    text: "全选"
+                    text: I18n.t("agentSelectAll") || "全选"
                     implicitHeight: 26
                     implicitWidth: 60
-                    
+
                     contentItem: Text {
                         text: parent.text
                         font.pixelSize: 11
@@ -165,14 +187,14 @@ Window {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
-                    
+
                     background: Rectangle {
                         color: parent.pressed ? "#e0e0e0" : (parent.hovered ? "#f0f0f0" : "white")
                         border.color: "#ddd"
                         border.width: 1
                         radius: 4
                     }
-                    
+
                     onClicked: {
                         var all = []
                         for (var i = 0; i < promptGeneratorDialog.fileList.length; i++) {
@@ -181,12 +203,12 @@ Window {
                         promptGeneratorDialog.selectedFiles = all
                     }
                 }
-                
+
                 Button {
-                    text: "取消全选"
+                    text: I18n.t("agentDeselectAll") || "取消全选"
                     implicitHeight: 26
                     implicitWidth: 70
-                    
+
                     contentItem: Text {
                         text: parent.text
                         font.pixelSize: 11
@@ -194,21 +216,21 @@ Window {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
-                    
+
                     background: Rectangle {
                         color: parent.pressed ? "#e0e0e0" : (parent.hovered ? "#f0f0f0" : "white")
                         border.color: "#ddd"
                         border.width: 1
                         radius: 4
                     }
-                    
+
                     onClicked: promptGeneratorDialog.selectedFiles = []
                 }
-                
+
                 Item { Layout.fillWidth: true }
-                
+
                 Text {
-                    text: "已选择 " + promptGeneratorDialog.selectedFiles.length + " 个文件"
+                    text: (I18n.t("agentSelectedFileCount") || "已选择 {0} 个文件").replace("{0}", promptGeneratorDialog.selectedFiles.length)
                     font.pixelSize: 12
                     color: "#666"
                 }
@@ -494,57 +516,87 @@ Window {
                     RowLayout {
                         Layout.fillWidth: true
                         spacing: 10
-                        
+
                         Text {
                             text: "📁 " + (I18n.t("agentWorkspace") || "协同文件夹")
                             font.pixelSize: 15
                             font.bold: true
                             color: "#333"
                         }
-                        
+
                         Item { Layout.fillWidth: true }
-                        
-                        Button {
-                            text: "选择"
-                            implicitWidth: 50
-                            implicitHeight: 28
-                            
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: 12
-                                color: "white"
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
+
+                        // 合并的「选择 + 刷新」按钮组
+                        Rectangle {
+                            id: selectGroup
+                            Layout.preferredHeight: 28
+                            Layout.preferredWidth: 80
+                            color: selectPressed ? "#1565c0" : (selectHovered || refreshHovered ? "#1e88e5" : "#1976d2")
+                            radius: 4
+
+                            property bool selectPressed: selectMouse.pressed
+                            property bool selectHovered: selectMouse.containsMouse
+                            property bool refreshHovered: refreshMouse.containsMouse
+
+                            Row {
+                                anchors.fill: parent
+                                spacing: 0
+
+                                // 选择按钮区域
+                                Item {
+                                    id: selectBtn
+                                    width: 50
+                                    height: parent.height
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: "选择"
+                                        font.pixelSize: 12
+                                        color: "white"
+                                    }
+
+                                    MouseArea {
+                                        id: selectMouse
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: manager.selectRootFolder()
+                                    }
+                                }
+
+                                // 分隔线
+                                Rectangle {
+                                    width: 1
+                                    height: parent.height - 8
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    color: "white"
+                                    opacity: 0.4
+                                }
+
+                                // 刷新按钮区域
+                                Item {
+                                    id: refreshBtn
+                                    width: 28
+                                    height: parent.height
+                                    enabled: manager.rootPath !== ""
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: "⟳"
+                                        font.pixelSize: 14
+                                        color: parent.parent.enabled ? "white" : "#88ffffff"
+                                    }
+
+                                    MouseArea {
+                                        id: refreshMouse
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        enabled: parent.parent.enabled
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: manager.refreshTree()
+                                    }
+                                }
                             }
-                            
-                            background: Rectangle {
-                                color: parent.pressed ? "#1565c0" : (parent.hovered ? "#1e88e5" : "#1976d2")
-                                radius: 4
-                            }
-                            
-                            onClicked: manager.selectRootFolder()
-                        }
-                        
-                        Button {
-                            text: "⟳"
-                            implicitWidth: 28
-                            implicitHeight: 28
-                            enabled: manager.rootPath !== ""
-                            
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: 14
-                                color: parent.enabled ? "#666" : "#ccc"
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
-                            
-                            background: Rectangle {
-                                color: parent.pressed ? "#e0e0e0" : (parent.hovered ? "#f0f0f0" : "transparent")
-                                radius: 4
-                            }
-                            
-                            onClicked: manager.refreshTree()
                         }
                     }
                     
@@ -633,12 +685,13 @@ Window {
                             Layout.fillWidth: true
                             text: "+ 文件"
                             implicitHeight: 30
-                            
+
                             contentItem: Text {
                                 text: parent.text
                                 font.pixelSize: 12
                                 color: "#666"
                                 horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
                             }
                             
                             background: Rectangle {
@@ -659,12 +712,13 @@ Window {
                             Layout.fillWidth: true
                             text: "+ 文件夹"
                             implicitHeight: 30
-                            
+
                             contentItem: Text {
                                 text: parent.text
                                 font.pixelSize: 12
                                 color: "#666"
                                 horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
                             }
                             
                             background: Rectangle {
@@ -688,12 +742,13 @@ Window {
                         text: "🚀 初始化骨架"
                         implicitHeight: 32
                         visible: manager.rootPath !== ""
-                        
+
                         contentItem: Text {
                             text: parent.text
                             font.pixelSize: 12
                             color: "white"
                             horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
                         }
                         
                         background: Rectangle {
@@ -710,12 +765,13 @@ Window {
                         text: "✨ 生成提示词"
                         implicitHeight: 32
                         visible: manager.rootPath !== ""
-                        
+
                         contentItem: Text {
                             text: parent.text
                             font.pixelSize: 12
                             color: "white"
                             horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
                         }
                         
                         background: Rectangle {
@@ -748,73 +804,149 @@ Window {
                     RowLayout {
                         Layout.fillWidth: true
                         spacing: 10
-                        
+
                         Text {
-                            text: manager.currentFilePath ? 
-                                  (manager.isImageFolder ? "🖼️ " : "📄 ") + 
-                                  manager.currentFilePath.split("/").pop().split("\\").pop() : 
+                            text: manager.currentFilePath ?
+                                  (manager.isImageFolder ? "🖼️ " : "📄 ") +
+                                  manager.currentFilePath.split("/").pop().split("\\").pop() :
                                   "选择文件查看内容"
                             font.pixelSize: 15
                             font.bold: true
                             color: "#333"
                         }
-                        
+
                         Item { Layout.fillWidth: true }
-                        
+
+                        // MD 文件查看模式切换
+                        Rectangle {
+                            id: previewToggle
+                            visible: !manager.isImageFolder && agentWindow.isMarkdownFile(manager.currentFilePath)
+                            Layout.preferredHeight: 28
+                            Layout.preferredWidth: 140
+                            color: "#f5f5f5"
+                            border.color: "#e0e0e0"
+                            border.width: 1
+                            radius: 4
+
+                            property string mode: agentWindow.previewMode
+
+                            // 左半：普通查看
+                            Item {
+                                anchors.left: parent.left
+                                width: parent.width / 2
+                                height: parent.height
+
+                                Rectangle {
+                                    anchors.fill: parent
+                                    anchors.margins: 2
+                                    radius: 3
+                                    color: previewToggle.mode === "normal" ? "white" : "transparent"
+                                    border.color: previewToggle.mode === "normal" ? "#1976d2" : "transparent"
+                                    border.width: 1
+                                }
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: I18n.t("agentPreviewNormal") || "普通查看"
+                                    font.pixelSize: 12
+                                    color: previewToggle.mode === "normal" ? "#1976d2" : "#666"
+                                }
+                                MouseArea {
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: agentWindow.previewMode = "normal"
+                                }
+                            }
+
+                            // 右半：MD 预览
+                            Item {
+                                anchors.right: parent.right
+                                width: parent.width / 2
+                                height: parent.height
+
+                                Rectangle {
+                                    anchors.fill: parent
+                                    anchors.margins: 2
+                                    radius: 3
+                                    color: previewToggle.mode === "markdown" ? "white" : "transparent"
+                                    border.color: previewToggle.mode === "markdown" ? "#1976d2" : "transparent"
+                                    border.width: 1
+                                }
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: I18n.t("agentPreviewMarkdown") || "MD 预览"
+                                    font.pixelSize: 12
+                                    color: previewToggle.mode === "markdown" ? "#1976d2" : "#666"
+                                }
+                                MouseArea {
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: agentWindow.previewMode = "markdown"
+                                }
+                            }
+                        }
+
                         Button {
                             text: "💾 保存"
                             visible: !manager.isImageFolder && manager.currentFilePath !== ""
                             implicitHeight: 30
-                            
+
                             contentItem: Text {
                                 text: parent.text
                                 font.pixelSize: 12
                                 color: "white"
                                 horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
                             }
-                            
+
                             background: Rectangle {
                                 color: parent.pressed ? "#388e3c" : (parent.hovered ? "#4caf50" : "#43a047")
                                 radius: 4
                             }
-                            
+
                             onClicked: manager.saveCurrentFile()
                         }
-                        
+
                         Button {
                             text: "📂 打开目录"
                             visible: manager.currentFilePath !== ""
                             implicitHeight: 30
-                            
+
                             contentItem: Text {
                                 text: parent.text
                                 font.pixelSize: 12
                                 color: "#666"
                                 horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
                             }
-                            
+
                             background: Rectangle {
                                 color: parent.pressed ? "#e0e0e0" : (parent.hovered ? "#f0f0f0" : "white")
                                 border.color: "#ddd"
                                 border.width: 1
                                 radius: 4
                             }
-                            
+
                             onClicked: manager.openInExplorer(manager.currentFilePath)
                         }
                     }
-                    
+
                     Rectangle {
                         Layout.fillWidth: true
                         height: 1
                         color: "#e0e0e0"
                     }
-                    
-                    // 内容区域 - 文本编辑器或图片管理器
+
+                    // 内容区域 - 文本编辑器 / Markdown 预览 / 图片管理器
                     Loader {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        sourceComponent: manager.isImageFolder ? imageManagerComponent : textEditorComponent
+                        sourceComponent: {
+                            if (manager.isImageFolder) return imageManagerComponent
+                            if (agentWindow.isMarkdownFile(manager.currentFilePath) && agentWindow.previewMode === "markdown") return markdownPreviewComponent
+                            return textEditorComponent
+                        }
                     }
                 }
             }
@@ -847,10 +979,10 @@ Window {
     // 文本编辑器组件
     Component {
         id: textEditorComponent
-        
+
         ScrollView {
             clip: true
-            
+
             TextArea {
                 id: contentEditor
                 text: manager.currentFileContent
@@ -858,17 +990,49 @@ Window {
                 font.pixelSize: 14
                 wrapMode: TextArea.Wrap
                 placeholderText: "选择一个文件开始编辑..."
-                
+
                 background: Rectangle {
                     color: "#fafafa"
                     border.color: contentEditor.focus ? "#1976d2" : "#e0e0e0"
                     border.width: 1
                     radius: 4
                 }
-                
+
                 onTextChanged: {
                     if (text !== manager.currentFileContent) {
                         manager.currentFileContent = text
+                    }
+                }
+            }
+        }
+    }
+
+    // Markdown 预览组件（只读）
+    Component {
+        id: markdownPreviewComponent
+
+        Rectangle {
+            color: "#fafafa"
+            border.color: "#e0e0e0"
+            border.width: 1
+            radius: 4
+
+            ScrollView {
+                anchors.fill: parent
+                anchors.margins: 14
+                clip: true
+
+                Text {
+                    id: mdRenderer
+                    width: parent.width
+                    textFormat: Text.RichText
+                    wrapMode: Text.WordWrap
+                    text: agentWindow.markdownToHtml(manager.currentFileContent)
+                    font.pixelSize: 14
+                    color: "#333"
+                    // 链接点击：在外部浏览器打开
+                    onLinkActivated: function(link) {
+                        Qt.openUrlExternally(link)
                     }
                 }
             }
@@ -898,12 +1062,13 @@ Window {
                     Button {
                         text: "📋 从剪切板粘贴"
                         implicitHeight: 32
-                        
+
                         contentItem: Text {
                             text: parent.text
                             font.pixelSize: 13
                             color: "white"
                             horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
                         }
                         
                         background: Rectangle {
@@ -1128,5 +1293,175 @@ Window {
             }
         }
         return result
+    }
+
+    // HTML 特殊字符转义
+    function escapeHtml(s) {
+        if (!s) return ""
+        return s.replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\"/g, "&quot;")
+    }
+
+    // 行内 Markdown 解析：粗体、斜体、删除线、行内代码、链接、图片
+    function inlineMd(text) {
+        if (!text) return ""
+        var s = escapeHtml(text)
+        // 行内代码先处理，避免被其他规则干扰
+        s = s.replace(/`([^`]+)`/g, '<code style="background-color:#f0f0f0;padding:1px 4px;border-radius:3px;font-family:Consolas,Monaco,monospace;color:#c7254e;">$1</code>')
+        // 图片 ![alt](url)
+        s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, '<img alt="$1" src="$2" style="max-width:100%;"/>')
+        // 链接 [text](url)
+        s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" style="color:#1976d2;text-decoration:none;">$1</a>')
+        // 粗体 **text** 或 __text__
+        s = s.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+        s = s.replace(/__([^_]+)__/g, '<b>$1</b>')
+        // 斜体 *text* 或 _text_
+        s = s.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<i>$2</i>')
+        s = s.replace(/(^|[^_])_([^_\n]+)_/g, '$1<i>$2</i>')
+        // 删除线 ~~text~~
+        s = s.replace(/~~([^~]+)~~/g, '<s>$1</s>')
+        return s
+    }
+
+    // Markdown -> HTML 转换（覆盖常用语法）
+    function markdownToHtml(md) {
+        if (!md) return ""
+        var lines = md.split(/\r?\n/)
+        var html = []
+        var i = 0
+        var inUl = false, inOl = false, inCode = false, inBq = false
+        var codeBuf = []
+
+        function closeLists() {
+            if (inUl) { html.push("</ul>"); inUl = false }
+            if (inOl) { html.push("</ol>"); inOl = false }
+        }
+        function closeBq() {
+            if (inBq) { html.push("</blockquote>"); inBq = false }
+        }
+
+        while (i < lines.length) {
+            var line = lines[i]
+            // 代码块围栏
+            if (/^\s*```/.test(line)) {
+                if (!inCode) {
+                    closeLists(); closeBq()
+                    inCode = true
+                    codeBuf = []
+                } else {
+                    var lang = line.replace(/^\s*```/, "").trim()
+                    var codeStyle = "display:block;background-color:#f5f5f5;border:1px solid #e0e0e0;border-radius:4px;padding:10px;font-family:Consolas,Monaco,monospace;font-size:13px;white-space:pre-wrap;word-wrap:break-word;color:#333;"
+                    html.push('<pre style="' + codeStyle + '"><code>' + escapeHtml(codeBuf.join("\n")) + '</code></pre>')
+                    inCode = false
+                }
+                i++; continue
+            }
+            if (inCode) { codeBuf.push(line); i++; continue }
+
+            // 空行：关闭当前段落
+            if (/^\s*$/.test(line)) {
+                closeLists(); closeBq()
+                i++; continue
+            }
+
+            // 标题 ######
+            var h = /^(#{1,6})\s+(.*)$/.exec(line)
+            if (h) {
+                closeLists(); closeBq()
+                var level = h[1].length
+                var sizes = ["24px", "21px", "18px", "16px", "15px", "14px"]
+                var style = "color:#222;margin:12px 0 6px 0;font-weight:bold;line-height:1.3;font-size:" + sizes[level - 1] + ";"
+                html.push('<h' + level + ' style="' + style + '">' + inlineMd(h[2]) + '</h' + level + '>')
+                i++; continue
+            }
+
+            // 水平线
+            if (/^\s*([-*_])\1{2,}\s*$/.test(line)) {
+                closeLists(); closeBq()
+                html.push('<hr style="border:none;border-top:1px solid #e0e0e0;margin:12px 0;"/>')
+                i++; continue
+            }
+
+            // 引用
+            var bq = /^\s*>\s?(.*)$/.exec(line)
+            if (bq) {
+                closeLists()
+                if (!inBq) { html.push('<blockquote style="margin:6px 0;padding:6px 12px;border-left:4px solid #1976d2;background-color:#f5f9fd;color:#555;">'); inBq = true }
+                html.push(inlineMd(bq[1]) + "<br/>")
+                i++
+                // 连续引用已在循环里累积；若下一行不是引用，下一次空行/标题会关闭
+                continue
+            }
+
+            // 无序列表
+            var ul = /^\s*[-*+]\s+(.*)$/.exec(line)
+            if (ul) {
+                closeBq()
+                if (!inUl) { html.push('<ul style="margin:6px 0;padding-left:24px;color:#333;">'); inUl = true }
+                if (inOl) { html.push("</ol>"); inOl = false }
+                html.push('<li style="margin:2px 0;">' + inlineMd(ul[1]) + '</li>')
+                i++; continue
+            }
+
+            // 有序列表
+            var ol = /^\s*\d+\.\s+(.*)$/.exec(line)
+            if (ol) {
+                closeBq()
+                if (!inOl) { html.push('<ol style="margin:6px 0;padding-left:24px;color:#333;">'); inOl = true }
+                if (inUl) { html.push("</ul>"); inUl = false }
+                html.push('<li style="margin:2px 0;">' + inlineMd(ol[1]) + '</li>')
+                i++; continue
+            }
+
+            // 表格（简化：仅支持 | 表头 | 表格 | 分隔行 |...|）
+            if (/^\s*\|.*\|\s*$/.test(line) && i + 1 < lines.length && /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)+\|?\s*$/.test(lines[i + 1])) {
+                closeLists(); closeBq()
+                var headerCells = line.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|")
+                var alignCells = lines[i + 1].replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|")
+                var tStyle = "border-collapse:collapse;margin:8px 0;width:100%;font-size:13px;"
+                var thStyle = "border:1px solid #e0e0e0;padding:6px 10px;background-color:#f5f5f5;text-align:left;font-weight:bold;"
+                var tdStyle = "border:1px solid #e0e0e0;padding:6px 10px;"
+                html.push('<table style="' + tStyle + '"><thead><tr>')
+                for (var c = 0; c < headerCells.length; c++) {
+                    html.push('<th style="' + thStyle + '">' + inlineMd(headerCells[c].trim()) + '</th>')
+                }
+                html.push('</tr></thead><tbody>')
+                i += 2
+                while (i < lines.length && /^\s*\|.*\|\s*$/.test(lines[i]) && !/^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)+\|?\s*$/.test(lines[i])) {
+                    var row = lines[i].replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|")
+                    html.push('<tr>')
+                    for (var k = 0; k < row.length; k++) {
+                        html.push('<td style="' + tdStyle + '">' + inlineMd(row[k].trim()) + '</td>')
+                    }
+                    html.push('</tr>')
+                    i++
+                }
+                html.push('</tbody></table>')
+                continue
+            }
+
+            // 普通段落：聚合连续非空非特殊行
+            var paraLines = [line]
+            i++
+            while (i < lines.length
+                   && !/^\s*$/.test(lines[i])
+                   && !/^#{1,6}\s+/.test(lines[i])
+                   && !/^\s*```/.test(lines[i])
+                   && !/^\s*[-*+]\s+/.test(lines[i])
+                   && !/^\s*\d+\.\s+/.test(lines[i])
+                   && !/^\s*>\s?/.test(lines[i])
+                   && !/^\s*\|.*\|\s*$/.test(lines[i])
+                   && !/^\s*([-*_])\1{2,}\s*$/.test(lines[i])) {
+                paraLines.push(lines[i])
+                i++
+            }
+            closeLists(); closeBq()
+            html.push('<p style="margin:6px 0;line-height:1.6;color:#333;">' + inlineMd(paraLines.join("<br/>")) + '</p>')
+        }
+
+        closeLists(); closeBq()
+        return html.join("")
     }
 }

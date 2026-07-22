@@ -377,6 +377,13 @@ function getZhLang() {
         agentEmptyFolder: "未选择文件夹",
         agentSelectFileHint: "选择文件查看内容",
         agentDropImageHint: "拖拽图片到这里\n或点击上方按钮粘贴",
+        agentPromptGenerateTitle: "生成提示词",
+        agentPromptSelectFiles: "请勾选需要包含在提示词中的文件：",
+        agentSelectAll: "全选",
+        agentDeselectAll: "取消全选",
+        agentSelectedFileCount: "已选择 {0} 个文件",
+        agentPreviewNormal: "普通查看",
+        agentPreviewMarkdown: "MD 预览",
 
         // ML手书/NN对照表/Layer对照表 界面文本
         mlSearchPlaceholder: "搜索算法名称或描述...",

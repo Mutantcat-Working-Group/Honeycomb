@@ -377,6 +377,13 @@ function getEnLang() {
         agentEmptyFolder: "No folder selected",
         agentSelectFileHint: "Select a file to view content",
         agentDropImageHint: "Drop images here\nor click the button above to paste",
+        agentPromptGenerateTitle: "Generate Prompt",
+        agentPromptSelectFiles: "Select files to include in the prompt:",
+        agentSelectAll: "Select All",
+        agentDeselectAll: "Deselect All",
+        agentSelectedFileCount: "{0} file(s) selected",
+        agentPreviewNormal: "Plain",
+        agentPreviewMarkdown: "MD Preview",
         
         // ML Handbook/NN Table/Layer Table UI Text
         mlSearchPlaceholder: "Search algorithm name or description...",
