@@ -391,8 +391,8 @@ Window {
                         font.pixelSize: 13
                         color: "#333333"
                         verticalAlignment: TextInput.AlignVCenter
-                        text: webView.url.toString()
                         onAccepted: rootWindow.navigate(text)
+                        // 初始值在 webView 的 onUrlChanged 中写入（覆盖所有变化：初始/导航/前进后退/重定向/SPA hash）
                         background: Rectangle {
                             radius: 6
                             color: "#f5f5f5"
@@ -486,7 +486,44 @@ Window {
                                 webView.runJavaScript(rootWindow.injectJs, function(res) {
                                     rootWindow.applyPickMode()
                                 })
-                                urlBar.text = webView.url.toString()
+                            }
+                        }
+
+                        // 地址变化（导航/前进后退/重定向/同页 hash/SPA pushState）时同步地址栏
+                        // 仅当地址栏未获得焦点时更新，避免用户正在输入时被覆盖
+                        onUrlChanged: {
+                            var u = webView.url
+                            if (!u) { return }
+                            var newUrl = u.toString()
+                            if (!urlBar.activeFocus && urlBar.text !== newUrl) {
+                                urlBar.text = newUrl
+                            }
+                        }
+
+                        // 自定义 HTTP / 代理认证弹窗，文字跟随应用语言
+                        // Qt 文档：handler 必须把 request.accepted = true 才能阻止默认 native 对话框
+                        onAuthenticationDialogRequested: function(request) {
+                            if (!request) { return }
+                            try {
+                                // 先把 request 的所有字段读取到本地变量（避免后续 request 被销毁后访问导致 undefined）
+                                var u = request.url ? request.url.toString() : ""
+                                var realm = request.realm || ""
+                                var proxy = (request.type === 1)
+                                // 标记 accepted 以阻止默认弹窗
+                                request.accepted = true
+                                // 防止同一个 request 多次弹窗：如果对话框已开着，直接关闭
+                                if (authDialog.opened) {
+                                    try { authDialog.close() } catch(e) {}
+                                }
+                                authDialog.request = request
+                                authDialog.urlText = u
+                                authDialog.realmText = realm
+                                authDialog.isProxy = proxy
+                                if (authDialog.userField) authDialog.userField.text = ""
+                                if (authDialog.passField) authDialog.passField.text = ""
+                                authDialog.open()
+                            } catch (e) {
+                                console.warn("[WebInspector] auth dialog open failed:", e)
                             }
                         }
 
@@ -712,6 +749,181 @@ Window {
                 onTriggered: copyToast.visible = false
             }
         }
+    }
+
+    // ===== HTTP / 代理认证弹窗（自渲染，跟随应用语言）=====
+    Dialog {
+        id: authDialog
+        title: authDialog.isProxy
+               ? (I18n.t("webInspectorProxyAuth") || "代理服务器需要身份验证")
+               : (I18n.t("webInspectorHttpAuth") || "网站需要身份验证")
+        modal: true
+        anchors.centerIn: Overlay.overlay
+        width: 380
+        padding: 16
+        topPadding: 14
+        bottomPadding: 12
+        z: 99999
+        closePolicy: Popup.CloseOnEscape
+        property var request: null
+        property string urlText: ""
+        property string realmText: ""
+        property bool isProxy: false
+
+        // 自定义标题样式
+        background: Rectangle {
+            color: "#ffffff"
+            border.color: "#e0e0e0"
+            border.width: 1
+            radius: 8
+        }
+        header: Label {
+            text: authDialog.title
+            font.pixelSize: 15
+            font.bold: true
+            color: "#333333"
+            padding: 16
+            bottomPadding: 4
+        }
+        footer: DialogButtonBox {
+            padding: 12
+            background: Rectangle { color: "transparent" }
+            Button {
+                text: I18n.t("webInspectorAuthCancel") || "取消"
+                DialogButtonBox.buttonRole: DialogButtonBox.RejectRole
+                flat: true
+                onClicked: authDialog.cancel()
+            }
+            Button {
+                text: I18n.t("webInspectorAuthLogin") || "登录"
+                DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
+                highlighted: true
+                onClicked: authDialog.submit()
+            }
+        }
+
+        contentItem: ColumnLayout {
+            spacing: 10
+
+            Text {
+                Layout.fillWidth: true
+                wrapMode: Text.WordWrap
+                font.pixelSize: 12
+                color: "#666666"
+                text: authDialog.isProxy
+                      ? (I18n.t("webInspectorProxyAuthDesc") || "请输入代理服务器的用户名和密码：")
+                      : (I18n.t("webInspectorHttpAuthDesc") || "请输入此网站的用户名和密码：")
+            }
+
+            // URL 区域
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 3
+                Text {
+                    text: authDialog.isProxy
+                          ? (I18n.t("webInspectorProxyHost") || "代理服务器")
+                          : (I18n.t("webInspectorAuthUrl") || "网址")
+                    font.pixelSize: 12
+                    color: "#333333"
+                }
+                Text {
+                    Layout.fillWidth: true
+                    wrapMode: Text.WrapAnywhere
+                    text: authDialog.urlText
+                    color: "#0078d4"
+                    font.pixelSize: 12
+                    font.family: "monospace"
+                }
+            }
+
+            // Realm 区域（可能为空）
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 3
+                visible: authDialog.realmText.length > 0
+                Text {
+                    text: I18n.t("webInspectorAuthRealm") || "域"
+                    font.pixelSize: 12
+                    color: "#333333"
+                }
+                Text {
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
+                    text: authDialog.realmText
+                    color: "#333333"
+                    font.pixelSize: 12
+                }
+            }
+
+            // 用户名
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 3
+                Text {
+                    text: I18n.t("webInspectorAuthUser") || "用户名"
+                    font.pixelSize: 12
+                    color: "#333333"
+                }
+                TextField {
+                    id: userField
+                    Layout.fillWidth: true
+                    Layout.minimumHeight: 32
+                    Layout.maximumHeight: 32
+                    selectByMouse: true
+                    font.pixelSize: 13
+                    background: Rectangle {
+                        color: "#f5f5f5"
+                        border.color: userField.activeFocus ? "#0078d4" : "#e0e0e0"
+                        border.width: 1
+                        radius: 4
+                    }
+                    leftPadding: 10
+                    onAccepted: passField.forceActiveFocus()
+                }
+            }
+
+            // 密码
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 3
+                Text {
+                    text: I18n.t("webInspectorAuthPass") || "密码"
+                    font.pixelSize: 12
+                    color: "#333333"
+                }
+                TextField {
+                    id: passField
+                    Layout.fillWidth: true
+                    Layout.minimumHeight: 32
+                    Layout.maximumHeight: 32
+                    selectByMouse: true
+                    font.pixelSize: 13
+                    echoMode: TextInput.Password
+                    background: Rectangle {
+                        color: "#f5f5f5"
+                        border.color: passField.activeFocus ? "#0078d4" : "#e0e0e0"
+                        border.width: 1
+                        radius: 4
+                    }
+                    leftPadding: 10
+                    onAccepted: authDialog.submit()
+                }
+            }
+        }
+
+        function submit() {
+            if (authDialog.request) {
+                authDialog.request.dialogAccept(userField.text, passField.text)
+            }
+            authDialog.close()
+        }
+        function cancel() {
+            if (authDialog.request) {
+                authDialog.request.dialogReject()
+            }
+            authDialog.close()
+        }
+        onRejected: cancel()
     }
 
     // ===== 轮询网页内的选取结果 =====
