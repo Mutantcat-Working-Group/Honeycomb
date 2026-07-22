@@ -62,6 +62,7 @@ public:
 
     // 平台权限（macOS 主要）
     Q_INVOKABLE void recheckPermissions();
+    Q_INVOKABLE bool requestAccessibilityPermission();
     Q_INVOKABLE void openAccessibilitySettings();
 
     // 主动查询（非延迟、无信号），同步返回

@@ -123,9 +123,6 @@ static QVariantMap elementToMap(AXUIElementRef el)
 void init(WindowElementInspector *insp)
 {
     g_inspector = insp;
-    // 在第一次使用时通过带 prompt 选项的 API 触发系统弹窗（仅在未授权时弹）
-    NSDictionary *opts = @{(__bridge NSString *)kAXTrustedCheckOptionPrompt: @YES};
-    AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef)opts);
 }
 
 void shutdown(WindowElementInspector *insp)
@@ -150,44 +147,18 @@ void shutdown(WindowElementInspector *insp)
 // ============================================================
 // 权限
 // ============================================================
-static bool canReadExternalAccessibility()
-{
-    @autoreleasepool {
-        const pid_t selfPid = [[NSProcessInfo processInfo] processIdentifier];
-        NSArray<NSRunningApplication *> *applications =
-            [[NSWorkspace sharedWorkspace] runningApplications];
-
-        for (NSRunningApplication *application in applications) {
-            if (application.processIdentifier <= 0 ||
-                application.processIdentifier == selfPid ||
-                application.terminated ||
-                application.activationPolicy != NSApplicationActivationPolicyRegular) {
-                continue;
-            }
-
-            AXUIElementRef appElement =
-                AXUIElementCreateApplication(application.processIdentifier);
-            if (!appElement) continue;
-
-            CFTypeRef role = nullptr;
-            const AXError error =
-                AXUIElementCopyAttributeValue(appElement, kAXRoleAttribute, &role);
-            const bool readable = error == kAXErrorSuccess && role != nullptr;
-            if (role) CFRelease(role);
-            CFRelease(appElement);
-
-            if (readable) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 bool refreshAccessibility(WindowElementInspector *insp)
 {
     Q_UNUSED(insp)
-    return AXIsProcessTrusted() || canReadExternalAccessibility();
+    NSDictionary *options = @{(__bridge NSString *)kAXTrustedCheckOptionPrompt: @NO};
+    return AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef)options);
+}
+
+bool requestAccessibilityPermission(WindowElementInspector *insp)
+{
+    Q_UNUSED(insp)
+    NSDictionary *options = @{(__bridge NSString *)kAXTrustedCheckOptionPrompt: @YES};
+    return AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef)options);
 }
 
 void openAccessibilitySettings()
@@ -218,6 +189,9 @@ void refreshForeground(WindowElementInspector *insp)
         NSRunningApplication *front = [[NSWorkspace sharedWorkspace] frontmostApplication];
         if (!front) return;
         QString bundleId = QString::fromNSString(front.bundleIdentifier ?: @"");
+        if (bundleId == "com.apple.accessibility.universalAccessAuthWarn") {
+            return;
+        }
         QString localized = QString::fromNSString(front.localizedName ?: @"");
         int pid = front.processIdentifier;
         QString display = !bundleId.isEmpty() ? bundleId : localized;

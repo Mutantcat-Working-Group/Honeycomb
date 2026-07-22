@@ -26,6 +26,7 @@ namespace PlatformBackend {
 void init(WindowElementInspector *insp);
 void shutdown(WindowElementInspector *insp);
 bool refreshAccessibility(WindowElementInspector *insp);
+bool requestAccessibilityPermission(WindowElementInspector *insp);
 void openAccessibilitySettings();
 void refreshForeground(WindowElementInspector *insp);
 QVariantMap getElementAtPoint(int x, int y);
@@ -49,7 +50,7 @@ WindowElementInspector::WindowElementInspector(QObject *parent)
     PlatformBackend::init(this);
     // 初始化时主动刷新一次前台信息
     PlatformBackend::refreshForeground(this);
-    PlatformBackend::refreshAccessibility(this);
+    setHasAccessibility(PlatformBackend::refreshAccessibility(this));
 }
 
 WindowElementInspector::~WindowElementInspector()
@@ -227,6 +228,13 @@ void WindowElementInspector::recheckPermissions()
     PlatformBackend::refreshForeground(this);
     bool has = PlatformBackend::refreshAccessibility(this);
     setHasAccessibility(has);
+}
+
+bool WindowElementInspector::requestAccessibilityPermission()
+{
+    const bool has = PlatformBackend::requestAccessibilityPermission(this);
+    setHasAccessibility(has);
+    return has;
 }
 
 void WindowElementInspector::openAccessibilitySettings()

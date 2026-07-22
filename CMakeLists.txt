@@ -284,7 +284,7 @@ qt_add_qml_module(appHoneycomb
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 set_target_properties(appHoneycomb PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER com.mutantcat.honeycomb
+    MACOSX_BUNDLE_GUI_IDENTIFIER org.mutantcat.honeycomb
     MACOSX_BUNDLE_BUNDLE_NAME "${HONEYCOMB_APP_DISPLAY_NAME}"
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_COPYRIGHT "Honeycomb"
@@ -336,7 +336,7 @@ if(APPLE)
     find_library(APPSERVICES_FRAMEWORK ApplicationServices)
     target_link_libraries(appHoneycomb PRIVATE ${APPKIT_FRAMEWORK} ${APPSERVICES_FRAMEWORK})
     add_custom_command(TARGET appHoneycomb POST_BUILD
-        COMMAND /usr/bin/codesign --force --deep --sign - --identifier com.mutantcat.honeycomb --requirements "=designated => identifier \"com.mutantcat.honeycomb\"" "$<TARGET_BUNDLE_DIR:appHoneycomb>"
+        COMMAND /usr/bin/codesign --force --deep --sign - --identifier org.mutantcat.honeycomb --requirements "=designated => identifier \"org.mutantcat.honeycomb\"" "$<TARGET_BUNDLE_DIR:appHoneycomb>"
         COMMENT "Applying a stable ad-hoc signature for macOS privacy permissions"
         VERBATIM
     )

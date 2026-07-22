@@ -1163,6 +1163,7 @@ function getZhLang() {
         windowInspectorPermTitle: "需要辅助功能权限",
         windowInspectorPermDesc: "macOS 需要在「系统设置 → 隐私与安全性 → 辅助功能」中勾选本应用。",
         windowInspectorPermRecheck: "重新检查",
+        windowInspectorPermRequest: "请求授权",
         windowInspectorPermOpen: "打开设置",
         windowInspectorTabNatural: "自然语言",
         windowInspectorTabPath: "结构化路径",

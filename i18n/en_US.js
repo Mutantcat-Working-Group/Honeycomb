@@ -1163,6 +1163,7 @@ function getEnLang() {
         windowInspectorPermTitle: "Accessibility Permission Required",
         windowInspectorPermDesc: "macOS requires enabling this app in System Settings → Privacy & Security → Accessibility.",
         windowInspectorPermRecheck: "Recheck",
+        windowInspectorPermRequest: "Request Access",
         windowInspectorPermOpen: "Open Settings",
         windowInspectorTabNatural: "Natural Language",
         windowInspectorTabPath: "Structured Path",

@@ -231,6 +231,11 @@ bool refreshAccessibility(WindowElementInspector *insp)
     return g_automation != nullptr;
 }
 
+bool requestAccessibilityPermission(WindowElementInspector *insp)
+{
+    return refreshAccessibility(insp);
+}
+
 void openAccessibilitySettings()
 {
     // 启动设置 → 辅助功能
@@ -355,6 +360,7 @@ namespace PlatformBackend {
 void init(WindowElementInspector*) {}
 void shutdown(WindowElementInspector*) {}
 bool refreshAccessibility(WindowElementInspector*) { return false; }
+bool requestAccessibilityPermission(WindowElementInspector*) { return false; }
 void openAccessibilitySettings() {}
 void refreshForeground(WindowElementInspector*) {}
 QVariantMap getElementAtPoint(int, int) { return {}; }

@@ -286,9 +286,9 @@ Window {
                                     }
                                 }
                                 Button {
-                                    text: I18n.t("windowInspectorPermOpen") || "打开设置"
+                                    text: I18n.t("windowInspectorPermRequest") || "请求授权"
                                     implicitHeight: 26
-                                    onClicked: inspector.openAccessibilitySettings()
+                                    onClicked: inspector.requestAccessibilityPermission()
                                     background: Rectangle {
                                         radius: 4
                                         color: parent.hovered ? "#006cbd" : "#0078d4"
@@ -298,6 +298,24 @@ Window {
                                         color: "#ffffff"
                                         font.pixelSize: 11
                                         font.bold: true
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+                                }
+                                Button {
+                                    text: I18n.t("windowInspectorPermOpen") || "打开设置"
+                                    implicitHeight: 26
+                                    onClicked: inspector.openAccessibilitySettings()
+                                    background: Rectangle {
+                                        radius: 4
+                                        color: parent.hovered ? "#f0f0f0" : "#ffffff"
+                                        border.color: "#cccccc"
+                                        border.width: 1
+                                    }
+                                    contentItem: Text {
+                                        text: parent.text
+                                        color: "#333333"
+                                        font.pixelSize: 11
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
                                     }
