@@ -12,6 +12,7 @@ CMakeFiles/
 Makefile
 *.cmake
 !tests/WindowElementInspectorIntegrationTest.cmake
+!tests/ReleaseMetadataTest.cmake
 !CMakeLists.txt
 
 # Qt Creator

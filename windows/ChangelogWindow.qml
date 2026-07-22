@@ -10,6 +10,10 @@ Window {
     title: I18n.t("changelogTitle")
     flags: Qt.Window
     modality: Qt.NonModal
+    readonly property var tagColors: [
+        "#e53935", "#00897b", "#3949ab", "#f4511e", "#8e24aa",
+        "#00838f", "#43a047", "#5e35b1", "#d81b60"
+    ]
     
     Rectangle {
         anchors.fill: parent
@@ -46,6 +50,57 @@ Window {
                     width: changelogWindow.width - 60
                     spacing: 15
 
+                    // 更新条目 - 1.0.20260722
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 92
+                        color: "white"
+                        border.color: "#e0e0e0"
+                        border.width: 1
+                        radius: 8
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 15
+                            spacing: 15
+
+                            Rectangle {
+                                Layout.preferredWidth: 120
+                                Layout.preferredHeight: 40
+                                color: changelogWindow.tagColors[0]
+                                radius: 6
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "1.0.20260722"
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    color: "white"
+                                }
+                            }
+
+                            Column {
+                                Layout.fillWidth: true
+                                spacing: 5
+
+                                Text {
+                                    text: I18n.t("changelog20260722") || "新增组件选取工具"
+                                    font.pixelSize: 16
+                                    font.bold: true
+                                    color: "#333"
+                                }
+
+                                Text {
+                                    text: I18n.t("changelog20260722Desc") || "新增网页组件选取、窗口组件选取"
+                                    width: parent.width
+                                    font.pixelSize: 14
+                                    color: "#666"
+                                    wrapMode: Text.WordWrap
+                                }
+                            }
+                        }
+                    }
+
                     // 更新条目 - 1.1.20260718
                     Rectangle {
                         Layout.fillWidth: true
@@ -64,7 +119,7 @@ Window {
                             Rectangle {
                                 Layout.preferredWidth: 120
                                 Layout.preferredHeight: 40
-                                color: "#00a86b"
+                                color: changelogWindow.tagColors[1]
                                 radius: 6
 
                                 Text {
@@ -117,7 +172,7 @@ Window {
                             Rectangle {
                                 Layout.preferredWidth: 120
                                 Layout.preferredHeight: 40
-                                color: "#00a86b"
+                                color: changelogWindow.tagColors[2]
                                 radius: 6
 
                                 Text {
@@ -170,7 +225,7 @@ Window {
                             Rectangle {
                                 Layout.preferredWidth: 120
                                 Layout.preferredHeight: 40
-                                color: "#0078d4"
+                                color: changelogWindow.tagColors[3]
                                 radius: 6
 
                                 Text {
@@ -223,7 +278,7 @@ Window {
                             Rectangle {
                                 Layout.preferredWidth: 120
                                 Layout.preferredHeight: 40
-                                color: "#ff006e"
+                                color: changelogWindow.tagColors[4]
                                 radius: 6
 
                                 Text {
@@ -276,7 +331,7 @@ Window {
                             Rectangle {
                                 Layout.preferredWidth: 120
                                 Layout.preferredHeight: 40
-                                color: "#9c27b0"
+                                color: changelogWindow.tagColors[5]
                                 radius: 6
                                 
                                 Text {
@@ -329,7 +384,7 @@ Window {
                             Rectangle {
                                 Layout.preferredWidth: 120
                                 Layout.preferredHeight: 40
-                                color: "#e91e63"
+                                color: changelogWindow.tagColors[6]
                                 radius: 6
                                 
                                 Text {
@@ -382,7 +437,7 @@ Window {
                             Rectangle {
                                 Layout.preferredWidth: 120
                                 Layout.preferredHeight: 40
-                                color: "#4caf50"
+                                color: changelogWindow.tagColors[7]
                                 radius: 6
                                 
                                 Text {
@@ -435,7 +490,7 @@ Window {
                             Rectangle {
                                 Layout.preferredWidth: 120
                                 Layout.preferredHeight: 40
-                                color: "#1976d2"
+                                color: changelogWindow.tagColors[8]
                                 radius: 6
                                 
                                 Text {

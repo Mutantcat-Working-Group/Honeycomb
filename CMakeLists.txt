@@ -24,7 +24,7 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND (NOT DEFINED CMAKE_MAKE_PROGRAM OR CMAKE
     endif()
 endif()
 
-project(Honeycomb VERSION 1.1.20260718 LANGUAGES C CXX)
+project(Honeycomb VERSION 1.0.20260722 LANGUAGES C CXX)
 
 # Toolchain files are loaded by project() and may replace an absolute SDK path
 # with the invalid literal "macosx". Normalize it again after toolchain setup.
@@ -289,7 +289,7 @@ set_target_properties(appHoneycomb PROPERTIES
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_COPYRIGHT "Honeycomb"
     MACOSX_BUNDLE_INFO_PLIST "${HONEYCOMB_INFO_PLIST}"
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION}
     MACOSX_BUNDLE_ICON_FILE logo
     MACOSX_BUNDLE TRUE
     MACOSX_RPATH TRUE
@@ -391,6 +391,12 @@ if(BUILD_TESTING)
             -DCOMMON_BACKEND=${CMAKE_CURRENT_SOURCE_DIR}/src/WindowElementInspector.cpp
             -DMAC_BACKEND=${CMAKE_CURRENT_SOURCE_DIR}/src/WindowElementInspector_mac.mm
             -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/WindowElementInspectorIntegrationTest.cmake
+    )
+    add_test(
+        NAME ReleaseMetadataTest
+        COMMAND ${CMAKE_COMMAND}
+            -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/ReleaseMetadataTest.cmake
     )
 endif()
 
