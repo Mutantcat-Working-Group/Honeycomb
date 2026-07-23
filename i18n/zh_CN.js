@@ -395,6 +395,7 @@ function getZhLang() {
         agentSpecStepArchive: "4. Archive（归档）",
         agentSpecStepArchiveDesc: "通过 /archive 把已上线的能力从 changes/ 移到 archive/，保持工作区整洁。",
         agentSpecFlowTip: "提示：每个阶段都必须停下来让 Agent 给出当前状态，再决定是否进入下一步；不要跳步。",
+        agentSpecClose: "关闭",
 
         // ML手书/NN对照表/Layer对照表 界面文本
         mlSearchPlaceholder: "搜索算法名称或描述...",

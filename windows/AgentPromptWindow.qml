@@ -420,197 +420,274 @@ Window {
     // Spec 小抄对话框（只读流程说明）
     Dialog {
         id: specCheatsheetDialog
-        title: I18n.t("agentSpecCheatsheetTitle") || "Spec 小抄 - OpenSpec 协同流程"
-        standardButtons: Dialog.Close
+        title: "📒  " + (I18n.t("agentSpecCheatsheetTitle") || "Spec 小抄 - OpenSpec 协同流程")
         anchors.centerIn: parent
         modal: true
-        width: 560
-        height: 540
+        width: 600
+        padding: 0
+        // 高度跟随内容自适应：约 70（header）+ contentItem(ColumnLayout + 32 padding) + 52（footer）
+        implicitHeight: 70 + cheatsheetCol.implicitHeight + 32 + 52
+        height: implicitHeight
 
-        contentItem: ScrollView {
-            clip: true
+        // 自定义底部按钮（替代标准 Close，提升美观度）
+        footer: DialogButtonBox {
+            padding: 10
+
+            background: Rectangle {
+                color: "#fafafa"
+                Rectangle {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    height: 1
+                    color: "#eceff1"
+                }
+            }
+
+            Button {
+                text: I18n.t("agentSpecClose") || "关闭"
+                DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
+                implicitWidth: 100
+                implicitHeight: 32
+
+                contentItem: Text {
+                    text: parent.text
+                    font.pixelSize: 12
+                    color: "white"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                background: Rectangle {
+                    radius: 4
+                    color: parent.pressed ? "#283593"
+                                 : (parent.hovered ? "#3949ab" : "#5e35b1")
+                }
+
+                onClicked: specCheatsheetDialog.close()
+            }
+        }
+
+        contentItem: Item {
+            implicitHeight: cheatsheetCol.implicitHeight + 32
 
             ColumnLayout {
-                width: parent.width
-                spacing: 14
+                id: cheatsheetCol
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.margins: 16
+                spacing: 12
 
-                // 流程图：Explore → Propose → Apply → Archive
+                // 顶部 Banner：渐变 + 4 步流程
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 48
-                    color: "#f5f9fd"
-                    border.color: "#bbdefb"
-                    border.width: 1
-                    radius: 6
+                    Layout.preferredHeight: 64
+                    radius: 8
+
+                    gradient: Gradient {
+                        GradientStop { position: 0.0; color: "#e3f2fd" }
+                        GradientStop { position: 1.0; color: "#ede7f6" }
+                    }
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.margins: 8
-                        spacing: 4
+                        anchors.margins: 10
+                        spacing: 6
 
                         Repeater {
                             model: [
-                                { tag: "Explore", color: "#1976d2" },
-                                { tag: "Propose", color: "#0288d1" },
-                                { tag: "Apply",   color: "#00897b" },
-                                { tag: "Archive", color: "#5e35b1" }
+                                { num: "1", tag: "Explore", color: "#1976d2", icon: "🔍" },
+                                { num: "2", tag: "Propose", color: "#0288d1", icon: "📝" },
+                                { num: "3", tag: "Apply",   color: "#00897b", icon: "🚀" },
+                                { num: "4", tag: "Archive", color: "#5e35b1", icon: "📦" }
                             ]
 
-                            delegate: Rectangle {
+                            delegate: Item {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
-                                color: modelData.color
-                                radius: 4
 
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: modelData.tag
-                                    font.pixelSize: 12
-                                    font.bold: true
-                                    color: "white"
+                                // 步骤块：圆角色块
+                                Rectangle {
+                                    anchors.fill: parent
+                                    color: modelData.color
+                                    radius: 6
+
+                                    // 编号圆
+                                    Rectangle {
+                                        anchors.left: parent.left
+                                        anchors.leftMargin: 6
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        width: 22
+                                        height: 22
+                                        radius: 11
+                                        color: "white"
+                                        opacity: 0.25
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: modelData.num
+                                            font.pixelSize: 12
+                                            font.bold: true
+                                            color: "white"
+                                        }
+                                    }
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: modelData.icon + "  " + modelData.tag
+                                        font.pixelSize: 13
+                                        font.bold: true
+                                        color: "white"
+                                    }
+                                }
+
+                                // 步骤之间的箭头（最后一个不加）
+                                Rectangle {
+                                    visible: index < 3
+                                    anchors.right: parent.right
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    width: 6
+                                    height: 1
+                                    color: "#90a4ae"
+                                    opacity: 0.6
                                 }
                             }
                         }
                     }
                 }
 
-                // Step 1: Explore
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    spacing: 4
+                // 4 个步骤卡片（用 Repeater 渲染）
+                Repeater {
+                    model: [
+                        {
+                            num: "1", name: "Explore", cn: "探索",
+                            color: "#1976d2", bgColor: "#e3f2fd", icon: "🔍",
+                            desc: "通过 /explore 描述当前行为、约束、相关代码与未知点。在动手前先把现状摸清楚。"
+                        },
+                        {
+                            num: "2", name: "Propose", cn: "提案",
+                            color: "#0288d1", bgColor: "#e1f5fe", icon: "📝",
+                            desc: "通过 /propose 把变更写成结构化提案：Why / What / Impact，明确新增/修改/移除的范围。"
+                        },
+                        {
+                            num: "3", name: "Apply", cn: "实施",
+                            color: "#00897b", bgColor: "#e0f2f1", icon: "🚀",
+                            desc: "通过 /apply 按提案逐项落地代码与文档，每完成一个 Requirement 立即打勾验证。"
+                        },
+                        {
+                            num: "4", name: "Archive", cn: "归档",
+                            color: "#5e35b1", bgColor: "#ede7f6", icon: "📦",
+                            desc: "通过 /archive 把已上线的能力从 changes/ 移到 archive/，保持工作区整洁。"
+                        }
+                    ]
 
-                    RowLayout {
+                    delegate: Rectangle {
                         Layout.fillWidth: true
-                        spacing: 8
-                        Text {
-                            text: I18n.t("agentSpecStepExplore") || "1. Explore（探索）"
-                            font.pixelSize: 14
-                            font.bold: true
-                            color: "#1976d2"
+                        Layout.preferredHeight: cardRow.implicitHeight + 16
+                        color: modelData.bgColor
+                        radius: 6
+                        border.color: Qt.lighter(modelData.color, 1.4)
+                        border.width: 1
+
+                        RowLayout {
+                            id: cardRow
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.leftMargin: 12
+                            anchors.rightMargin: 12
+                            spacing: 12
+
+                            // 编号 + 图标圆形
+                            Rectangle {
+                                Layout.preferredWidth: 36
+                                Layout.preferredHeight: 36
+                                radius: 18
+                                color: modelData.color
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: modelData.icon
+                                    font.pixelSize: 16
+                                }
+                            }
+
+                            // 标题 + 描述
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 2
+
+                                RowLayout {
+                                    spacing: 6
+                                    Text {
+                                        text: modelData.num + ". " + modelData.name
+                                        font.pixelSize: 13
+                                        font.bold: true
+                                        color: modelData.color
+                                    }
+                                    Text {
+                                        text: "（" + modelData.cn + "）"
+                                        font.pixelSize: 13
+                                        color: "#555"
+                                    }
+                                    Item { Layout.fillWidth: true }
+                                    // 命令徽章
+                                    Rectangle {
+                                        Layout.preferredHeight: 18
+                                        Layout.preferredWidth: cmdText.implicitWidth + 14
+                                        radius: 9
+                                        color: Qt.darker(modelData.bgColor, 1.05)
+                                        border.color: Qt.lighter(modelData.color, 1.2)
+                                        border.width: 1
+                                        Text {
+                                            id: cmdText
+                                            anchors.centerIn: parent
+                                            text: "/" + modelData.name.toLowerCase()
+                                            font.family: "Consolas, Monaco, monospace"
+                                            font.pixelSize: 11
+                                            color: modelData.color
+                                        }
+                                    }
+                                }
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: modelData.desc
+                                    font.pixelSize: 12
+                                    color: "#333"
+                                    wrapMode: Text.WordWrap
+                                }
+                            }
                         }
-                        Item { Layout.fillWidth: true }
-                        Rectangle {
-                            Layout.alignment: Qt.AlignVCenter
-                            width: 8; height: 8; radius: 4
-                            color: "#1976d2"
-                        }
-                    }
-                    Text {
-                        Layout.fillWidth: true
-                        text: I18n.t("agentSpecStepExploreDesc") || "通过 /explore 描述当前行为、约束、相关代码与未知点。在动手前先把现状摸清楚。"
-                        font.pixelSize: 13
-                        color: "#333"
-                        wrapMode: Text.WordWrap
                     }
                 }
 
-                // Step 2: Propose
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    spacing: 4
-
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 8
-                        Text {
-                            text: I18n.t("agentSpecStepPropose") || "2. Propose（提案）"
-                            font.pixelSize: 14
-                            font.bold: true
-                            color: "#0288d1"
-                        }
-                        Item { Layout.fillWidth: true }
-                        Rectangle {
-                            Layout.alignment: Qt.AlignVCenter
-                            width: 8; height: 8; radius: 4
-                            color: "#0288d1"
-                        }
-                    }
-                    Text {
-                        Layout.fillWidth: true
-                        text: I18n.t("agentSpecStepProposeDesc") || "通过 /propose 把变更写成结构化提案：Why / What / Impact，明确新增/修改/移除的范围。"
-                        font.pixelSize: 13
-                        color: "#333"
-                        wrapMode: Text.WordWrap
-                    }
-                }
-
-                // Step 3: Apply
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    spacing: 4
-
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 8
-                        Text {
-                            text: I18n.t("agentSpecStepApply") || "3. Apply（实施）"
-                            font.pixelSize: 14
-                            font.bold: true
-                            color: "#00897b"
-                        }
-                        Item { Layout.fillWidth: true }
-                        Rectangle {
-                            Layout.alignment: Qt.AlignVCenter
-                            width: 8; height: 8; radius: 4
-                            color: "#00897b"
-                        }
-                    }
-                    Text {
-                        Layout.fillWidth: true
-                        text: I18n.t("agentSpecStepApplyDesc") || "通过 /apply 按提案逐项落地代码与文档，每完成一个 Requirement 立即打勾验证。"
-                        font.pixelSize: 13
-                        color: "#333"
-                        wrapMode: Text.WordWrap
-                    }
-                }
-
-                // Step 4: Archive
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    spacing: 4
-
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 8
-                        Text {
-                            text: I18n.t("agentSpecStepArchive") || "4. Archive（归档）"
-                            font.pixelSize: 14
-                            font.bold: true
-                            color: "#5e35b1"
-                        }
-                        Item { Layout.fillWidth: true }
-                        Rectangle {
-                            Layout.alignment: Qt.AlignVCenter
-                            width: 8; height: 8; radius: 4
-                            color: "#5e35b1"
-                        }
-                    }
-                    Text {
-                        Layout.fillWidth: true
-                        text: I18n.t("agentSpecStepArchiveDesc") || "通过 /archive 把已上线的能力从 changes/ 移到 archive/，保持工作区整洁。"
-                        font.pixelSize: 13
-                        color: "#333"
-                        wrapMode: Text.WordWrap
-                    }
-                }
-
-                // 底部提示
+                // 底部提示条
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 38
+                    Layout.preferredHeight: 36
                     color: "#fff8e1"
-                    border.color: "#ffe082"
+                    border.color: "#ffd54f"
                     border.width: 1
-                    radius: 4
+                    radius: 6
 
-                    Text {
+                    RowLayout {
                         anchors.fill: parent
-                        anchors.margins: 8
-                        text: "💡 " + (I18n.t("agentSpecFlowTip") || "提示：每个阶段都必须停下来让 Agent 给出当前状态，再决定是否进入下一步；不要跳步。")
-                        font.pixelSize: 12
-                        color: "#7a5b00"
-                        wrapMode: Text.WordWrap
-                        verticalAlignment: Text.AlignVCenter
+                        anchors.leftMargin: 12
+                        anchors.rightMargin: 12
+                        spacing: 8
+
+                        Text {
+                            text: "💡"
+                            font.pixelSize: 14
+                        }
+                        Text {
+                            Layout.fillWidth: true
+                            text: I18n.t("agentSpecFlowTip") || "提示：每个阶段都必须停下来让 Agent 给出当前状态，再决定是否进入下一步；不要跳步。"
+                            font.pixelSize: 12
+                            color: "#7a5b00"
+                            wrapMode: Text.WordWrap
+                            verticalAlignment: Text.AlignVCenter
+                        }
                     }
                 }
             }
@@ -726,30 +803,7 @@ Window {
 
                         Item { Layout.fillWidth: true }
 
-                        // 选择按钮（蓝色主操作）
-                        Button {
-                            text: I18n.t("agentSelectFolder") || "选择"
-                            implicitHeight: 28
-
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: 12
-                                color: "white"
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                                leftPadding: 14
-                                rightPadding: 14
-                            }
-
-                            background: Rectangle {
-                                color: parent.pressed ? "#1565c0" : (parent.hovered ? "#1e88e5" : "#1976d2")
-                                radius: 4
-                            }
-
-                            onClicked: manager.selectRootFolder()
-                        }
-
-                        // 刷新按钮（独立的次要操作按钮）
+                        // 刷新按钮（独立次要操作按钮）
                         Button {
                             text: "⟳"
                             implicitWidth: 32
@@ -772,6 +826,29 @@ Window {
                             }
 
                             onClicked: manager.refreshTree()
+                        }
+
+                        // 选择按钮（蓝色主操作）
+                        Button {
+                            text: I18n.t("agentSelectFolder") || "选择"
+                            implicitHeight: 28
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 12
+                                color: "white"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                leftPadding: 14
+                                rightPadding: 14
+                            }
+
+                            background: Rectangle {
+                                color: parent.pressed ? "#1565c0" : (parent.hovered ? "#1e88e5" : "#1976d2")
+                                radius: 4
+                            }
+
+                            onClicked: manager.selectRootFolder()
                         }
                     }
                     
@@ -1063,29 +1140,6 @@ Window {
                         }
 
                         Button {
-                            text: "📂 打开目录"
-                            visible: manager.currentFilePath !== ""
-                            implicitHeight: 30
-
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: 12
-                                color: "#666"
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
-
-                            background: Rectangle {
-                                color: parent.pressed ? "#e0e0e0" : (parent.hovered ? "#f0f0f0" : "white")
-                                border.color: "#ddd"
-                                border.width: 1
-                                radius: 4
-                            }
-
-                            onClicked: manager.openInExplorer(manager.currentFilePath)
-                        }
-
-                        Button {
                             text: I18n.t("agentSpecCheatsheet") || "📋 Spec 小抄"
                             visible: manager.rootPath !== ""
                             implicitHeight: 30
@@ -1106,6 +1160,29 @@ Window {
                             }
 
                             onClicked: specCheatsheetDialog.open()
+                        }
+
+                        Button {
+                            text: "📂 打开目录"
+                            visible: manager.currentFilePath !== ""
+                            implicitHeight: 30
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 12
+                                color: "#666"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            background: Rectangle {
+                                color: parent.pressed ? "#e0e0e0" : (parent.hovered ? "#f0f0f0" : "white")
+                                border.color: "#ddd"
+                                border.width: 1
+                                radius: 4
+                            }
+
+                            onClicked: manager.openInExplorer(manager.currentFilePath)
                         }
 
                         Button {

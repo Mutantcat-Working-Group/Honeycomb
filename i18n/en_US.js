@@ -395,6 +395,7 @@ function getEnLang() {
         agentSpecStepArchive: "4. Archive",
         agentSpecStepArchiveDesc: "Run /archive to move shipped capabilities from changes/ into archive/ and keep the workspace clean.",
         agentSpecFlowTip: "Tip: pause at each phase and let the Agent report current status before moving on — do not skip steps.",
+        agentSpecClose: "Close",
         
         // ML Handbook/NN Table/Layer Table UI Text
         mlSearchPlaceholder: "Search algorithm name or description...",
