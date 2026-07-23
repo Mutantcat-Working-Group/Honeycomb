@@ -24,7 +24,7 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND (NOT DEFINED CMAKE_MAKE_PROGRAM OR CMAKE
     endif()
 endif()
 
-project(Honeycomb VERSION 1.0.20260722 LANGUAGES C CXX)
+project(Honeycomb VERSION 1.1.20260723 LANGUAGES C CXX)
 
 # Toolchain files are loaded by project() and may replace an absolute SDK path
 # with the invalid literal "macosx". Normalize it again after toolchain setup.

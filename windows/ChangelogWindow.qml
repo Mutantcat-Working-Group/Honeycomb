@@ -50,6 +50,57 @@ Window {
                     width: changelogWindow.width - 60
                     spacing: 15
 
+                    // 更新条目 - 1.1.20260723
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 92
+                        color: "white"
+                        border.color: "#e0e0e0"
+                        border.width: 1
+                        radius: 8
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 15
+                            spacing: 15
+
+                            Rectangle {
+                                Layout.preferredWidth: 120
+                                Layout.preferredHeight: 40
+                                color: changelogWindow.tagColors[4]
+                                radius: 6
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "1.1.20260723"
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    color: "white"
+                                }
+                            }
+
+                            Column {
+                                Layout.fillWidth: true
+                                spacing: 5
+
+                                Text {
+                                    text: I18n.t("changelog20260723") || "窗口组件选取优化"
+                                    font.pixelSize: 16
+                                    font.bold: true
+                                    color: "#333"
+                                }
+
+                                Text {
+                                    text: I18n.t("changelog20260723Desc") || "优化 macOS 辅助功能权限检测与授权流程"
+                                    width: parent.width
+                                    font.pixelSize: 14
+                                    color: "#666"
+                                    wrapMode: Text.WordWrap
+                                }
+                            }
+                        }
+                    }
+
                     // 更新条目 - 1.0.20260722
                     Rectangle {
                         Layout.fillWidth: true

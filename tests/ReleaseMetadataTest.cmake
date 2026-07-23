@@ -8,8 +8,8 @@ file(READ "${SOURCE_DIR}/i18n/zh_CN.js" zh_source)
 file(READ "${SOURCE_DIR}/i18n/en_US.js" en_source)
 file(READ "${SOURCE_DIR}/sdk/NSIS/Honeycomb.nsi" nsis_source)
 
-if(NOT cmake_source MATCHES "project\\(Honeycomb VERSION 1\\.0\\.20260722 ")
-    message(FATAL_ERROR "Project version is not 1.0.20260722")
+if(NOT cmake_source MATCHES "project\\(Honeycomb VERSION 1\\.1\\.20260723 ")
+    message(FATAL_ERROR "Project version is not 1.1.20260723")
 endif()
 
 string(FIND "${cmake_source}" "MACOSX_BUNDLE_SHORT_VERSION_STRING \${PROJECT_VERSION}" short_version_index)
@@ -17,14 +17,14 @@ if(short_version_index EQUAL -1)
     message(FATAL_ERROR "macOS short version must use the complete project version")
 endif()
 
-if(NOT nsis_source MATCHES "VERSION=1\\.0\\.20260722" OR
-   NOT nsis_source MATCHES "VERSION \"1\\.0\\.20260722\"")
-    message(FATAL_ERROR "Windows installer version is not 1.0.20260722")
+if(NOT nsis_source MATCHES "VERSION=1\\.1\\.20260723" OR
+   NOT nsis_source MATCHES "VERSION \"1\\.1\\.20260723\"")
+    message(FATAL_ERROR "Windows installer version is not 1.1.20260723")
 endif()
 
 foreach(source IN ITEMS changelog_source zh_source en_source)
-    if(NOT "${${source}}" MATCHES "20260722")
-        message(FATAL_ERROR "${source} does not contain the 20260722 release entry")
+    if(NOT "${${source}}" MATCHES "20260723")
+        message(FATAL_ERROR "${source} does not contain the 20260723 release entry")
     endif()
 endforeach()
 

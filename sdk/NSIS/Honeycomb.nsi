@@ -1,11 +1,11 @@
 ﻿;=== [可配置区域] ============================================
 ; 命令行参数覆盖示例:
-;   makensis.exe /DVERSION=1.0.20260722 /DSTAGING=E:\Projects\Honeycomb_1.0.20260722_msvc2022_64 Honeycomb.nsi
+;   makensis.exe /DVERSION=1.1.20260723 /DSTAGING=E:\Projects\Honeycomb_1.1.20260723_msvc2022_64 Honeycomb.nsi
 !ifndef VERSION
-  !define VERSION "1.0.20260722"
+  !define VERSION "1.1.20260723"
 !endif
 !ifndef STAGING_DIR
-  !define STAGING_DIR "E:\Projects\Honeycomb_1.0.20260722_msvc2022_64"
+  !define STAGING_DIR "E:\Projects\Honeycomb_1.1.20260723_msvc2022_64"
 !endif
 !define PRODUCT_NAME    "蜂巢工具箱"
 !define PRODUCT_NAME_EN "Honeycomb"
