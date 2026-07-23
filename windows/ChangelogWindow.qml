@@ -84,14 +84,14 @@ Window {
                                 spacing: 5
 
                                 Text {
-                                    text: I18n.t("changelog20260723") || "窗口组件选取优化"
+                                    text: I18n.t("changelog20260723") || "优化 Agent 协同"
                                     font.pixelSize: 16
                                     font.bold: true
                                     color: "#333"
                                 }
 
                                 Text {
-                                    text: I18n.t("changelog20260723Desc") || "优化 macOS 辅助功能权限检测与授权流程"
+                                    text: I18n.t("changelog20260723Desc") || "增强与 Spec 的适配度"
                                     width: parent.width
                                     font.pixelSize: 14
                                     color: "#666"
