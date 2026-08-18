@@ -163,40 +163,129 @@ Window {
                         color: "#333"
                     }
                     
-                    SpinBox {
-                        id: portInput
-                        from: 1
-                        to: 65535
-                        value: fakeServer.port
-                        editable: true
+                    // 自定义端口输入：± 按钮 + 居中数字，避免 Qt 默认 SpinBox 数字偏左、5 位数被挤压
+                    Rectangle {
+                        id: portBox
+                        Layout.preferredWidth: 150
+                        Layout.preferredHeight: 32
                         enabled: !fakeServer.isRunning
-                        Layout.preferredWidth: 120
-                        
-                        background: Rectangle {
-                            color: fakeServer.isRunning ? "#f5f5f5" : "white"
-                            border.color: "#e0e0e0"
-                            border.width: 1
-                            radius: 4
-                        }
-                        
-                        contentItem: TextInput {
-                            z: 2
-                            text: portInput.textFromValue(portInput.value, portInput.locale)
+                        color: fakeServer.isRunning ? "#f5f5f5" : "white"
+                        border.color: portInput.activeFocus ? "#1976d2" : "#e0e0e0"
+                        border.width: 1
+                        radius: 4
+
+                        // 居中数字编辑
+                        TextField {
+                            id: portInput
+                            anchors.left: parent.left
+                            anchors.right: minusBtn.left
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            horizontalAlignment: TextInput.AlignHCenter
+                            verticalAlignment: TextInput.AlignVCenter
+                            inputMethodHints: Qt.ImhDigitsOnly
+                            validator: IntValidator { bottom: 1; top: 65535 }
                             font.pixelSize: 13
                             color: "#333"
-                            selectionColor: "#1976d2"
-                            selectedTextColor: "white"
-                            horizontalAlignment: Qt.AlignHCenter
-                            verticalAlignment: Qt.AlignVCenter
-                            readOnly: !portInput.editable
-                            validator: portInput.validator
-                            inputMethodHints: Qt.ImhFormattedNumbersOnly
-                            anchors.fill: parent
-                            anchors.leftMargin: 8
-                            anchors.rightMargin: 8
+                            selectByMouse: true
+                            text: String(fakeServer.port)
+                            background: Item {}
+
+                            property bool _syncingFromBackend: false
+
+                            Connections {
+                                target: fakeServer
+                                function onPortChanged() {
+                                    var s = String(fakeServer.port)
+                                    if (portInput.text !== s) {
+                                        portInput._syncingFromBackend = true
+                                        portInput.text = s
+                                        portInput._syncingFromBackend = false
+                                    }
+                                }
+                            }
+
+                            property int value: {
+                                var n = parseInt(text)
+                                if (isNaN(n) || n < 1) return 1
+                                if (n > 65535) return 65535
+                                return n
+                            }
+
+                            onTextChanged: {
+                                if (_syncingFromBackend) return
+                                if (text === "") return
+                                var n = parseInt(text)
+                                if (!isNaN(n)) fakeServer.port = n
+                            }
                         }
-                        
-                        onValueChanged: fakeServer.port = value
+
+                        // 减号按钮
+                        Button {
+                            id: minusBtn
+                            anchors.right: plusBtn.left
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: 32
+                            enabled: !fakeServer.isRunning && portInput.value > 1
+                            text: "−"
+                            font.pixelSize: 16
+                            font.bold: true
+                            onClicked: {
+                                var n = portInput.value - 1
+                                if (n < 1) n = 1
+                                portInput.text = String(n)
+                            }
+                            background: Rectangle {
+                                color: minusBtn.hovered && minusBtn.enabled ? "#e3f2fd" : "transparent"
+                                radius: 4
+                            }
+                            contentItem: Text {
+                                text: minusBtn.text
+                                color: minusBtn.enabled ? "#1976d2" : "#bbb"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font: minusBtn.font
+                            }
+                        }
+
+                        // 加号按钮
+                        Button {
+                            id: plusBtn
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: 32
+                            enabled: !fakeServer.isRunning && portInput.value < 65535
+                            text: "+"
+                            font.pixelSize: 16
+                            font.bold: true
+                            onClicked: {
+                                var n = portInput.value + 1
+                                if (n > 65535) n = 65535
+                                portInput.text = String(n)
+                            }
+                            background: Rectangle {
+                                color: plusBtn.hovered && plusBtn.enabled ? "#e3f2fd" : "transparent"
+                                radius: 4
+                            }
+                            contentItem: Text {
+                                text: plusBtn.text
+                                color: plusBtn.enabled ? "#1976d2" : "#bbb"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font: plusBtn.font
+                            }
+                        }
+
+                        // 内部竖向分隔线（视觉上分组）
+                        Rectangle {
+                            anchors.left: portInput.right
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: 1
+                            color: "#e0e0e0"
+                        }
                     }
                     
                     Button {
@@ -667,39 +756,112 @@ Window {
                                     color: "#333"
                                 }
                                 
-                                SpinBox {
+                                // 自定义状态码输入：± + 居中数字
+                                Rectangle {
                                     id: statusCodeInput
-                                    from: 100
-                                    to: 599
-                                    value: 200
-                                    editable: true
-                                    Layout.preferredWidth: 110
-                                    
-                                    background: Rectangle {
-                                        color: "white"
-                                        border.color: "#e0e0e0"
-                                        border.width: 1
-                                        radius: 4
+                                    Layout.preferredWidth: 130
+                                    Layout.preferredHeight: 32
+                                    color: "white"
+                                    border.color: statusField.activeFocus ? "#1976d2" : "#e0e0e0"
+                                    border.width: 1
+                                    radius: 4
+
+                                    // 双向 value 接口（外层旧 SpinBox 调用方不变）
+                                    property int from: 100
+                                    property int to: 599
+                                    property int value: 200
+                                    onValueChanged: {
+                                        if (statusField._syncing) return
+                                        var v = value
+                                        if (v < from) v = from
+                                        if (v > to) v = to
+                                        statusField.text = String(v)
                                     }
-                                    
-                                    contentItem: TextInput {
-                                        z: 2
-                                        text: statusCodeInput.textFromValue(statusCodeInput.value, statusCodeInput.locale)
+
+                                    TextField {
+                                        id: statusField
+                                        anchors.left: parent.left
+                                        anchors.right: minusBtn.left
+                                        anchors.top: parent.top
+                                        anchors.bottom: parent.bottom
+                                        horizontalAlignment: TextInput.AlignHCenter
+                                        verticalAlignment: TextInput.AlignVCenter
+                                        inputMethodHints: Qt.ImhDigitsOnly
+                                        validator: IntValidator { bottom: parent.from; top: parent.to }
                                         font.pixelSize: 13
                                         color: "#333"
-                                        selectionColor: "#1976d2"
-                                        selectedTextColor: "white"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter
-                                        readOnly: !statusCodeInput.editable
-                                        validator: statusCodeInput.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        anchors.fill: parent
-                                        anchors.leftMargin: 8
-                                        anchors.rightMargin: 8
+                                        selectByMouse: true
+                                        text: String(statusCodeInput.value)
+                                        background: Item {}
+                                        property bool _syncing: false
+
+                                        onTextChanged: {
+                                            if (_syncing) return
+                                            if (text === "") return
+                                            var n = parseInt(text)
+                                            if (isNaN(n)) return
+                                            if (n < parent.from) n = parent.from
+                                            if (n > parent.to) n = parent.to
+                                            _syncing = true
+                                            statusCodeInput.value = n
+                                            _syncing = false
+                                            saveEditorToRoute()
+                                        }
                                     }
-                                    
-                                    onValueChanged: saveEditorToRoute()
+
+                                    Button {
+                                        id: minusBtn
+                                        anchors.right: plusBtn.left
+                                        anchors.top: parent.top
+                                        anchors.bottom: parent.bottom
+                                        width: 28
+                                        enabled: statusCodeInput.value > statusCodeInput.from
+                                        text: "−"
+                                        font.pixelSize: 14
+                                        font.bold: true
+                                        onClicked: statusCodeInput.value = Math.max(statusCodeInput.from, statusCodeInput.value - 1)
+                                        background: Rectangle {
+                                            color: minusBtn.hovered && minusBtn.enabled ? "#e3f2fd" : "transparent"
+                                            radius: 4
+                                        }
+                                        contentItem: Text {
+                                            text: minusBtn.text
+                                            color: minusBtn.enabled ? "#1976d2" : "#bbb"
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                            font: minusBtn.font
+                                        }
+                                    }
+                                    Button {
+                                        id: plusBtn
+                                        anchors.right: parent.right
+                                        anchors.top: parent.top
+                                        anchors.bottom: parent.bottom
+                                        width: 28
+                                        enabled: statusCodeInput.value < statusCodeInput.to
+                                        text: "+"
+                                        font.pixelSize: 14
+                                        font.bold: true
+                                        onClicked: statusCodeInput.value = Math.min(statusCodeInput.to, statusCodeInput.value + 1)
+                                        background: Rectangle {
+                                            color: plusBtn.hovered && plusBtn.enabled ? "#e3f2fd" : "transparent"
+                                            radius: 4
+                                        }
+                                        contentItem: Text {
+                                            text: plusBtn.text
+                                            color: plusBtn.enabled ? "#1976d2" : "#bbb"
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                            font: plusBtn.font
+                                        }
+                                    }
+                                    Rectangle {
+                                        anchors.left: statusField.right
+                                        anchors.top: parent.top
+                                        anchors.bottom: parent.bottom
+                                        width: 1
+                                        color: "#e0e0e0"
+                                    }
                                 }
                             }
                             
@@ -713,40 +875,122 @@ Window {
                                     color: "#333"
                                 }
                                 
-                                SpinBox {
+                                // 自定义延迟输入：± + 居中数字（步长 100，0-30000）
+                                Rectangle {
                                     id: delayInput
-                                    from: 0
-                                    to: 30000
-                                    value: 0
-                                    stepSize: 100
-                                    editable: true
-                                    Layout.preferredWidth: 120
-                                    
-                                    background: Rectangle {
-                                        color: "white"
-                                        border.color: "#e0e0e0"
-                                        border.width: 1
-                                        radius: 4
+                                    Layout.preferredWidth: 140
+                                    Layout.preferredHeight: 32
+                                    color: "white"
+                                    border.color: delayField.activeFocus ? "#1976d2" : "#e0e0e0"
+                                    border.width: 1
+                                    radius: 4
+
+                                    property int from: 0
+                                    property int to: 30000
+                                    property int stepSize: 100
+                                    property int value: 0
+                                    onValueChanged: {
+                                        if (delayField._syncing) return
+                                        var v = value
+                                        if (v < from) v = from
+                                        if (v > to) v = to
+                                        // 对齐到 stepSize
+                                        v = Math.round(v / stepSize) * stepSize
+                                        delayField.text = String(v)
                                     }
-                                    
-                                    contentItem: TextInput {
-                                        z: 2
-                                        text: delayInput.textFromValue(delayInput.value, delayInput.locale)
+
+                                    TextField {
+                                        id: delayField
+                                        anchors.left: parent.left
+                                        anchors.right: minusBtn.left
+                                        anchors.top: parent.top
+                                        anchors.bottom: parent.bottom
+                                        horizontalAlignment: TextInput.AlignHCenter
+                                        verticalAlignment: TextInput.AlignVCenter
+                                        inputMethodHints: Qt.ImhDigitsOnly
+                                        validator: IntValidator { bottom: parent.from; top: parent.to }
                                         font.pixelSize: 13
                                         color: "#333"
-                                        selectionColor: "#1976d2"
-                                        selectedTextColor: "white"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter
-                                        readOnly: !delayInput.editable
-                                        validator: delayInput.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        anchors.fill: parent
-                                        anchors.leftMargin: 8
-                                        anchors.rightMargin: 8
+                                        selectByMouse: true
+                                        text: String(delayInput.value)
+                                        background: Item {}
+                                        property bool _syncing: false
+
+                                        onTextChanged: {
+                                            if (_syncing) return
+                                            if (text === "") return
+                                            var n = parseInt(text)
+                                            if (isNaN(n)) return
+                                            if (n < parent.from) n = parent.from
+                                            if (n > parent.to) n = parent.to
+                                            _syncing = true
+                                            delayInput.value = n
+                                            _syncing = false
+                                            saveEditorToRoute()
+                                        }
                                     }
-                                    
-                                    onValueChanged: saveEditorToRoute()
+
+                                    Button {
+                                        id: minusBtn
+                                        anchors.right: plusBtn.left
+                                        anchors.top: parent.top
+                                        anchors.bottom: parent.bottom
+                                        width: 28
+                                        enabled: delayInput.value > delayInput.from
+                                        text: "−"
+                                        font.pixelSize: 14
+                                        font.bold: true
+                                        onClicked: {
+                                            var v = delayInput.value - delayInput.stepSize
+                                            if (v < delayInput.from) v = delayInput.from
+                                            delayInput.value = v
+                                        }
+                                        background: Rectangle {
+                                            color: minusBtn.hovered && minusBtn.enabled ? "#e3f2fd" : "transparent"
+                                            radius: 4
+                                        }
+                                        contentItem: Text {
+                                            text: minusBtn.text
+                                            color: minusBtn.enabled ? "#1976d2" : "#bbb"
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                            font: minusBtn.font
+                                        }
+                                    }
+                                    Button {
+                                        id: plusBtn
+                                        anchors.right: parent.right
+                                        anchors.top: parent.top
+                                        anchors.bottom: parent.bottom
+                                        width: 28
+                                        enabled: delayInput.value < delayInput.to
+                                        text: "+"
+                                        font.pixelSize: 14
+                                        font.bold: true
+                                        onClicked: {
+                                            var v = delayInput.value + delayInput.stepSize
+                                            if (v > delayInput.to) v = delayInput.to
+                                            delayInput.value = v
+                                        }
+                                        background: Rectangle {
+                                            color: plusBtn.hovered && plusBtn.enabled ? "#e3f2fd" : "transparent"
+                                            radius: 4
+                                        }
+                                        contentItem: Text {
+                                            text: plusBtn.text
+                                            color: plusBtn.enabled ? "#1976d2" : "#bbb"
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                            font: plusBtn.font
+                                        }
+                                    }
+                                    Rectangle {
+                                        anchors.left: delayField.right
+                                        anchors.top: parent.top
+                                        anchors.bottom: parent.bottom
+                                        width: 1
+                                        color: "#e0e0e0"
+                                    }
                                 }
                             }
                             

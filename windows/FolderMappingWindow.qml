@@ -169,24 +169,130 @@ Window {
                             Layout.preferredWidth: 90
                         }
                         
-                        SpinBox {
-                            id: portInput
-                            from: 1
-                            to: 65535
-                            value: httpServer.port
-                            editable: true
+                        // 自定义端口输入：± 按钮 + 居中数字，避免 Qt 默认 SpinBox 数字偏左、5 位数被挤压
+                        Rectangle {
+                            id: portBox
+                            Layout.preferredWidth: 150
+                            Layout.preferredHeight: 32
                             enabled: !httpServer.isRunning
-                            Layout.preferredWidth: 120
-                            
-                            background: Rectangle {
-                                color: httpServer.isRunning ? "#f5f5f5" : "white"
-                                border.color: portInput.focus ? "#1976d2" : "#e0e0e0"
-                                border.width: 1
-                                radius: 4
+                            color: httpServer.isRunning ? "#f5f5f5" : "white"
+                            border.color: portInput.activeFocus ? "#1976d2" : "#e0e0e0"
+                            border.width: 1
+                            radius: 4
+
+                            // 内部数字编辑（居中显示）
+                            TextField {
+                                id: portInput
+                                anchors.left: parent.left
+                                anchors.right: minusBtn.left
+                                anchors.top: parent.top
+                                anchors.bottom: parent.bottom
+                                horizontalAlignment: TextInput.AlignHCenter
+                                verticalAlignment: TextInput.AlignVCenter
+                                inputMethodHints: Qt.ImhDigitsOnly
+                                validator: IntValidator { bottom: 1; top: 65535 }
+                                font.pixelSize: 14
+                                color: "#333333"
+                                selectByMouse: true
+                                text: String(httpServer.port)
+                                // 去掉 TextField 默认的背景/边框，只保留 Rectangle 外壳
+                                background: Item {}
+
+                                // 反向同步：C++ 后端端口变化时回灌到 TextField，避免覆盖用户当前焦点
+                                property bool _syncingFromBackend: false
+
+                                Connections {
+                                    target: httpServer
+                                    function onPortChanged() {
+                                        var s = String(httpServer.port)
+                                        if (portInput.text !== s) {
+                                            portInput._syncingFromBackend = true
+                                            portInput.text = s
+                                            portInput._syncingFromBackend = false
+                                        }
+                                    }
+                                }
+
+                                property int value: {
+                                    var n = parseInt(text)
+                                    if (isNaN(n) || n < 1) return 1
+                                    if (n > 65535) return 65535
+                                    return n
+                                }
+
+                                onTextChanged: {
+                                    if (_syncingFromBackend) return
+                                    if (text === "") return
+                                    var n = parseInt(text)
+                                    if (!isNaN(n)) httpServer.port = n
+                                }
                             }
-                            
-                            onValueChanged: {
-                                httpServer.port = value
+
+                            // 减号按钮
+                            Button {
+                                id: minusBtn
+                                anchors.right: plusBtn.left
+                                anchors.top: parent.top
+                                anchors.bottom: parent.bottom
+                                width: 32
+                                enabled: !httpServer.isRunning && portInput.value > 1
+                                text: "−"
+                                font.pixelSize: 16
+                                font.bold: true
+                                onClicked: {
+                                    var n = portInput.value - 1
+                                    if (n < 1) n = 1
+                                    portInput.text = String(n)
+                                }
+                                background: Rectangle {
+                                    color: minusBtn.hovered && minusBtn.enabled ? "#e3f2fd" : "transparent"
+                                    radius: 4
+                                }
+                                contentItem: Text {
+                                    text: minusBtn.text
+                                    color: minusBtn.enabled ? "#1976d2" : "#bbb"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    font: minusBtn.font
+                                }
+                            }
+
+                            // 加号按钮
+                            Button {
+                                id: plusBtn
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.bottom: parent.bottom
+                                width: 32
+                                enabled: !httpServer.isRunning && portInput.value < 65535
+                                text: "+"
+                                font.pixelSize: 16
+                                font.bold: true
+                                onClicked: {
+                                    var n = portInput.value + 1
+                                    if (n > 65535) n = 65535
+                                    portInput.text = String(n)
+                                }
+                                background: Rectangle {
+                                    color: plusBtn.hovered && plusBtn.enabled ? "#e3f2fd" : "transparent"
+                                    radius: 4
+                                }
+                                contentItem: Text {
+                                    text: plusBtn.text
+                                    color: plusBtn.enabled ? "#1976d2" : "#bbb"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    font: plusBtn.font
+                                }
+                            }
+
+                            // 内部竖向分隔线（在 ± 中间，视觉上分组）
+                            Rectangle {
+                                anchors.left: portInput.right
+                                anchors.top: parent.top
+                                anchors.bottom: parent.bottom
+                                width: 1
+                                color: "#e0e0e0"
                             }
                         }
                         
