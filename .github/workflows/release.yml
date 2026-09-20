@@ -52,7 +52,7 @@ jobs:
           pkg-config --exists atspi-2
           cmake -B build -S . -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_TOOLCHAIN_FILE="$PWD/build/conan-deps/conan_toolchain.cmake" \
-          -DCMAKE_PREFIX_PATH="$PWD/build/conan-deps;${Qt6_DIR}"
+          -DCMAKE_PREFIX_PATH="$PWD/build/conan-deps;${QT_ROOT_DIR}"
 
       - name: Build
         run: cmake --build build --parallel 2
@@ -151,12 +151,13 @@ jobs:
       - name: Configure
         run: >
           cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_CONFIGURATION_TYPES=Release
           -DCMAKE_TOOLCHAIN_FILE="$PWD/build/conan-deps/conan_toolchain.cmake"
-          -DCMAKE_PREFIX_PATH="$PWD/build/conan-deps;${Qt6_DIR}"
+          -DCMAKE_PREFIX_PATH="$PWD/build/conan-deps;${QT_ROOT_DIR}"
           ${{ matrix.os == 'darwin' && format('-DCMAKE_OSX_ARCHITECTURES="{0}"', matrix.cmake_arch) || '' }}
 
       - name: Build
-        run: cmake --build build --parallel 2
+        run: cmake --build build --config Release --parallel 2
 
       - name: Build Windows NSIS installer
         if: matrix.os == 'windows'
@@ -222,11 +223,11 @@ jobs:
           export PATH="${PWD}:${PATH}"
           export APPIMAGE_EXTRACT_AND_RUN=1
           export QML_SOURCES_PATHS="${PWD}"
-          QT_BIN_DIR="${Qt6_DIR}/bin"
+          QT_BIN_DIR="${QT_ROOT_DIR}/bin"
           export PATH="${QT_BIN_DIR}:${PATH}"
           export QMAKE="${QT_BIN_DIR}/qmake"
-          export QTDIR="${Qt6_DIR}/../../.."
-          export LD_LIBRARY_PATH="${Qt6_DIR}/../lib:${LD_LIBRARY_PATH}"
+          export QTDIR="${QT_ROOT_DIR}"
+          export LD_LIBRARY_PATH="${QT_ROOT_DIR}/lib:${LD_LIBRARY_PATH}"
           "./linuxdeploy-${LD_ARCH}.AppImage" --appdir "${APPDIR}" --plugin qt
           "./appimagetool-${LD_ARCH}.AppImage" "${APPDIR}" "dist/${APP_NAME}-${VERSION}-linux-${ARCH}.AppImage"
 
