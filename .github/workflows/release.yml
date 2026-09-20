@@ -27,7 +27,7 @@ jobs:
           version: '6.8.*'
           target: desktop
           arch: linux_gcc_64
-          modules: 'qtwebengine qtwebchannel qtmultimedia qtwebsockets qtserialport'
+          modules: 'qtwebengine qtpositioning qtwebchannel qtmultimedia qtwebsockets qtserialport'
           cache: true
 
       - name: Install Conan
