@@ -173,7 +173,7 @@ jobs:
             -DVERSION="${VERSION}" \
             -DSTAGING_DIR="$(cygpath -w "${GITHUB_WORKSPACE}/dist/stage")" \
             -DPROJECT_DIR="$(cygpath -w "${GITHUB_WORKSPACE}")" \
-            -DINSTALLER_NAME="dist/${APP_NAME}-${VERSION}-windows-${ARCH}-setup.exe" \
+            -DINSTALLER_NAME="$(cygpath -w "${GITHUB_WORKSPACE}/dist/${APP_NAME}-${VERSION}-windows-${ARCH}-setup.exe")" \
             sdk/NSIS/Honeycomb.nsi
 
       - name: Build macOS app and DMG
