@@ -40,12 +40,12 @@ jobs:
         run: |
           # shellcheck disable=SC2155
           export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig:/usr/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
-          ATSPI_PC="$(dpkg -L libatspi2.0-dev 2>/dev/null | grep -F 'atspi-2.0.pc' | head -n1 || true)"
+          ATSPI_PC="$(dpkg -L libatspi2.0-dev 2>/dev/null | grep -F 'atspi-2.pc' | head -n1 || true)"
           if [ -n "$ATSPI_PC" ]; then
             # shellcheck disable=SC2155
             export PKG_CONFIG_PATH="$(dirname "$ATSPI_PC"):${PKG_CONFIG_PATH}"
           fi
-          pkg-config --exists atspi-2.0
+          pkg-config --exists atspi-2
           cmake -B build -S . -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_TOOLCHAIN_FILE="$PWD/build/conan-deps/conan_toolchain.cmake" \
           -DCMAKE_PREFIX_PATH="$PWD/build/conan-deps;${Qt6_DIR}"

@@ -350,7 +350,7 @@ if(UNIX AND NOT APPLE)
     target_sources(appHoneycomb PRIVATE src/WindowElementInspector_linux.cpp)
     # AT-SPI2
     find_package(PkgConfig REQUIRED)
-    pkg_check_modules(AT_SPI2 REQUIRED atspi-2.0)
+    pkg_check_modules(AT_SPI2 REQUIRED atspi-2)
     target_include_directories(appHoneycomb PRIVATE ${AT_SPI2_INCLUDE_DIRS})
     target_link_libraries(appHoneycomb PRIVATE ${AT_SPI2_LIBRARIES})
 endif()
