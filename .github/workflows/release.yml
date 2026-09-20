@@ -125,6 +125,18 @@ jobs:
             fi
           done
           sudo apt-get install -y libxkbcommon0 libxkbcommon-x11-0 libxcb-cursor0 libxcb-xinerama0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render0 libxcb-render-util0 libxcb-shape0 libxcb-shm0 libxcb-sync1 libxcb-xfixes0 libxcb-xkb1 libnss3 libnspr4 libegl1 libgl1 libdrm2 libgbm1 libfontconfig1 libxrender1 libxi6 libxtst6
+          for PKG in libevent-2.1-7t64 libevent-2.1-7; do
+            if apt-cache show "${PKG}" >/dev/null 2>&1; then
+              sudo apt-get install -y "${PKG}"
+              break
+            fi
+          done
+          for PKG in libminizip1t64 libminizip1; do
+            if apt-cache show "${PKG}" >/dev/null 2>&1; then
+              sudo apt-get install -y "${PKG}"
+              break
+            fi
+          done
 
       - name: Install Conan
         run: |
@@ -134,7 +146,7 @@ jobs:
       - name: Resolve dependencies
         run: |
           conan profile detect --force
-          conan install . --output-folder=build/conan-deps --build=missing -s build_type=Release
+          conan install . --output-folder=build/conan-deps --build=missing -s build_type=Release -s compiler.cppstd=17
 
       - name: Configure
         run: >
@@ -210,7 +222,7 @@ jobs:
           export PATH="${PWD}:${PATH}"
           export APPIMAGE_EXTRACT_AND_RUN=1
           export QML_SOURCES_PATHS="${PWD}"
-          QT_BIN_DIR="${Qt6_DIR}/../../bin"
+          QT_BIN_DIR="${Qt6_DIR}/bin"
           export PATH="${QT_BIN_DIR}:${PATH}"
           export QMAKE="${QT_BIN_DIR}/qmake"
           export QTDIR="${Qt6_DIR}/../../.."
