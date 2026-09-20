@@ -1,11 +1,17 @@
 ﻿;=== [可配置区域] ============================================
 ; 命令行参数覆盖示例:
-;   makensis.exe /DVERSION=1.1.20260723 /DSTAGING=E:\Projects\Honeycomb_1.1.20260723_msvc2022_64 Honeycomb.nsi
+;   makensis.exe /DVERSION=1.0.20260920 /DSTAGING_DIR=E:\Projects\Honeycomb_1.0.20260920_msvc2022_64 Honeycomb.nsi
+; CI 打包示例（工程相对路径 + 自定义输出名）:
+;   makensis -V2 /DVERSION=1.0.20260920 /DSTAGING_DIR=dist\stage /DPROJECT_DIR=%CD% /DINSTALLER_NAME=dist\Honeycomb-1.0.20260920-windows-amd64-setup.exe Honeycomb.nsi
 !ifndef VERSION
-  !define VERSION "1.1.20260723"
+  !define VERSION "1.0.20260920"
 !endif
 !ifndef STAGING_DIR
-  !define STAGING_DIR "E:\Projects\Honeycomb_1.1.20260723_msvc2022_64"
+  !define STAGING_DIR "E:\Projects\Honeycomb_1.0.20260920_msvc2022_64"
+!endif
+; 工程根目录（用于定位图标等资源），默认值为本地开发机路径
+!ifndef PROJECT_DIR
+  !define PROJECT_DIR "E:\Projects\Honeycomb"
 !endif
 !define PRODUCT_NAME    "蜂巢工具箱"
 !define PRODUCT_NAME_EN "Honeycomb"
@@ -15,7 +21,9 @@
 !define APP_EXE         "appHoneycomb.exe"
 ;=== [可配置区域结束] ========================================
 
-!define INSTALLER_NAME  "${PRODUCT_NAME_EN}_${VERSION}_msvc2022_64_setup.exe"
+!ifndef INSTALLER_NAME
+  !define INSTALLER_NAME "${PRODUCT_NAME_EN}_${VERSION}_msvc2022_64_setup.exe"
+!endif
 !define REG_KEY         "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME_EN}"
 !define EXE_SOURCE      "${STAGING_DIR}\${APP_EXE}"
 
@@ -38,8 +46,8 @@ BrandingText "蜂巢工具箱 v${VERSION}"
 !include "MUI2.nsh"
 
 !define MUI_ABORTWARNING
-!define MUI_ICON   "E:\Projects\Honeycomb\logo.ico"
-!define MUI_UNICON "E:\Projects\Honeycomb\logo.ico"
+!define MUI_ICON   "${PROJECT_DIR}\logo.ico"
+!define MUI_UNICON "${PROJECT_DIR}\logo.ico"
 
 ; 欢迎页正文（厂商 / 官网 / 邮箱）
 !define MUI_WELCOMEPAGE_TITLE_3LINES

@@ -16,7 +16,7 @@ if "%VERSION%"=="" (
     echo [ERROR] 缺少版本号参数。用法:
     echo   build.cmd ^<VERSION^> ^<STAGING_PATH^>
     echo 示例:
-    echo   build.cmd 1.1.20260712 E:\Projects\Honeycomb_1.1.20260712_msvc2022_64
+    echo   build.cmd 1.0.20260920 E:\Projects\Honeycomb_1.0.20260920_msvc2022_64
     exit /b 1
 )
 if "%STAGING%"=="" (
@@ -41,7 +41,8 @@ echo ============================================
 echo.
 
 ;=== 编译 ===
-"%MAKENSIS%" /DVERSION="%VERSION%" /DSTAGING="%STAGING%" "%~dp0Honeycomb.nsi"
+; 注意: Honeycomb.nsi 中读取的是 STAGING_DIR，参数名必须与其一致。
+"%MAKENSIS%" /DVERSION="%VERSION%" /DSTAGING_DIR="%STAGING%" "%~dp0Honeycomb.nsi"
 if errorlevel 1 (
     echo.
     echo [ERROR] NSIS 编译失败。

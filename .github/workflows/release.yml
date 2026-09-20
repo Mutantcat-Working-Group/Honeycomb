@@ -1,0 +1,247 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+      - '[0-9]*.[0-9]*.[0-9]*'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config libgl1-mesa-dev libdbus-1-dev libssl-dev libatspi2.0-dev
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.*'
+          target: desktop
+          arch: linux_gcc_64
+          modules: 'qtwebengine qtwebchannel qtmultimedia qtwebsockets qtserialport'
+          cache: true
+
+      - name: Install Conan
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "conan>=2,<3"
+
+      - name: Resolve dependencies
+        run: |
+          conan profile detect --force
+          conan install . --output-folder=build/conan-deps --build=missing -s build_type=Release
+
+      - name: Configure
+        run: >
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_TOOLCHAIN_FILE="$PWD/build/conan-deps/conan_toolchain.cmake"
+          -DCMAKE_PREFIX_PATH="$PWD/build/conan-deps;${Qt6_DIR}"
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+  build:
+    needs: verify
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows
+            arch: amd64
+            runner: windows-2022
+            qt_arch: win64_msvc2022_64
+          - os: darwin
+            arch: arm64
+            runner: macos-15
+            qt_arch: clang_64
+            cmake_arch: arm64
+          - os: darwin
+            arch: amd64
+            runner: macos-15-intel
+            qt_arch: clang_64
+            cmake_arch: x86_64
+          - os: linux
+            arch: amd64
+            runner: ubuntu-22.04
+            qt_arch: linux_gcc_64
+          - os: linux
+            arch: arm64
+            runner: ubuntu-24.04-arm
+            qt_arch: linux_gcc_arm64
+    env:
+      APP_NAME: Honeycomb
+      BINARY_NAME: appHoneycomb
+      ARCH: ${{ matrix.arch }}
+      OS: ${{ matrix.os }}
+      VERSION: ${{ github.ref_name }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.*'
+          target: desktop
+          arch: ${{ matrix.qt_arch }}
+          modules: 'qtwebengine qtwebchannel qtmultimedia qtwebsockets qtserialport'
+          cache: true
+
+      - name: Install Linux dependencies
+        if: matrix.os == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config patchelf desktop-file-utils libgl1-mesa-dev libdbus-1-dev libssl-dev libatspi2.0-dev
+          # Ubuntu 24.04 renamed the 64-bit time_t audio package.
+          for PKG in libasound2t64 libasound2; do
+            if apt-cache show "${PKG}" >/dev/null 2>&1; then
+              sudo apt-get install -y "${PKG}"
+              break
+            fi
+          done
+          sudo apt-get install -y libxkbcommon0 libxkbcommon-x11-0 libxcb-cursor0 libxcb-xinerama0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render0 libxcb-render-util0 libxcb-shape0 libxcb-shm0 libxcb-sync1 libxcb-xfixes0 libxcb-xkb1 libnss3 libnspr4 libegl1 libgl1 libdrm2 libgbm1 libfontconfig1 libxrender1 libxi6 libxtst6
+
+      - name: Install Conan
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "conan>=2,<3"
+
+      - name: Resolve dependencies
+        run: |
+          conan profile detect --force
+          conan install . --output-folder=build/conan-deps --build=missing -s build_type=Release
+
+      - name: Configure
+        run: >
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_TOOLCHAIN_FILE="$PWD/build/conan-deps/conan_toolchain.cmake"
+          -DCMAKE_PREFIX_PATH="$PWD/build/conan-deps;${Qt6_DIR}"
+          ${{ matrix.os == 'darwin' && format('-DCMAKE_OSX_ARCHITECTURES="{0}"', matrix.cmake_arch) || '' }}
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Build Windows NSIS installer
+        if: matrix.os == 'windows'
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          choco install nsis -y --no-progress
+          mkdir -p dist/stage
+          EXE="$(find build -name 'appHoneycomb.exe' -print -quit)"
+          cp "${EXE}" dist/stage/appHoneycomb.exe
+          cp LICENSE.txt dist/stage/LICENSE.txt
+          windeployqt --release --qmldir . --no-translations dist/stage/appHoneycomb.exe
+          makensis -V2 \
+            -DVERSION="${VERSION}" \
+            -DSTAGING_DIR="dist\stage" \
+            -DPROJECT_DIR="${GITHUB_WORKSPACE}" \
+            -DINSTALLER_NAME="dist/${APP_NAME}-${VERSION}-windows-${ARCH}-setup.exe" \
+            sdk/NSIS/Honeycomb.nsi
+
+      - name: Build macOS app and DMG
+        if: matrix.os == 'darwin'
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mkdir -p dist
+          BUNDLE="$(find build -maxdepth 1 -name '*.app' -print -quit)"
+          ditto "${BUNDLE}" "dist/${APP_NAME}.app"
+          macdeployqt "dist/${APP_NAME}.app" -always-overwrite
+          codesign --force --deep --sign - "dist/${APP_NAME}.app"
+          hdiutil create -volname "${APP_NAME} ${VERSION}" -srcfolder "dist/${APP_NAME}.app" -ov -format UDZO "dist/${APP_NAME}-${VERSION}-darwin-${ARCH}.dmg"
+          codesign --force --sign - "dist/${APP_NAME}-${VERSION}-darwin-${ARCH}.dmg"
+
+      - name: Build Linux AppImage
+        if: matrix.os == 'linux'
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          APPDIR="dist/${APP_NAME}.AppDir"
+          BINARY="$(find build -maxdepth 1 -name "${BINARY_NAME}" -type f -print -quit)"
+          mkdir -p "${APPDIR}/usr/bin" "${APPDIR}/usr/share/applications" "${APPDIR}/usr/share/icons/hicolor/256x256/apps"
+          cp "${BINARY}" "${APPDIR}/usr/bin/${BINARY_NAME}"
+          chmod +x "${APPDIR}/usr/bin/${BINARY_NAME}"
+          cat > "${APPDIR}/${APP_NAME}.desktop" <<EOF
+          [Desktop Entry]
+          Type=Application
+          Name=${APP_NAME}
+          Name[zh_CN]=蜂巢工具箱
+          Comment=Honeycomb offline toolbox
+          Exec=${BINARY_NAME}
+          Icon=${APP_NAME}
+          Categories=Utility;Development;
+          Terminal=false
+          EOF
+          cp "${APPDIR}/${APP_NAME}.desktop" "${APPDIR}/usr/share/applications/${APP_NAME}.desktop"
+          cp logo.png "${APPDIR}/${APP_NAME}.png"
+          cp logo.png "${APPDIR}/usr/share/icons/hicolor/256x256/apps/${APP_NAME}.png"
+          if [ "${ARCH}" = "amd64" ]; then
+            LD_ARCH="x86_64"
+          else
+            LD_ARCH="aarch64"
+          fi
+          curl -fsSL -o "linuxdeploy-${LD_ARCH}.AppImage" "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-${LD_ARCH}.AppImage"
+          curl -fsSL -o "linuxdeploy-plugin-qt-${LD_ARCH}.AppImage" "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-${LD_ARCH}.AppImage"
+          curl -fsSL -o "appimagetool-${LD_ARCH}.AppImage" "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-${LD_ARCH}.AppImage"
+          chmod +x "linuxdeploy-${LD_ARCH}.AppImage" "linuxdeploy-plugin-qt-${LD_ARCH}.AppImage" "appimagetool-${LD_ARCH}.AppImage"
+          export PATH="${PWD}:${PATH}"
+          export APPIMAGE_EXTRACT_AND_RUN=1
+          export QML_SOURCES_PATHS="${PWD}"
+          QT_BIN_DIR="${Qt6_DIR}/../../bin"
+          export PATH="${QT_BIN_DIR}:${PATH}"
+          export QMAKE="${QT_BIN_DIR}/qmake"
+          export QTDIR="${Qt6_DIR}/../../.."
+          export LD_LIBRARY_PATH="${Qt6_DIR}/../lib:${LD_LIBRARY_PATH}"
+          "./linuxdeploy-${LD_ARCH}.AppImage" --appdir "${APPDIR}" --plugin qt
+          "./appimagetool-${LD_ARCH}.AppImage" "${APPDIR}" "dist/${APP_NAME}-${VERSION}-linux-${ARCH}.AppImage"
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-${{ matrix.arch }}
+          path: |
+            dist/*setup.exe
+            dist/*.dmg
+            dist/*.AppImage
+          if-no-files-found: warn
+
+  publish:
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: |
+          cd release-assets
+          sha256sum -- * > ../checksums.txt
+
+      - name: Create or update release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if gh release view "${TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            gh release upload "${TAG}" release-assets/* checksums.txt --repo "${GITHUB_REPOSITORY}" --clobber
+          else
+            gh release create "${TAG}" release-assets/* checksums.txt --repo "${GITHUB_REPOSITORY}" --title "${TAG}" --generate-notes
+          fi
