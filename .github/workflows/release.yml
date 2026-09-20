@@ -171,8 +171,8 @@ jobs:
           windeployqt --release --qmldir . --no-translations dist/stage/appHoneycomb.exe
           makensis -V2 \
             -DVERSION="${VERSION}" \
-            -DSTAGING_DIR="dist\stage" \
-            -DPROJECT_DIR="${GITHUB_WORKSPACE}" \
+            -DSTAGING_DIR="$(cygpath -w "${GITHUB_WORKSPACE}/dist/stage")" \
+            -DPROJECT_DIR="$(cygpath -w "${GITHUB_WORKSPACE}")" \
             -DINSTALLER_NAME="dist/${APP_NAME}-${VERSION}-windows-${ARCH}-setup.exe" \
             sdk/NSIS/Honeycomb.nsi
 
