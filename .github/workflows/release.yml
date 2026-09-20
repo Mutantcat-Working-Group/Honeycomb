@@ -230,14 +230,22 @@ jobs:
           "./linuxdeploy-${LD_ARCH}.AppImage" --appdir "${APPDIR}" --plugin qt
           "./appimagetool-${LD_ARCH}.AppImage" "${APPDIR}" "dist/${APP_NAME}-${VERSION}-linux-${ARCH}.AppImage"
 
+      - name: Collect installer assets
+        run: |
+          mkdir -p release
+          if [ "${OS}" = "windows" ]; then
+            cp dist/*setup.exe "release/${APP_NAME}-${VERSION}-windows-${ARCH}.exe"
+          elif [ "${OS}" = "darwin" ]; then
+            cp dist/*.dmg "release/${APP_NAME}-${VERSION}-darwin-${ARCH}.dmg"
+          elif [ "${OS}" = "linux" ]; then
+            cp dist/*.AppImage "release/${APP_NAME}-${VERSION}-linux-${ARCH}.AppImage"
+          fi
+
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-${{ matrix.arch }}
-          path: |
-            dist/*setup.exe
-            dist/*.dmg
-            dist/*.AppImage
+          path: release/*
           if-no-files-found: warn
 
   publish:
@@ -253,7 +261,7 @@ jobs:
       - name: Generate checksums
         run: |
           cd release-assets
-          sha256sum -- * > ../checksums.txt
+          find . -type f -print0 | sort -z | xargs -0 sha256sum > ../checksums.txt
 
       - name: Create or update release
         env:
