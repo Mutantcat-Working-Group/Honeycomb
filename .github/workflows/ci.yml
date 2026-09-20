@@ -37,7 +37,10 @@ jobs:
           conan install . --output-folder=build/conan-deps --build=missing -s build_type=Release
 
       - name: Configure
+        env:
+          PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig:${PKG_CONFIG_PATH}
         run: >
+          pkg-config --exists atspi-2.0 && echo "atspi-2.0 found"
           cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
           -DCMAKE_TOOLCHAIN_FILE="$PWD/build/conan-deps/conan_toolchain.cmake"
           -DCMAKE_PREFIX_PATH="$PWD/build/conan-deps;${Qt6_DIR}"
