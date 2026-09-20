@@ -109,7 +109,7 @@ jobs:
           version: '6.8.*'
           target: desktop
           arch: ${{ matrix.qt_arch }}
-          modules: 'qtwebengine qtwebchannel qtmultimedia qtwebsockets qtserialport'
+          modules: 'qtwebengine qtpositioning qtwebchannel qtmultimedia qtwebsockets qtserialport'
           cache: true
 
       - name: Install Linux dependencies
