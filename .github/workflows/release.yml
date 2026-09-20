@@ -55,7 +55,7 @@ jobs:
           -DCMAKE_PREFIX_PATH="$PWD/build/conan-deps;${Qt6_DIR}"
 
       - name: Build
-        run: cmake --build build --parallel
+        run: cmake --build build --parallel 2
 
       - name: Test
         run: ctest --test-dir build --output-on-failure
@@ -144,7 +144,7 @@ jobs:
           ${{ matrix.os == 'darwin' && format('-DCMAKE_OSX_ARCHITECTURES="{0}"', matrix.cmake_arch) || '' }}
 
       - name: Build
-        run: cmake --build build --parallel
+        run: cmake --build build --parallel 2
 
       - name: Build Windows NSIS installer
         if: matrix.os == 'windows'
