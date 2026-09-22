@@ -435,7 +435,7 @@ jobs:
           find . -type f -print0 | sort -z | xargs -0 -r sha256sum > ../checksums.txt
           find . -type f -print0 | sort -z | xargs -0 -r md5sum > ../checksums-md5.txt
           find . -type f -print0 | sort -z | xargs -0 -r sha1sum > ../checksums-sha1.txt
-          for SUM in ../checksums.txt ../checksums-md5.txt ../checksums-sha1.txt; do
+          for SUM in ../checksums.txt checksums-md5.txt checksums-sha1.txt; do
             if [ "$(wc -l < "${SUM}" | tr -d ' ')" -ne "${ASSET_COUNT}" ]; then
               echo "::error::${SUM} line count does not match the asset count"
               exit 1
