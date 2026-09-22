@@ -65,7 +65,7 @@ jobs:
             exit 1
           fi
 
-          ( cd dl && sha256sum * > ../out/checksums.txt && md5sum * > ../out/checksums-md5.txt && sha1sum * > ../out/checksums-sha1.txt )
+          ( cd dl && sha256sum -- * > ../out/checksums.txt && md5sum -- * > ../out/checksums-md5.txt && sha1sum -- * > ../out/checksums-sha1.txt )
 
           echo "--- checksums.txt ---"
           cat out/checksums.txt
