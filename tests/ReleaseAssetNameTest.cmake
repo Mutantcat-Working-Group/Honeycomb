@@ -55,10 +55,7 @@ if(NOT workflow_source MATCHES "refusing to publish non-ASCII asset names")
     message(FATAL_ERROR "release.yml has no ASCII-only guard in the publish job")
 endif()
 
-if(NOT DEFINED ENV{TMPDIR})
-    message(FATAL_ERROR "TMPDIR is required to run the collect step in isolation")
-endif()
-set(_root "$ENV{TMPDIR}/honeycomb-release-asset-name-test")
+set(_root "${CMAKE_CURRENT_BINARY_DIR}/ReleaseAssetNameTest-sandbox")
 
 file(REMOVE_RECURSE "${_root}")
 set(_run_dir "${_root}/run-a")
