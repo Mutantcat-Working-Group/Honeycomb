@@ -99,9 +99,11 @@ int main(int argc, char *argv[])
     require(windows.version == "1.1.20260723");
     require(windows.downloadUrl == QUrl("https://example.test/win"));
 
-    const UpdateChecker::UpdateInfo linux = UpdateChecker::parseVersionResponse(liveShapedPayload, "linux", "x64");
-    require(linux.version == "1.1.20260723");
-    require(linux.downloadUrl == QUrl("https://example.test/linux"));
+    // Not "linux": glibc defines that name as the literal 1, which trips the
+    // Linux toolchain on CI.
+    const UpdateChecker::UpdateInfo linuxInfo = UpdateChecker::parseVersionResponse(liveShapedPayload, "linux", "x64");
+    require(linuxInfo.version == "1.1.20260723");
+    require(linuxInfo.downloadUrl == QUrl("https://example.test/linux"));
 
     return 0;
 }

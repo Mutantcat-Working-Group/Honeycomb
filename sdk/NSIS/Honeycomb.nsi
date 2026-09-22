@@ -4,7 +4,7 @@
 ; CI 打包示例（工程相对路径 + 自定义输出名）:
 ;   makensis -V2 /DVERSION=<版本号> /DSTAGING_DIR=dist\stage /DPROJECT_DIR=%CD% /DINSTALLER_NAME=dist\Honeycomb-<版本号>-windows-amd64-setup.exe Honeycomb.nsi
 !ifndef VERSION
-  !define VERSION "1.0.20260922"
+  !define VERSION "1.0.20260923"
 !endif
 !ifndef STAGING_DIR
   ; 默认值为工程相对路径，在仓库根目录执行 makensis 时生效
