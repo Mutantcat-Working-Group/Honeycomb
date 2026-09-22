@@ -39,12 +39,14 @@ jobs:
           fi
 
           existing=$(gh release view "${TAG}" --repo "${REPO}" --json assets --jq '[.assets[].name] | join("\n")')
-          need=true
-          if [ "${FORCE}" != "true" ] && echo "${existing}" | grep -qx 'checksums-md5.txt' && echo "${existing}" | grep -qx 'checksums-sha1.txt'; then
-            need=false
-          fi
+          need=false
+          for SUM in checksums.txt checksums-md5.txt checksums-sha1.txt; do
+            if [ "${FORCE}" = "true" ] || ! echo "${existing}" | grep -qx "${SUM}"; then
+              need=true
+            fi
+          done
           if [ "${need}" = "false" ]; then
-            echo "Both checksum files already exist; pass force=true to recompute."
+            echo "All three checksum files already exist; pass force=true to recompute."
             exit 0
           fi
 
@@ -63,14 +65,16 @@ jobs:
             exit 1
           fi
 
-          ( cd dl && md5sum * > ../out/checksums-md5.txt && sha1sum * > ../out/checksums-sha1.txt )
+          ( cd dl && sha256sum * > ../out/checksums.txt && md5sum * > ../out/checksums-md5.txt && sha1sum * > ../out/checksums-sha1.txt )
 
+          echo "--- checksums.txt ---"
+          cat out/checksums.txt
           echo "--- checksums-md5.txt ---"
           cat out/checksums-md5.txt
           echo "--- checksums-sha1.txt ---"
           cat out/checksums-sha1.txt
 
-          gh release upload "${TAG}" out/checksums-md5.txt out/checksums-sha1.txt \
+          gh release upload "${TAG}" out/checksums.txt out/checksums-md5.txt out/checksums-sha1.txt \
             --repo "${REPO}" --clobber
 
-          echo "Uploaded checksums-md5.txt and checksums-sha1.txt to ${REPO}@${TAG}"
+          echo "Uploaded checksums.txt, checksums-md5.txt and checksums-sha1.txt to ${REPO}@${TAG}"
