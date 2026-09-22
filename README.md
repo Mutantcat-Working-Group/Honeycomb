@@ -1,17 +1,17 @@
-<div align="center">
+<div align=center>
 <img src="https://s2.loli.net/2024/03/06/gTFN1fcst8QGeaZ.jpg" style="width:100px;" width="100"/>
 <h2>蜂巢工具箱</h2>
 </div>
 
+### 一、产品概述
 
-### 一、功能简介
+- 一款能离线使用在线工具功能的应用，工具箱封装了各种在线工具的离线版本。
+- 覆盖编码、字符、开发、加密、随机、网络、硬件、AI 八大类上百个常用工具，无需联网、无广告、即开即用。
+- 已转为 Qt 实现，轻量、快速、稳定、兼容。
+- 软件功能还在不断拓展，软件版本会按需打包。
+- 三平台安装包由 GitHub Actions 在版本标签推送后自动构建：Windows 输出 NSIS 安装程序，macOS 输出 ad-hoc 签名的 DMG（Apple Silicon 与 Intel 各一个），Linux 输出 amd64 与 arm64 的 AppImage。
 
-- 一款能离线使用在线工具功能的应用
-- 工具箱封装了各种在线工具的离线版本
-- 软件功能还在不断拓展，软件版本会按需打包
-- 已转为Qt实现，轻量、快速、稳定、兼容
-
-### 二、功能列表
+### 二、功能说明
 
 #### 编码工具
 - 条形码生成
@@ -119,18 +119,42 @@
 - 网页组件选取
 - 窗口组件选取
 
-### 三、版本号规则
+### 三、安装与下载
 
-版本号格式为 `主版本.次版本.发布日期`，例如 `1.0.20260922`（2026 年 9 月 22 日发布）。
+从 [Releases](https://github.com/Mutantcat-Working-Group/Honeycomb/releases) 下载对应平台的安装包：
 
-- 唯一事实来源是 `CMakeLists.txt` 中的 `project(... VERSION ...)`，安装脚本、i18n、「关于」页均由其派生，升级时只改这一处。
+| 平台 | 架构 | 安装包 |
+| --- | --- | --- |
+| Windows | x64 | `Honeycomb-<版本>-windows-amd64.exe`（NSIS） |
+| macOS | Apple Silicon | `Honeycomb-<版本>-macOS-arm64.dmg` |
+| macOS | Intel | `Honeycomb-<版本>-macOS-x86_64.dmg` |
+| Linux | x64 | `Honeycomb-<版本>-linux-amd64.AppImage` |
+| Linux | arm64 | `Honeycomb-<版本>-linux-arm64.AppImage` |
+
+macOS 应用及 DMG 使用 ad-hoc 签名，不是 Apple 公证，首次启动可能需在系统设置中允许；Windows 可能出现 SmartScreen 提示。下载后可使用 Release 中的 `checksums.txt`、`checksums-md5.txt` 与 `checksums-sha1.txt` 校验安装包。
+
+### 四、快速上手
+
+1. 安装并启动蜂巢工具箱，左侧选择工具分类。
+2. 在分类中找到需要的工具，右侧即为工具界面，所有工具本地离线运行。
+3. 涉及文件操作的工具（如文件转 Base64、文件校验）直接选择本地文件即可。
+
+### 五、从源码构建
+
+项目使用 CMake 与 Qt 6.8 构建：
+
+```sh
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+```
+
+版本号唯一事实来源是 `CMakeLists.txt` 中的 `project(... VERSION ...)`，安装脚本、i18n 与「关于」页均由其派生，升级只改这一处。
+
+### 六、版本与发布
+
+版本号格式为 `主版本.次版本.发布日期`，例如 `1.0.20260924`（2026 年 9 月 24 日发布）。
+
 - 发新版本时直接使用当天日期，CI 重跑或连发多个版本时依次往后取日期（`1.0.20260923`、`1.0.20260924`），不要使用 `-1`、`-2` 之类的后缀。
 - 打标签 `v<版本号>`（如 `v1.0.20260924`）推送后，由 GitHub Actions 自动完成三平台打包与 Release 发布。
-
-### 四、Release 资产命名约束
-
-GitHub 上传 Release 资产时会把文件名里的非 ASCII 字符整体剥掉，且不会报错：`蜂巢工具箱-1.0.20260924-macOS-arm64.dmg` 会静默变成 `-1.0.20260924-macOS-arm64.dmg`（以连字符开头，甚至会让后续 shell 命令把它当成参数）。这是服务端行为，换 `gh` 版本、改用 `gh api` 显式传 `name` 都无法绕过。
-
-因此 CI 一律发布 ASCII 资产名 `Honeycomb-<版本>-<系统>-<架构>.<扩展名>`，中文名称只保留在 DMG 内部的 `蜂巢工具箱.app` 与卷标上——用户拖到「应用程序」后看到的仍是「蜂巢工具箱」。
-
-`.github/workflows/release.yml` 的「Collect installer assets」与「Generate checksums」两处都有非 ASCII 名称守卫，一旦产物名不合规会在构建期直接失败，不会带着坏名字发上网。
+- Release 资产一律使用 ASCII 名称 `Honeycomb-<版本>-<系统>-<架构>.<扩展名>`：GitHub 上传资产时会静默剥掉文件名中的非 ASCII 字符，中文名称只保留在 DMG 内部的 `蜂巢工具箱.app` 与卷标上，用户拖到「应用程序」后看到的仍是「蜂巢工具箱」。
+- `.github/workflows/release.yml` 的「Collect installer assets」与「Generate checksums」两处都有非 ASCII 名称守卫，产物名不合规会在构建期直接失败，不会带着坏名字发上网。
