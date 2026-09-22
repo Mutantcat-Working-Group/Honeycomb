@@ -1,17 +1,18 @@
 ﻿;=== [可配置区域] ============================================
 ; 命令行参数覆盖示例:
-;   makensis.exe /DVERSION=1.0.20260920 /DSTAGING_DIR=E:\Projects\Honeycomb_1.0.20260920_msvc2022_64 Honeycomb.nsi
+;   makensis.exe /DVERSION=<版本号> /DSTAGING_DIR=dist\stage Honeycomb.nsi
 ; CI 打包示例（工程相对路径 + 自定义输出名）:
-;   makensis -V2 /DVERSION=1.0.20260920 /DSTAGING_DIR=dist\stage /DPROJECT_DIR=%CD% /DINSTALLER_NAME=dist\Honeycomb-1.0.20260920-windows-amd64-setup.exe Honeycomb.nsi
+;   makensis -V2 /DVERSION=<版本号> /DSTAGING_DIR=dist\stage /DPROJECT_DIR=%CD% /DINSTALLER_NAME=dist\Honeycomb-<版本号>-windows-amd64-setup.exe Honeycomb.nsi
 !ifndef VERSION
-  !define VERSION "1.0.20260920"
+  !define VERSION "1.0.20260922"
 !endif
 !ifndef STAGING_DIR
-  !define STAGING_DIR "E:\Projects\Honeycomb_1.0.20260920_msvc2022_64"
+  ; 默认值为工程相对路径，在仓库根目录执行 makensis 时生效
+  !define STAGING_DIR "dist\stage"
 !endif
-; 工程根目录（用于定位图标等资源），默认值为本地开发机路径
+; 工程根目录（用于定位图标等资源），默认值为当前目录
 !ifndef PROJECT_DIR
-  !define PROJECT_DIR "E:\Projects\Honeycomb"
+  !define PROJECT_DIR "."
 !endif
 !define PRODUCT_NAME    "蜂巢工具箱"
 !define PRODUCT_NAME_EN "Honeycomb"

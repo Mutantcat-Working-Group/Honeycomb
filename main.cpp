@@ -1,5 +1,6 @@
 #include <QIcon>
 #include <QApplication>
+#include <QQmlContext>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include <QtQml>
@@ -108,7 +109,11 @@ int main(int argc, char *argv[])
     engine.addImageProvider("barcode", g_barcodeImageProvider);
     engine.addImageProvider("qrcode", g_qrcodeImageProvider);
     engine.addImageProvider("qrscanner", g_qrScannerImageProvider);
-    
+
+    // 唯一版本事实来源是 CMakeLists.txt 里的 PROJECT_VERSION，经编译期宏下发，
+    // 避免 i18n 写死版本号与「关于」页实际显示不一致。
+    engine.rootContext()->setContextProperty("appVersion", QStringLiteral(HONEYCOMB_VERSION));
+
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,

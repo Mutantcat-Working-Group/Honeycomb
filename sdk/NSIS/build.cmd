@@ -16,7 +16,7 @@ if "%VERSION%"=="" (
     echo [ERROR] 缺少版本号参数。用法:
     echo   build.cmd ^<VERSION^> ^<STAGING_PATH^>
     echo 示例:
-    echo   build.cmd 1.0.20260920 E:\Projects\Honeycomb_1.0.20260920_msvc2022_64
+    echo   build.cmd 1.0.20260922 E:\Projects\Honeycomb_1.0.20260922_msvc2022_64
     exit /b 1
 )
 if "%STAGING%"=="" (

@@ -48,7 +48,7 @@ jobs:
           pkg-config --exists atspi-2
           cmake -B build -S . -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_TOOLCHAIN_FILE="$PWD/build/conan-deps/conan_toolchain.cmake" \
-          -DCMAKE_PREFIX_PATH="$PWD/build/conan-deps;${Qt6_DIR}"
+          -DCMAKE_PREFIX_PATH="$PWD/build/conan-deps;${QT_ROOT_DIR}"
 
       - name: Build
         run: cmake --build build --parallel 2

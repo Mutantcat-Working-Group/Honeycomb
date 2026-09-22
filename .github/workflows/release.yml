@@ -179,14 +179,129 @@ jobs:
       - name: Build macOS app and DMG
         if: matrix.os == 'darwin'
         run: |
+          set -euo pipefail
           VERSION="${GITHUB_REF_NAME#v}"
-          mkdir -p dist
-          BUNDLE="$(find build -maxdepth 1 -name '*.app' -print -quit)"
-          ditto "${BUNDLE}" "dist/${APP_NAME}.app"
-          macdeployqt "dist/${APP_NAME}.app" -always-overwrite
-          codesign --force --deep --sign - "dist/${APP_NAME}.app"
-          hdiutil create -volname "${APP_NAME} ${VERSION}" -srcfolder "dist/${APP_NAME}.app" -ov -format UDZO "dist/${APP_NAME}-${VERSION}-darwin-${ARCH}.dmg"
-          codesign --force --sign - "dist/${APP_NAME}-${VERSION}-darwin-${ARCH}.dmg"
+          PKG_ARCH="${ARCH}"
+          if [ "${ARCH}" = "amd64" ]; then PKG_ARCH="x86_64"; fi
+
+          MACDEPLOYQT="${QT_ROOT_DIR:-}/bin/macdeployqt"
+          if [ ! -x "${MACDEPLOYQT}" ]; then MACDEPLOYQT="$(command -v macdeployqt)"; fi
+
+          SOURCE_BUNDLE="$(find build -maxdepth 1 -name '*.app' -print -quit)"
+          if [ -z "${SOURCE_BUNDLE}" ]; then
+            echo "::error::the build produced no .app bundle"
+            exit 1
+          fi
+
+          # Keep the bundle name CMake generated (蜂巢工具箱) instead of the
+          # internal project name, otherwise Finder shows "Honeycomb.app".
+          BUNDLE_NAME="$(basename "${SOURCE_BUNDLE}")"
+          STAGING="dist/dmg-${PKG_ARCH}"
+          DMG="dist/${BUNDLE_NAME%.app}-${VERSION}-macOS-${PKG_ARCH}.dmg"
+
+          rm -rf "${STAGING}"
+          mkdir -p dist "${STAGING}"
+          ditto "${SOURCE_BUNDLE}" "${STAGING}/${BUNDLE_NAME}"
+
+          "${MACDEPLOYQT}" "${STAGING}/${BUNDLE_NAME}" \
+            -always-overwrite -codesign=- -qmldir="${GITHUB_WORKSPACE}"
+
+          # macdeployqt hands work to helper processes that can outlive it, so
+          # anything copied afterwards would slip past the signature.
+          for _ in $(seq 60); do
+            pgrep -f "macdeployqt .*${STAGING}" >/dev/null 2>&1 || break
+            sleep 2
+          done
+
+          xattr -cr "${STAGING}/${BUNDLE_NAME}"
+          codesign --force --deep --sign - \
+            --identifier org.mutantcat.honeycomb \
+            --requirements '=designated => identifier "org.mutantcat.honeycomb"' \
+            "${STAGING}/${BUNDLE_NAME}"
+
+          # The Applications shortcut is what makes the image drag-to-install.
+          ln -s /Applications "${STAGING}/Applications"
+          for REQUIRED in "${STAGING}/${BUNDLE_NAME}" "${STAGING}/Applications"; do
+            if [ ! -e "${REQUIRED}" ]; then
+              echo "::error::staging is missing ${REQUIRED}"
+              exit 1
+            fi
+          done
+
+          hdiutil create -volname "${BUNDLE_NAME%.app} ${VERSION} ${PKG_ARCH}" \
+            -srcfolder "${STAGING}" -ov -format UDZO "${DMG}"
+          codesign --force --sign - "${DMG}"
+          echo "built ${DMG}"
+
+      - name: Verify macOS DMG
+        if: matrix.os == 'darwin'
+        run: |
+          # shellcheck disable=SC2153
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          PKG_ARCH="${ARCH}"
+          if [ "${ARCH}" = "amd64" ]; then PKG_ARCH="x86_64"; fi
+          STAGING="dist/dmg-${PKG_ARCH}"
+          BUNDLE_NAME="$(basename "$(find "${STAGING}" -maxdepth 1 -name '*.app' -print -quit)")"
+          APP="${STAGING}/${BUNDLE_NAME}"
+          DMG="dist/${BUNDLE_NAME%.app}-${VERSION}-macOS-${PKG_ARCH}.dmg"
+
+          codesign --verify --deep --strict "${APP}"
+          echo "signature OK, identifier: $(codesign -d -r- "${APP}" 2>&1 | sed -n 's/^designated => //p')"
+
+          EXEC_NAME="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "${APP}/Contents/Info.plist")"
+          EXEC="${APP}/Contents/MacOS/${EXEC_NAME}"
+          ARCHS="$(lipo -archs "${EXEC}")"
+          echo "executable ${EXEC_NAME} architectures: ${ARCHS}"
+          if ! printf '%s\n' "${ARCHS}" | tr ' ' '\n' | grep -qx "${PKG_ARCH}"; then
+            echo "::error::${DMG} does not contain ${PKG_ARCH}"
+            exit 1
+          fi
+
+          LEAKED="$(otool -L "${EXEC}" | grep -E '/Users/|/opt/homebrew|/usr/local' || true)"
+          if [ -n "${LEAKED}" ]; then
+            echo "::error::bundle still references build-machine paths:"
+            echo "${LEAKED}"
+            exit 1
+          fi
+
+          hdiutil verify "${DMG}"
+
+          # Prove the image really mounts with the app and its drop target.
+          MOUNT="$(mktemp -d)"
+          VOLUME=""
+          cleanup() {
+            if [ -n "${VOLUME}" ]; then hdiutil detach "${VOLUME}" -quiet || true; fi
+            rmdir "${MOUNT}" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+          hdiutil attach "${DMG}" -mountroot "${MOUNT}" -nobrowse -quiet
+
+          # The mount point can lag behind a successful hdiutil attach.
+          for _ in $(seq 30); do
+            VOLUME="$(find "${MOUNT}" -maxdepth 1 -mindepth 1 -type d -print -quit 2>/dev/null || true)"
+            if [ -n "${VOLUME}" ]; then break; fi
+            sleep 1
+          done
+          if [ -z "${VOLUME}" ]; then
+            echo "::error::could not mount ${DMG}"
+            exit 1
+          fi
+
+          # Every assertion has to run while the volume is still mounted.
+          APP_COUNT="$(find "${VOLUME}" -maxdepth 1 -name '*.app' | wc -l | tr -d ' ')"
+          SHORTCUT="$(find "${VOLUME}" -maxdepth 1 -name 'Applications' -print -quit)"
+          if [ -n "${SHORTCUT}" ] && [ -L "${SHORTCUT}" ]; then SHORTCUT_OK=yes; else SHORTCUT_OK=no; fi
+
+          if [ "${APP_COUNT}" -ne 1 ]; then
+            echo "::error::${DMG} contains ${APP_COUNT} app bundles, expected 1"
+            exit 1
+          fi
+          if [ "${SHORTCUT_OK}" != yes ]; then
+            echo "::error::${DMG} is missing the Applications shortcut"
+            exit 1
+          fi
+          echo "DMG verified: ${DMG} (app plus Applications shortcut)"
 
       - name: Build Linux AppImage
         if: matrix.os == 'linux'
@@ -233,13 +348,29 @@ jobs:
 
       - name: Collect installer assets
         run: |
+          # The job-level VERSION env keeps the tag's "v" prefix, so strip it
+          # here exactly like every build step does.
+          VERSION="${GITHUB_REF_NAME#v}"
           mkdir -p release
           if [ "${OS}" = "windows" ]; then
             cp dist/*setup.exe "release/${APP_NAME}-${VERSION}-windows-${ARCH}.exe"
           elif [ "${OS}" = "darwin" ]; then
-            cp dist/*.dmg "release/${APP_NAME}-${VERSION}-darwin-${ARCH}.dmg"
+            # The DMG is already named after the deployed bundle (蜂巢工具箱).
+            cp dist/*.dmg release/
           elif [ "${OS}" = "linux" ]; then
             cp dist/*.AppImage "release/${APP_NAME}-${VERSION}-linux-${ARCH}.AppImage"
+          else
+            echo "::error::unsupported matrix os ${OS}"
+            exit 1
+          fi
+          if find release -type f -name "*-v${VERSION}-*" | grep -q .; then
+            echo "::error::installer assets still carry the tag's v prefix"
+            exit 1
+          fi
+          ASSET_COUNT="$(find release -type f | wc -l | tr -d ' ')"
+          if [ "${ASSET_COUNT}" -lt 1 ]; then
+            echo "::error::no installer asset collected for ${OS}/${ARCH}"
+            exit 1
           fi
 
       - name: Upload installer artifact
@@ -262,7 +393,21 @@ jobs:
       - name: Generate checksums
         run: |
           cd release-assets
-          find . -type f -print0 | sort -z | xargs -0 sha256sum > ../checksums.txt
+          ASSET_COUNT="$(find . -type f | wc -l | tr -d ' ')"
+          if [ "${ASSET_COUNT}" -lt 1 ]; then
+            echo "::error::no release assets downloaded, refusing to checksum an empty set"
+            exit 1
+          fi
+          # -r keeps xargs from hashing empty stdin when the set is empty.
+          find . -type f -print0 | sort -z | xargs -0 -r sha256sum > ../checksums.txt
+          find . -type f -print0 | sort -z | xargs -0 -r md5sum > ../checksums-md5.txt
+          find . -type f -print0 | sort -z | xargs -0 -r sha1sum > ../checksums-sha1.txt
+          for SUM in ../checksums.txt ../checksums-md5.txt ../checksums-sha1.txt; do
+            if [ "$(wc -l < "${SUM}" | tr -d ' ')" -ne "${ASSET_COUNT}" ]; then
+              echo "::error::${SUM} line count does not match the asset count"
+              exit 1
+            fi
+          done
 
       - name: Create or update release
         env:
@@ -270,7 +415,11 @@ jobs:
         run: |
           TAG="${GITHUB_REF_NAME}"
           if gh release view "${TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
-            gh release upload "${TAG}" release-assets/* checksums.txt --repo "${GITHUB_REPOSITORY}" --clobber
+            gh release upload "${TAG}" release-assets/* \
+              checksums.txt checksums-md5.txt checksums-sha1.txt \
+              --repo "${GITHUB_REPOSITORY}" --clobber
           else
-            gh release create "${TAG}" release-assets/* checksums.txt --repo "${GITHUB_REPOSITORY}" --title "${TAG}" --generate-notes
+            gh release create "${TAG}" release-assets/* \
+              checksums.txt checksums-md5.txt checksums-sha1.txt \
+              --repo "${GITHUB_REPOSITORY}" --title "${TAG}" --generate-notes
           fi

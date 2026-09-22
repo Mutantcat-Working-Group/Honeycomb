@@ -65,7 +65,7 @@ Window {
             // 版本号
             Text {
                 Layout.alignment: Qt.AlignHCenter
-                text: I18n.t("aboutVersion")
+                text: I18n.t("aboutVersion").replace("{0}", appVersion)
                 font.pixelSize: 14
                 color: "#666"
             }

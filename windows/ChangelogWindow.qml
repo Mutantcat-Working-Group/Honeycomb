@@ -50,6 +50,57 @@ Window {
                     width: changelogWindow.width - 60
                     spacing: 15
 
+                    // 更新条目 - 1.0.20260922
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 120
+                        color: "white"
+                        border.color: "#e0e0e0"
+                        border.width: 1
+                        radius: 8
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 15
+                            spacing: 15
+
+                            Rectangle {
+                                Layout.preferredWidth: 120
+                                Layout.preferredHeight: 40
+                                color: changelogWindow.tagColors[5]
+                                radius: 6
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "1.0.20260922"
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    color: "white"
+                                }
+                            }
+
+                            Column {
+                                Layout.fillWidth: true
+                                spacing: 5
+
+                                Text {
+                                    text: I18n.t("changelog20260922") || "修复更新检查与发布流程暗病"
+                                    font.pixelSize: 16
+                                    font.bold: true
+                                    color: "#333"
+                                }
+
+                                Text {
+                                    text: I18n.t("changelog20260922Desc") || "版本比较改为按发布日期判定，修复误报更旧版本；统一 CI 产物命名并增加 checksums 守卫；版本号统一由 CMake 下发；Windows 安装脚本默认路径改为仓库相对路径"
+                                    width: parent.width
+                                    font.pixelSize: 14
+                                    color: "#666"
+                                    wrapMode: Text.WordWrap
+                                }
+                            }
+                        }
+                    }
+
                     // 更新条目 - 1.0.20260920
                     Rectangle {
                         Layout.fillWidth: true

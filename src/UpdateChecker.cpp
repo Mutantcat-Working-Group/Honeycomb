@@ -67,6 +67,41 @@ bool architectureMatches(const QString &value, const QString &architecture)
     return candidate == requested;
 }
 
+QList<int> numericParts(const QString &value)
+{
+    static const QRegularExpression numberPattern(QStringLiteral("\\d+"));
+    QList<int> parts;
+    QRegularExpressionMatchIterator matches = numberPattern.globalMatch(value);
+    while (matches.hasNext()) {
+        parts.append(matches.next().capturedView().toInt());
+    }
+    return parts;
+}
+
+// Release versions are shaped major.minor.YYYYMMDD, so a date component always
+// outranks the middle one: 1.0.20260922 is newer than 1.1.20260723.
+bool isReleaseDate(int part)
+{
+    return part >= 10000101 && part <= 99991231;
+}
+
+int compareParts(const QList<int> &candidate, const QList<int> &current, bool datesOnly)
+{
+    const int count = qMax(candidate.size(), current.size());
+    for (int index = 0; index < count; ++index) {
+        const int left = index < candidate.size() ? candidate.at(index) : 0;
+        const int right = index < current.size() ? current.at(index) : 0;
+        if (left == right) {
+            continue;
+        }
+        if (datesOnly && !(isReleaseDate(left) && isReleaseDate(right))) {
+            continue;
+        }
+        return left < right ? -1 : 1;
+    }
+    return 0;
+}
+
 QUrl downloadUrlForEntry(const QJsonObject &entry)
 {
     const QJsonObject download = valueForKey(entry, QStringLiteral("download")).toObject();
@@ -139,31 +174,22 @@ void UpdateChecker::checkForUpdates()
 
 bool UpdateChecker::isVersionNewer(const QString &candidate, const QString &current)
 {
-    static const QRegularExpression numberPattern(QStringLiteral("\\d+"));
-    const QRegularExpressionMatchIterator candidateMatches = numberPattern.globalMatch(candidate);
-    const QRegularExpressionMatchIterator currentMatches = numberPattern.globalMatch(current);
     QList<int> candidateParts;
     QList<int> currentParts;
-    auto appendParts = [](QRegularExpressionMatchIterator matches, QList<int> &parts) {
-        while (matches.hasNext()) {
-            parts.append(matches.next().capturedView().toInt());
-        }
-    };
-    appendParts(candidateMatches, candidateParts);
-    appendParts(currentMatches, currentParts);
+    candidateParts = numericParts(candidate);
+    currentParts = numericParts(current);
 
     if (candidateParts.isEmpty() || currentParts.isEmpty()) {
         return candidate.compare(current, Qt::CaseInsensitive) > 0;
     }
-    const int count = qMax(candidateParts.size(), currentParts.size());
-    for (int index = 0; index < count; ++index) {
-        const int candidatePart = index < candidateParts.size() ? candidateParts.at(index) : 0;
-        const int currentPart = index < currentParts.size() ? currentParts.at(index) : 0;
-        if (candidatePart != currentPart) {
-            return candidatePart > currentPart;
-        }
+
+    // Compare the release dates first so a later date always wins, then fall
+    // back to a plain numeric comparison for versions without a date.
+    const int dateOrder = compareParts(candidateParts, currentParts, true);
+    if (dateOrder != 0) {
+        return dateOrder > 0;
     }
-    return false;
+    return compareParts(candidateParts, currentParts, false) > 0;
 }
 
 UpdateChecker::UpdateInfo UpdateChecker::parseVersionResponse(const QByteArray &payload,
