@@ -50,6 +50,57 @@ Window {
                     width: changelogWindow.width - 60
                     spacing: 15
 
+                    // 更新条目 - 1.0.20260924
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 132
+                        color: "white"
+                        border.color: "#e0e0e0"
+                        border.width: 1
+                        radius: 8
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 15
+                            spacing: 15
+
+                            Rectangle {
+                                Layout.preferredWidth: 120
+                                Layout.preferredHeight: 40
+                                color: changelogWindow.tagColors[6]
+                                radius: 6
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "1.0.20260924"
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    color: "white"
+                                }
+                            }
+
+                            Column {
+                                Layout.fillWidth: true
+                                spacing: 5
+
+                                Text {
+                                    text: I18n.t("changelog20260924") || "修复 macOS 安装包名称问题"
+                                    font.pixelSize: 16
+                                    font.bold: true
+                                    color: "#333"
+                                }
+
+                                Text {
+                                    text: I18n.t("changelog20260924Desc") || "GitHub 上传 Release 资产时会剥掉文件名里的非 ASCII 字符，导致 macOS 安装包被发布成以连字符开头的名称；CI 现改为生成 ASCII 资产名，并在产物收集与发布两处增加非 ASCII 名称守卫。DMG 内的「蜂巢工具箱.app」名称保持不变"
+                                    width: parent.width
+                                    font.pixelSize: 14
+                                    color: "#666"
+                                    wrapMode: Text.WordWrap
+                                }
+                            }
+                        }
+                    }
+
                     // 更新条目 - 1.0.20260923
                     Rectangle {
                         Layout.fillWidth: true

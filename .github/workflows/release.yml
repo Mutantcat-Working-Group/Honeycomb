@@ -351,12 +351,23 @@ jobs:
           # The job-level VERSION env keeps the tag's "v" prefix, so strip it
           # here exactly like every build step does.
           VERSION="${GITHUB_REF_NAME#v}"
+          PKG_ARCH="${ARCH}"
+          if [ "${ARCH}" = "amd64" ]; then PKG_ARCH="x86_64"; fi
           mkdir -p release
           if [ "${OS}" = "windows" ]; then
             cp dist/*setup.exe "release/${APP_NAME}-${VERSION}-windows-${ARCH}.exe"
           elif [ "${OS}" = "darwin" ]; then
-            # The DMG is already named after the deployed bundle (蜂巢工具箱).
-            cp dist/*.dmg release/
+            # GitHub strips every non-ASCII byte out of a release asset name,
+            # so a DMG named after the Chinese bundle would be published as
+            # "-<version>-macOS-<arch>.dmg". Derive the uploaded name from
+            # APP_NAME instead; the bundle inside the image keeps its Chinese
+            # name, which is what Finder and /Applications show.
+            DMG_SRC="$(find dist -maxdepth 1 -name '*.dmg' -print -quit)"
+            if [ -z "${DMG_SRC}" ]; then
+              echo "::error::the darwin build produced no .dmg"
+              exit 1
+            fi
+            cp "${DMG_SRC}" "release/${APP_NAME}-${VERSION}-macOS-${PKG_ARCH}.dmg"
           elif [ "${OS}" = "linux" ]; then
             cp dist/*.AppImage "release/${APP_NAME}-${VERSION}-linux-${ARCH}.AppImage"
           else
@@ -365,6 +376,20 @@ jobs:
           fi
           if find release -type f -name "*-v${VERSION}-*" | grep -q .; then
             echo "::error::installer assets still carry the tag's v prefix"
+            find release -type f -name "*-v${VERSION}-*"
+            exit 1
+          fi
+          # An ASCII-only assert catches the mangled-asset-name failure mode
+          # here instead of letting a stripped name reach the release.
+          NON_ASCII="$(find release -type f | LC_ALL=C grep '[^ -~]' || true)"
+          if [ -n "${NON_ASCII}" ]; then
+            echo "::error::release asset names must be ASCII only:"
+            echo "${NON_ASCII}"
+            exit 1
+          fi
+          if find release -type f -name '-*' | grep -q .; then
+            echo "::error::release asset names must not start with a dash"
+            find release -type f -name '-*'
             exit 1
           fi
           ASSET_COUNT="$(find release -type f | wc -l | tr -d ' ')"
@@ -396,6 +421,14 @@ jobs:
           ASSET_COUNT="$(find . -type f | wc -l | tr -d ' ')"
           if [ "${ASSET_COUNT}" -lt 1 ]; then
             echo "::error::no release assets downloaded, refusing to checksum an empty set"
+            exit 1
+          fi
+          # Same ASCII-only guard as the collect step, in case a stripped name
+          # was already baked into an artifact.
+          NON_ASCII="$(find . -type f | LC_ALL=C grep '[^ -~]' || true)"
+          if [ -n "${NON_ASCII}" ]; then
+            echo "::error::refusing to publish non-ASCII asset names:"
+            echo "${NON_ASCII}"
             exit 1
           fi
           # -r keeps xargs from hashing empty stdin when the set is empty.

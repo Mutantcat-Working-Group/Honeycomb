@@ -512,6 +512,8 @@ function getEnLang() {
         changelogVersion: "Version",
         changelogDate: "Date",
         changelogDescription: "Description",
+        changelog20260924: "Fixed macOS Installer Naming",
+        changelog20260924Desc: "GitHub strips non-ASCII bytes from release asset names, which published the macOS installer under a leading-dash name; CI now derives ASCII asset names and guards against non-ASCII names at both collection and publish time. The Honeycomb Toolbox app inside the DMG keeps its Chinese name",
         changelog20260923: "Fixed Update Check and Release Pipeline Defects",
         changelog20260923Desc: "Version comparison now uses the release date, fixing false prompts for older builds; unified CI asset naming with checksum guards; version comes from a single CMake source; Windows installer defaults are repo-relative",
         changelog20260920: "Release Pipeline Upgrade",

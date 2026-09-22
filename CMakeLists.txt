@@ -24,7 +24,7 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND (NOT DEFINED CMAKE_MAKE_PROGRAM OR CMAKE
     endif()
 endif()
 
-project(Honeycomb VERSION 1.0.20260923 LANGUAGES C CXX)
+project(Honeycomb VERSION 1.0.20260924 LANGUAGES C CXX)
 
 # Toolchain files are loaded by project() and may replace an absolute SDK path
 # with the invalid literal "macosx". Normalize it again after toolchain setup.
@@ -397,6 +397,12 @@ if(BUILD_TESTING)
         COMMAND ${CMAKE_COMMAND}
             -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
             -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/ReleaseMetadataTest.cmake
+    )
+    add_test(
+        NAME ReleaseAssetNameTest
+        COMMAND ${CMAKE_COMMAND}
+            -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/ReleaseAssetNameTest.cmake
     )
 endif()
 

@@ -11,8 +11,10 @@ CMakeCache.txt
 CMakeFiles/
 Makefile
 *.cmake
-!tests/WindowElementInspectorIntegrationTest.cmake
-!tests/ReleaseMetadataTest.cmake
+# Guard tests live in tests/ and CMakeLists.txt registers them, so a blanket
+# *.cmake ignore would silently drop a new test from the repo. Negate the
+# whole naming convention instead of listing files one by one.
+!tests/*Test.cmake
 !CMakeLists.txt
 
 # Qt Creator

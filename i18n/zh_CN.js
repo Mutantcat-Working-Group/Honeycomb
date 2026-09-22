@@ -512,6 +512,8 @@ function getZhLang() {
         changelogVersion: "版本",
         changelogDate: "日期",
         changelogDescription: "更新内容",
+        changelog20260924: "修复 macOS 安装包名称问题",
+        changelog20260924Desc: "GitHub 上传 Release 资产时会剥掉文件名里的非 ASCII 字符，导致 macOS 安装包被发布成以连字符开头的名称；CI 现改为生成 ASCII 资产名，并在产物收集与发布两处增加非 ASCII 名称守卫。DMG 内的「蜂巢工具箱.app」名称保持不变",
         changelog20260923: "修复更新检查与发布流程暗病",
         changelog20260923Desc: "版本比较改为按发布日期判定，修复误报更旧版本；统一 CI 产物命名并增加 checksums 守卫；版本号统一由 CMake 下发；Windows 安装脚本默认路径改为仓库相对路径",
         changelog20260920: "发布流程升级",

@@ -79,7 +79,7 @@ QList<int> numericParts(const QString &value)
 }
 
 // Release versions are shaped major.minor.YYYYMMDD, so a date component always
-// outranks the middle one: 1.0.20260923 is newer than 1.1.20260723.
+// outranks the middle one: 1.0.20260924 is newer than 1.1.20260723.
 bool isReleaseDate(int part)
 {
     return part >= 10000101 && part <= 99991231;
