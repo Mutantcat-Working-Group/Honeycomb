@@ -1,0 +1,76 @@
+name: Backfill Checksums
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to backfill checksums for (for example v1.0.20260920)'
+        required: true
+        type: string
+      force:
+        description: 'Recompute and overwrite even if both files already exist'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compute and upload checksums-md5.txt / checksums-sha1.txt
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          set -euo pipefail
+          REPO="${GITHUB_REPOSITORY}"
+
+          echo "Backfilling checksums for ${REPO}@${TAG}"
+          if ! gh release view "${TAG}" --repo "${REPO}" >/dev/null 2>&1; then
+            echo "::error::release ${TAG} not found in ${REPO}"
+            exit 1
+          fi
+
+          existing=$(gh release view "${TAG}" --repo "${REPO}" --json assets --jq '[.assets[].name] | join("\n")')
+          need=true
+          if [ "${FORCE}" != "true" ] && echo "${existing}" | grep -qx 'checksums-md5.txt' && echo "${existing}" | grep -qx 'checksums-sha1.txt'; then
+            need=false
+          fi
+          if [ "${need}" = "false" ]; then
+            echo "Both checksum files already exist; pass force=true to recompute."
+            exit 0
+          fi
+
+          mkdir -p dl out
+          gh release download "${TAG}" --repo "${REPO}" --dir dl
+
+          # Hash only the real deliverables: drop checksum and sidecar files so the
+          # listings stay comparable with the sha256 checksums.txt produced at build time.
+          find dl -maxdepth 1 -type f \
+            \( -name 'checksums*.txt' -o -name 'SHA256SUMS*' -o -name '*.sha256' -o -name '*.sha1' \) \
+            -delete
+
+          remaining=$(find dl -maxdepth 1 -type f | wc -l)
+          if [ "${remaining}" -eq 0 ]; then
+            echo "::error::no deliverable assets left to hash after filtering checksum files"
+            exit 1
+          fi
+
+          ( cd dl && md5sum * > ../out/checksums-md5.txt && sha1sum * > ../out/checksums-sha1.txt )
+
+          echo "--- checksums-md5.txt ---"
+          cat out/checksums-md5.txt
+          echo "--- checksums-sha1.txt ---"
+          cat out/checksums-sha1.txt
+
+          gh release upload "${TAG}" out/checksums-md5.txt out/checksums-sha1.txt \
+            --repo "${REPO}" --clobber
+
+          echo "Uploaded checksums-md5.txt and checksums-sha1.txt to ${REPO}@${TAG}"
