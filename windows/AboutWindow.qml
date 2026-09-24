@@ -7,9 +7,9 @@ import "../i18n/i18n.js" as I18n
 Window {
     id: aboutWindow
     width: 500
-    height: 460
+    height: 530
     minimumWidth: 420
-    minimumHeight: 460
+    minimumHeight: 530
     title: I18n.t("aboutTitle")
     flags: Qt.Window
     modality: Qt.NonModal
@@ -70,6 +70,20 @@ Window {
                 color: "#666"
             }
 
+            // 发行方与源码地址
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                text: I18n.t("aboutPublisher")
+                font.pixelSize: 13
+                color: "#666"
+            }
+
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                text: I18n.t("aboutGithub")
+                font.pixelSize: 13
+                color: "#666"
+            }
         }
 
         ColumnLayout {

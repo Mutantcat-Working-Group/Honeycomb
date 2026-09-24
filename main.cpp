@@ -1,3 +1,5 @@
+// Honeycomb — 由异猫工作群（mutantcat.org）发行
+// GitHub: https://github.com/Mutantcat-Working-Group
 #include <QIcon>
 #include <QApplication>
 #include <QQmlContext>

@@ -500,6 +500,8 @@ function getZhLang() {
         aboutDesc: "蜂巢工具箱是一个离线工具箱，提供了一些常用的工具。",
         aboutWebsite: "官网：www.mutantcat.org",
         aboutVersion: "版本：{0}",
+        aboutPublisher: "发行方：异猫工作群（mutantcat.org）",
+        aboutGithub: "GitHub：https://github.com/Mutantcat-Working-Group",
         aboutCheckUpdate: "检查更新",
         aboutChecking: "正在检查更新...",
         aboutLatest: "当前已是最新版本",
