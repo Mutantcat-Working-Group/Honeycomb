@@ -159,7 +159,7 @@ jobs:
       - name: Build
         run: cmake --build build --config Release --parallel 2
 
-      - name: Build Windows NSIS installer
+      - name: Stage Windows application
         if: matrix.os == 'windows'
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
@@ -169,12 +169,85 @@ jobs:
           cp "${EXE}" dist/stage/appHoneycomb.exe
           cp LICENSE.txt dist/stage/LICENSE.txt
           windeployqt --release --qmldir . --no-translations dist/stage/appHoneycomb.exe
+
+      # The NSIS installer embeds the staged binary as-is, so the application has
+      # to carry its self-signed signature before makensis runs.
+      - name: Create Windows code-signing certificate
+        if: matrix.os == 'windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $pfx = Join-Path $env:RUNNER_TEMP 'mutantcat-code-signing.pfx'
+          $password = 'mutantcat'
+          $cert = New-SelfSignedCertificate `
+            -Subject 'CN=Mutantcat Working Group, O=Mutantcat Working Group, C=CN' `
+            -CertStoreLocation 'Cert:\CurrentUser\My' `
+            -KeyUsage DigitalSignature `
+            -Type CodeSigningCert `
+            -KeyExportPolicy Exportable `
+            -KeyLength 2048 `
+            -HashAlgorithm SHA256 `
+            -NotAfter (Get-Date).AddYears(10)
+          Export-PfxCertificate -Cert $cert -FilePath $pfx -Password (ConvertTo-SecureString -String $password -Force -AsPlainText) | Out-Null
+          "PFX_PATH=$pfx" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "SIGN_PASSWORD=$password" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          $signtool = $null
+          foreach ($kit in (Get-ChildItem -Path 'C:\Program Files (x86)\Windows Kits\10\bin' -Directory | Sort-Object Name -Descending)) {
+            $candidate = Join-Path $kit.FullName 'x64\signtool.exe'
+            if (Test-Path $candidate) { $signtool = $candidate; break }
+          }
+          if (-not $signtool) { throw 'signtool.exe not found in the Windows SDK' }
+          "SIGNTOOL_PATH=$signtool" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Sign Windows application
+        if: matrix.os == 'windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not $env:PFX_PATH -or -not $env:SIGNTOOL_PATH) { throw 'code-signing setup did not run' }
+          $exe = Join-Path $env:GITHUB_WORKSPACE 'dist\stage\appHoneycomb.exe'
+          if (-not (Test-Path $exe)) { throw "missing $exe" }
+          & $env:SIGNTOOL_PATH sign /fd SHA256 /f $env:PFX_PATH /p $env:SIGN_PASSWORD /d 'Honeycomb' "$exe"
+          $signature = Get-AuthenticodeSignature $exe
+          if (-not $signature.SignerCertificate -or $signature.SignerCertificate.Subject -notlike '*CN=Mutantcat Working Group*') {
+            throw "$exe lost its signature ($($signature.Status))"
+          }
+          echo "signed $exe"
+
+      - name: Build Windows NSIS installer
+        if: matrix.os == 'windows'
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
           makensis -V2 \
             -DVERSION="${VERSION}" \
             -DSTAGING_DIR="$(cygpath -w "${GITHUB_WORKSPACE}/dist/stage")" \
             -DPROJECT_DIR="$(cygpath -w "${GITHUB_WORKSPACE}")" \
             -DINSTALLER_NAME="$(cygpath -w "${GITHUB_WORKSPACE}/dist/${APP_NAME}-${VERSION}-windows-${ARCH}-setup.exe")" \
             sdk/NSIS/Honeycomb.nsi
+
+      - name: Sign and verify Windows installer
+        if: matrix.os == 'windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not $env:PFX_PATH -or -not $env:SIGNTOOL_PATH) { throw 'code-signing setup did not run' }
+          $exe = Join-Path $env:GITHUB_WORKSPACE 'dist\stage\appHoneycomb.exe'
+          $installers = @(Get-ChildItem -Path (Join-Path $env:GITHUB_WORKSPACE 'dist') -Filter '*-windows-*-setup.exe')
+          if ($installers.Count -eq 0) { throw 'no Windows NSIS installer found' }
+          foreach ($installer in $installers) {
+            & $env:SIGNTOOL_PATH sign /fd SHA256 /f $env:PFX_PATH /p $env:SIGN_PASSWORD /d 'Honeycomb Installer' "$($installer.FullName)"
+          }
+          $appSignature = Get-AuthenticodeSignature $exe
+          if (-not $appSignature.SignerCertificate -or $appSignature.SignerCertificate.Subject -notlike '*CN=Mutantcat Working Group*') {
+            throw "$exe lost its signature ($($appSignature.Status))"
+          }
+          foreach ($installer in $installers) {
+            $signature = Get-AuthenticodeSignature $installer.FullName
+            if (-not $signature.SignerCertificate -or $signature.SignerCertificate.Subject -notlike '*CN=Mutantcat Working Group*') {
+              throw "$($installer.Name) lost its signature ($($signature.Status))"
+            }
+            echo "signed $($installer.Name)"
+          }
 
       - name: Build macOS app and DMG
         if: matrix.os == 'darwin'
