@@ -50,6 +50,57 @@ Window {
                     width: changelogWindow.width - 60
                     spacing: 15
 
+                    // 更新条目 - 1.0.20260929
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 175
+                        color: "white"
+                        border.color: "#e0e0e0"
+                        border.width: 1
+                        radius: 8
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 15
+                            spacing: 15
+
+                            Rectangle {
+                                Layout.preferredWidth: 120
+                                Layout.preferredHeight: 40
+                                color: changelogWindow.tagColors[7]
+                                radius: 6
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "1.0.20260929"
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    color: "white"
+                                }
+                            }
+
+                            Column {
+                                Layout.fillWidth: true
+                                spacing: 5
+
+                                Text {
+                                    text: I18n.t("changelog20260929") || "新增游戏开发板块"
+                                    font.pixelSize: 16
+                                    font.bold: true
+                                    color: "#333"
+                                }
+
+                                Text {
+                                    text: I18n.t("changelog20260929Desc") || "新增「游戏开发」板块：精灵图播放支持任意规格精灵图预览、播放与分割配置，支持水平/垂直镜像；黑白透明遮罩可生成黑、白、透明三色矩形阵列作为图片背景布置，可指定每个矩形宽高并导出 PNG"
+                                    width: parent.width
+                                    font.pixelSize: 14
+                                    color: "#666"
+                                    wrapMode: Text.WordWrap
+                                }
+                            }
+                        }
+                    }
+
                     // 更新条目 - 1.0.20260924
                     Rectangle {
                         Layout.fillWidth: true

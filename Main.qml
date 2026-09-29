@@ -113,7 +113,9 @@ ApplicationWindow {
         "Agent协同": "qrc:/qt/qml/Honeycomb/windows/AgentPromptWindow.qml",
         "对照降AI": "qrc:/qt/qml/Honeycomb/windows/AiTextReducerWindow.qml",
         "网页组件选取": "qrc:/qt/qml/Honeycomb/windows/WebInspectorWindow.qml",
-        "窗口组件选取": "qrc:/qt/qml/Honeycomb/windows/WindowElementInspectorWindow.qml"
+        "窗口组件选取": "qrc:/qt/qml/Honeycomb/windows/WindowElementInspectorWindow.qml",
+        "精灵图播放": "qrc:/qt/qml/Honeycomb/windows/SpritePlayerWindow.qml",
+        "黑白透明遮罩": "qrc:/qt/qml/Honeycomb/windows/GameMaskWindow.qml"
     })
     
     // 存储已打开的窗口引用，防止被垃圾回收
@@ -177,6 +179,7 @@ ApplicationWindow {
             {text: I18n.t("navRandom"), desc: I18n.t("navRandomDesc"), icon: ""},
             {text: I18n.t("navNetwork"), desc: I18n.t("navNetworkDesc"), icon: ""},
             {text: I18n.t("navHardware"), desc: I18n.t("navHardwareDesc"), icon: ""},
+            {text: I18n.t("navGame"), desc: I18n.t("navGameDesc"), icon: ""},
             {text: I18n.t("navAI"), desc: I18n.t("navAIDesc"), icon: ""}
         ]
     }
@@ -293,7 +296,11 @@ ApplicationWindow {
             {title: I18n.t("toolRegisterRef"), subtitle: I18n.t("toolRegisterRefDesc"), key: "通用寄存器速查"},
             {title: I18n.t("toolAsm"), subtitle: I18n.t("toolAsmDesc"), key: "汇编速查"}
         ],
-        8: [ // AI工具
+        8: [ // 游戏开发
+            {title: I18n.t("toolSpritePlayer"), subtitle: I18n.t("toolSpritePlayerDesc"), key: "精灵图播放"},
+            {title: I18n.t("toolGameMask"), subtitle: I18n.t("toolGameMaskDesc"), key: "黑白透明遮罩"}
+        ],
+        9: [ // AI工具
             {title: I18n.t("toolAIPrompt"), subtitle: I18n.t("toolAIPromptDesc"), key: "AI提示词"},
             {title: I18n.t("toolAgentPrompt"), subtitle: I18n.t("toolAgentPromptDesc"), key: "Agent协同"},
             {title: I18n.t("toolWebInspector"), subtitle: I18n.t("toolWebInspectorDesc"), key: "网页组件选取"},

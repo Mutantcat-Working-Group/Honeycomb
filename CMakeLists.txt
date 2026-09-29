@@ -24,7 +24,7 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND (NOT DEFINED CMAKE_MAKE_PROGRAM OR CMAKE
     endif()
 endif()
 
-project(Honeycomb VERSION 1.0.20260924 LANGUAGES C CXX)
+project(Honeycomb VERSION 1.0.20260929 LANGUAGES C CXX)
 
 # Toolchain files are loaded by project() and may replace an absolute SDK path
 # with the invalid literal "macosx". Normalize it again after toolchain setup.
@@ -193,6 +193,8 @@ qt_add_qml_module(appHoneycomb
         windows/WebInspectorWindow.qml
         windows/SerialPortWindow.qml
         windows/WindowElementInspectorWindow.qml
+        windows/SpritePlayerWindow.qml
+        windows/GameMaskWindow.qml
     RESOURCES
         i18n/zh_CN.js
         i18n/en_US.js
@@ -278,6 +280,8 @@ qt_add_qml_module(appHoneycomb
         src/SerialPortTool.cpp
         src/WindowElementInspector.h
         src/WindowElementInspector.cpp
+        src/GameAssetGenerator.h
+        src/GameAssetGenerator.cpp
     )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -370,6 +374,18 @@ if(BUILD_TESTING)
         )
     endif()
     add_test(NAME UpdateCheckerTest COMMAND update_checker_test)
+    qt_add_executable(game_asset_generator_test
+        tests/GameAssetGeneratorTest.cpp
+        src/GameAssetGenerator.h
+        src/GameAssetGenerator.cpp
+    )
+    target_link_libraries(game_asset_generator_test PRIVATE Qt6::Core Qt6::Gui)
+    if(APPLE)
+        set_target_properties(game_asset_generator_test PROPERTIES
+            BUILD_RPATH "${HONEYCOMB_QT_LIB_DIR}"
+        )
+    endif()
+    add_test(NAME GameAssetGeneratorTest COMMAND game_asset_generator_test)
     add_test(
         NAME AboutWindowLayoutTest
         COMMAND ${CMAKE_COMMAND}

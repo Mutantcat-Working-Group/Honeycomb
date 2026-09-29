@@ -46,6 +46,7 @@
 #include "src/UpdateChecker.h"
 #include "src/SerialPortTool.h"
 #include "src/WindowElementInspector.h"
+#include "src/GameAssetGenerator.h"
 
 int main(int argc, char *argv[])
 {
@@ -104,6 +105,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<UpdateChecker>("Honeycomb", 1, 0, "UpdateChecker");
     qmlRegisterType<SerialPortTool>("Honeycomb", 1, 0, "SerialPortTool");
     qmlRegisterType<WindowElementInspector>("Honeycomb", 1, 0, "WindowElementInspector");
+    qmlRegisterType<GameAssetGenerator>("Honeycomb", 1, 0, "GameAssetGenerator");
 
     QQmlApplicationEngine engine;
     
