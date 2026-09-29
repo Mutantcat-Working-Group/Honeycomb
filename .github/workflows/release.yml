@@ -72,6 +72,10 @@ jobs:
             arch: amd64
             runner: windows-2022
             qt_arch: win64_msvc2022_64
+          - os: windows
+            arch: arm64
+            runner: windows-11-arm
+            qt_arch: win64_msvc2022_arm64
           - os: darwin
             arch: arm64
             runner: macos-15
