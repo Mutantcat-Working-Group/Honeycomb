@@ -386,6 +386,10 @@ if(BUILD_TESTING)
         )
     endif()
     add_test(NAME GameAssetGeneratorTest COMMAND game_asset_generator_test)
+    # The generator needs a Qt GUI stack; CI runs headless on Linux.
+    set_tests_properties(GameAssetGeneratorTest PROPERTIES
+        ENVIRONMENT "QT_QPA_PLATFORM=offscreen"
+    )
     add_test(
         NAME AboutWindowLayoutTest
         COMMAND ${CMAKE_COMMAND}
