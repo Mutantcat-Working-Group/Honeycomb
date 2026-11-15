@@ -50,6 +50,57 @@ Window {
                     width: changelogWindow.width - 60
                     spacing: 15
 
+                    // 更新条目 - 1.1.20261113
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 175
+                        color: "white"
+                        border.color: "#e0e0e0"
+                        border.width: 1
+                        radius: 8
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 15
+                            spacing: 15
+
+                            Rectangle {
+                                Layout.preferredWidth: 120
+                                Layout.preferredHeight: 40
+                                color: changelogWindow.tagColors[8]
+                                radius: 6
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "1.1.20261113"
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    color: "white"
+                                }
+                            }
+
+                            Column {
+                                Layout.fillWidth: true
+                                spacing: 5
+
+                                Text {
+                                    text: I18n.t("changelog20261113") || "对外发布版：安装、离线与校验说明"
+                                    font.pixelSize: 16
+                                    font.bold: true
+                                    color: "#333"
+                                }
+
+                                Text {
+                                    text: I18n.t("changelog20261113Desc") || "首个面向公众的正式版本：README 补齐三平台安装包下载、checksums 校验、从源码构建与离线使用说明；版本号改为「主版本.次版本.发布日期」并统一由 CMake 下发；「关于」页与「更新日志」同步到 1.1.20261113"
+                                    width: parent.width
+                                    font.pixelSize: 14
+                                    color: "#666"
+                                    wrapMode: Text.WordWrap
+                                }
+                            }
+                        }
+                    }
+
                     // 更新条目 - 1.0.20260929
                     Rectangle {
                         Layout.fillWidth: true

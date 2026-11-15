@@ -125,17 +125,32 @@
 
 ### 三、安装与下载
 
-从 [Releases](https://github.com/Mutantcat-Working-Group/Honeycomb/releases) 下载对应平台的安装包：
+当前版本 **1.1.20261113**。从 [Releases](https://github.com/Mutantcat-Working-Group/Honeycomb/releases) 下载对应平台的安装包：
 
 | 平台 | 架构 | 安装包 |
 | --- | --- | --- |
-| Windows | x64 | `Honeycomb-<版本>-windows-amd64.exe`（NSIS） |
+| Windows | x64 | `Honeycomb-<版本>-windows-amd64.exe`（NSIS 安装程序） |
 | macOS | Apple Silicon | `Honeycomb-<版本>-macOS-arm64.dmg` |
 | macOS | Intel | `Honeycomb-<版本>-macOS-x86_64.dmg` |
 | Linux | x64 | `Honeycomb-<版本>-linux-amd64.AppImage` |
 | Linux | arm64 | `Honeycomb-<版本>-linux-arm64.AppImage` |
 
-macOS 应用及 DMG 使用 ad-hoc 签名，不是 Apple 公证，首次启动可能需在系统设置中允许；Windows 可能出现 SmartScreen 提示。下载后可使用 Release 中的 `checksums.txt`、`checksums-md5.txt` 与 `checksums-sha1.txt` 校验安装包。
+每个 Release 还会附带 `checksums.txt`（SHA-256）、`checksums-md5.txt`（MD5）与 `checksums-sha1.txt`（SHA-1）。校验方式：
+
+```sh
+# 下载安装包与 checksums.txt 到同一目录后
+sha256sum --ignore-missing -c checksums.txt
+```
+
+首次启动需要注意：
+
+- **macOS**：应用与 DMG 使用 ad-hoc 签名，不是 Apple 公证，首次启动可能需在「系统设置 → 隐私与安全性」中允许。
+- **Windows**：安装或首次运行时可能出现 SmartScreen 提示，需选择「仍要运行」。
+- **Linux**：AppImage 需先加执行权限：`chmod +x Honeycomb-<版本>-linux-<架构>.AppImage`。
+
+#### 升级
+
+应用内的「关于」页可检查更新：检查结果来自 `version.mutantcat.org`（失败时回退到 `.com.cn` 域名），只读取一个版本描述文件，不上报任何使用数据；检查由手动点击触发。也可以直接下载上面表格中更新的安装包覆盖安装，配置与数据不受影响。
 
 ### 四、快速上手
 
@@ -143,22 +158,53 @@ macOS 应用及 DMG 使用 ad-hoc 签名，不是 Apple 公证，首次启动可
 2. 在分类中找到需要的工具，右侧即为工具界面，所有工具本地离线运行。
 3. 涉及文件操作的工具（如文件转 Base64、文件校验）直接选择本地文件即可。
 
-### 五、从源码构建
+### 五、离线使用
 
-项目使用 CMake 与 Qt 6.8 构建：
+蜂巢工具箱的工具默认全部本地运行：编解码、格式转换、加解密、随机生成、文件校验、取色、正则、SQL/JSON 处理等都不发出任何网络请求，断网、内网、隔离环境中均可正常使用。
+
+需要联网的只有三类，且都是你主动填了地址或点击之后才发生：
+
+| 工具 | 用途 | 断网时 |
+| --- | --- | --- |
+| WebSocket 测试、RESTful 测试 | 需要你填写目标地址 | 仅在你填了地址并发起请求时才联网 |
+| MQTT 监听 / 广播、RTSP 预览、DNS 查询、Fake API、文件夹映射 | 连接你指定的本地或远程地址 | 连本地地址可用；连不通时报错，不影响其他工具 |
+| OpenAI API 测试 | 连接你填写的 API 地址与密钥 | 仅在填写并测试时联网 |
+
+除此之外，AI 提示词、Agent 协同、对照降 AI、上下文飘窗等 AI 工具只在你提供的文本上本地处理；「机器学习手书」等参考表为内置静态数据。
+
+### 六、从源码构建
+
+依赖：Qt 6.8（模块 Quick、QuickControls2、Widgets、WebSockets、Multimedia、Network、SerialPort、WebEngineQuick、WebChannel、DBus）、CMake ≥ 3.16、Conan 2，以及 Qt WebEngine 所需的系统库。
+
+Linux 以 Debian/Ubuntu 为例：
 
 ```sh
-cmake -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build
+sudo apt-get install -y build-essential pkg-config libgl1-mesa-dev libdbus-1-dev libssl-dev libatspi2.0-dev
+python -m pip install "conan>=2,<3"
+conan profile detect --force
+conan install . --output-folder=build/conan-deps --build=missing -s build_type=Release
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_TOOLCHAIN_FILE="$PWD/build/conan-deps/conan_toolchain.cmake" \
+  -DCMAKE_PREFIX_PATH="$PWD/build/conan-deps;$QT_ROOT_DIR"
+cmake --build build --parallel
 ```
 
-版本号唯一事实来源是 `CMakeLists.txt` 中的 `project(... VERSION ...)`，安装脚本、i18n 与「关于」页均由其派生，升级只改这一处。
+Windows 上若源码含非 ASCII 字符，建议使用仓库内的 `conan_profile_msvc_utf8`（为 MSVC 追加 `/utf-8`）。
 
-### 六、版本与发布
+跑测试：
 
-版本号格式为 `主版本.次版本.发布日期`，例如 `1.0.20260924`（2026 年 9 月 24 日发布）。
+```sh
+ctest --test-dir build --output-on-failure
+```
 
-- 发新版本时直接使用当天日期，CI 重跑或连发多个版本时依次往后取日期（`1.0.20260923`、`1.0.20260924`），不要使用 `-1`、`-2` 之类的后缀。
-- 打标签 `v<版本号>`（如 `v1.0.20260924`）推送后，由 GitHub Actions 自动完成三平台打包与 Release 发布。
+其中 `ReleaseMetadataTest` 与 `ReleaseAssetNameTest` 会校验版本号在 CMake、NSIS 脚本、i18n 与「关于」页之间保持一致，并检查发布产物命名不会踩到 GitHub 剥除非 ASCII 字符的问题。
+
+版本号唯一事实来源是 `CMakeLists.txt` 中的 `project(... VERSION ...)`，安装脚本、i18n 与「关于」页均由其派生，升级只改这一处（Windows 的 `sdk/NSIS/Honeycomb.nsi` 中另有一份默认值，发布流水线以 CMake 的版本为准传入）。
+
+### 七、版本与发布
+
+版本号格式为 `主版本.次版本.发布日期`，例如 `1.1.20261113`（2026 年 11 月 13 日发布）。主版本与次版本表示功能层级，日期部分即发布日，因此同一个日期连发多个版本时依次往后取日期（`1.1.20261113`、`1.1.20261114`），不使用 `-1`、`-2` 之类的后缀。
+
+- 打标签 `v<版本号>`（如 `v1.1.20261113`）推送后，由 GitHub Actions 自动完成三平台打包与 Release 发布。
 - Release 资产一律使用 ASCII 名称 `Honeycomb-<版本>-<系统>-<架构>.<扩展名>`：GitHub 上传资产时会静默剥掉文件名中的非 ASCII 字符，中文名称只保留在 DMG 内部的 `蜂巢工具箱.app` 与卷标上，用户拖到「应用程序」后看到的仍是「蜂巢工具箱」。
 - `.github/workflows/release.yml` 的「Collect installer assets」与「Generate checksums」两处都有非 ASCII 名称守卫，产物名不合规会在构建期直接失败，不会带着坏名字发上网。

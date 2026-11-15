@@ -571,6 +571,8 @@ function getZhLang() {
         changelogVersion: "版本",
         changelogDate: "日期",
         changelogDescription: "更新内容",
+        changelog20261113: "对外发布版：安装、离线与校验说明",
+        changelog20261113Desc: "首个面向公众的正式版本：README 补齐三平台安装包下载、checksums 校验、从源码构建与离线使用说明；版本号改为「主版本.次版本.发布日期」并统一由 CMake 下发；「关于」页与「更新日志」同步到 1.1.20261113",
         changelog20260929: "新增游戏开发板块",
         changelog20260929Desc: "新增「游戏开发」板块：精灵图播放支持任意规格精灵图预览、播放与分割配置，支持水平/垂直镜像；黑白透明遮罩可生成黑、白、透明三色矩形阵列作为图片背景布置，可指定每个矩形宽高并导出 PNG",
         changelog20260924: "修复 macOS 安装包名称问题",

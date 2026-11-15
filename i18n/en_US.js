@@ -571,6 +571,8 @@ function getEnLang() {
         changelogVersion: "Version",
         changelogDate: "Date",
         changelogDescription: "Description",
+        changelog20261113: "First Public Release: Install, Offline Use and Checksums",
+        changelog20261113Desc: "The first release aimed at users outside the team: the README now documents the three-platform installers, how to verify them with the published checksums, how to build from source, and how the toolbox works offline; the version scheme becomes major.minor.release-date with CMake as the single source; the About and Changelog windows are updated to 1.1.20261113",
         changelog20260929: "New Game Development Section",
         changelog20260929Desc: "Added the Game Development section: the sprite player previews and animates sprites of any layout with configurable slicing and horizontal/vertical mirroring; the black/white/transparent mask generator builds three-rectangle background layouts with per-rectangle sizes and PNG export",
         changelog20260924: "Fixed macOS Installer Naming",
