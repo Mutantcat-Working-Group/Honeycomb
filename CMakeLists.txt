@@ -204,6 +204,8 @@ qt_add_qml_module(appHoneycomb
     SOURCES
         lib/qrcodegen/qrcodegen.hpp
         lib/qrcodegen/qrcodegen.cpp
+        lib/llm-retry/llm_retry.hpp
+        lib/llm-cost/llm_cost.hpp
         src/RandomNumberGenerator.h
         src/RandomNumberGenerator.cpp
         src/RandomLetterGenerator.h
@@ -390,6 +392,18 @@ if(BUILD_TESTING)
     set_tests_properties(GameAssetGeneratorTest PROPERTIES
         ENVIRONMENT "QT_QPA_PLATFORM=offscreen"
     )
+    qt_add_executable(openai_client_test
+        tests/OpenAIClientTest.cpp
+        src/OpenAIClient.h
+        src/OpenAIClient.cpp
+    )
+    target_link_libraries(openai_client_test PRIVATE Qt6::Core Qt6::Network)
+    if(APPLE)
+        set_target_properties(openai_client_test PROPERTIES
+            BUILD_RPATH "${HONEYCOMB_QT_LIB_DIR}"
+        )
+    endif()
+    add_test(NAME OpenAIClientTest COMMAND openai_client_test)
     add_test(
         NAME AboutWindowLayoutTest
         COMMAND ${CMAKE_COMMAND}

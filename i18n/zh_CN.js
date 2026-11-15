@@ -1209,6 +1209,7 @@ function getZhLang() {
         maxTokens: "最大Token",
         testConnection: "测试连接",
         clearChat: "清空对话",
+        chatUsage: "本次对话用量",
         success: "成功",
         you: "你",
         aiThinking: "AI 正在回复...",

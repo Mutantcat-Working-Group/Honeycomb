@@ -7,6 +7,10 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QUrl>
+#include <QNetworkRequest>
+#include <QByteArray>
+
+class QTimer;
 
 class OpenAIClient : public QObject
 {
@@ -18,6 +22,8 @@ class OpenAIClient : public QObject
     Q_PROPERTY(int maxTokens READ maxTokens WRITE setMaxTokens NOTIFY maxTokensChanged)
     Q_PROPERTY(bool isLoading READ isLoading NOTIFY isLoadingChanged)
     Q_PROPERTY(QStringList chatHistory READ chatHistory NOTIFY chatHistoryChanged)
+    Q_PROPERTY(int usageTokens READ usageTokens NOTIFY usageChanged)
+    Q_PROPERTY(QString usageCost READ usageCost NOTIFY usageChanged)
 
 public:
     explicit OpenAIClient(QObject *parent = nullptr);
@@ -41,6 +47,10 @@ public:
     bool isLoading() const;
     QStringList chatHistory() const;
 
+    // 本次对话累计的 token 数和费用（费用仅在模型价格已知时给出）
+    int usageTokens() const;
+    QString usageCost() const;
+
     Q_INVOKABLE void sendMessage(const QString &message);
     Q_INVOKABLE void stopGeneration();
     Q_INVOKABLE void clearChat();
@@ -54,6 +64,7 @@ signals:
     void maxTokensChanged();
     void isLoadingChanged();
     void chatHistoryChanged();
+    void usageChanged();
     void errorOccurred(const QString &error);
     void testSuccess(const QString &info);
     void streamingText(const QString &text);
@@ -64,6 +75,10 @@ private slots:
     void onFinished();
 
 private:
+    void postCurrentRequest();
+    void finishRequest();
+    void recordUsage();
+
     QNetworkAccessManager *m_networkManager;
     QNetworkReply *m_currentReply;
 
@@ -82,6 +97,22 @@ private:
     QString m_currentResponse;
     // SSE 缓冲区
     QString m_sseBuffer;
+    // 错误响应体（HTTP 4xx/5xx 时不按 SSE 解析）
+    QByteArray m_errorBody;
+
+    // 当前请求，429/5xx 或连接断开时用于重试
+    QNetworkRequest m_request;
+    QByteArray m_requestBody;
+    int m_attempt;
+    QTimer *m_retryTimer;
+
+    // 服务端在流中返回的 usage（没有则用 llm-cost 估算）
+    qint64 m_serverPromptTokens;
+    qint64 m_serverCompletionTokens;
+    // 本次对话累计用量
+    qint64 m_usageTokens;
+    double m_usageCostUsd;
+    bool m_usageCostKnown;
 };
 
 #endif // OPENAICLIENT_H

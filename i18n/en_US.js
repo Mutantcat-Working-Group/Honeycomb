@@ -1209,6 +1209,7 @@ function getEnLang() {
         maxTokens: "Max Tokens",
         testConnection: "Test Connection",
         clearChat: "Clear Chat",
+        chatUsage: "Chat usage",
         success: "Success",
         you: "You",
         aiThinking: "AI is responding...",
