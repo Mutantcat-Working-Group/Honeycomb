@@ -355,6 +355,18 @@ Window {
                             onClicked: client.clearChat()
                         }
                     }
+
+                    // 本次对话的 token 用量（模型价格已知时附带费用）
+                    Text {
+                        Layout.fillWidth: true
+                        visible: client.usageTokens > 0
+                        text: (I18n.t("chatUsage") || "本次对话用量") + ": " + client.usageTokens + " tokens"
+                              + (client.usageCost !== "" ? " · " + client.usageCost : "")
+                        font.pixelSize: 12
+                        color: "#999"
+                        horizontalAlignment: Text.AlignHCenter
+                        wrapMode: Text.Wrap
+                    }
                 }
             }
             
